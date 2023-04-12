@@ -3,6 +3,8 @@ const User = require('../models/user');
 
 const sequelize = require('../connection');
 
+const imageUploadServer = process.env.IMAGE_SERVER_URL
+
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 
@@ -35,7 +37,7 @@ async function createGame(req, res) {
             const imageName = `${filename}.webp`;
 
             const options = {
-                url: `http://localhost:5000/upload/${filename}`,
+                url: `${imageUploadServer}/upload/${filename}`,
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/octet-stream',
