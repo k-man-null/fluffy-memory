@@ -6,7 +6,7 @@ const sequelize = require('../connection');
 const { Storage } = require('@google-cloud/storage');
 const storage = new Storage();
 
-const bucketName = "tikitiki-image-server";
+const bucketName = process.env.IMAGE_BUCKET;
 const bucket = storage.bucket(bucketName);
 const path = require('path');
 
@@ -36,6 +36,7 @@ function uploadToGCS(file) {
 
     fileStream.on('error', (err) => {
         console.error(`Error uploading file ${filename}: ${err}`);
+        throw err;
     });
 
     fileStream.on('finish', () => {
