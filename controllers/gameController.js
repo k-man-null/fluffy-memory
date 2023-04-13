@@ -139,17 +139,20 @@ async function createGame(req, res) {
             { transaction: t }
         );
 
-        console.log(new_game);
+        
 
         await t.commit();
 
         return res.status(200).json({ done: new_game });
 
     } catch (error) {
-        if (t && t.finished !== 'commit') {
-            await t.rollback();
-        }
 
+        try {
+            await t.rollback();
+        } catch (error) {
+            
+        }
+       
         console.log(error);
 
         return res.status(400).send("Error creating the competition");
