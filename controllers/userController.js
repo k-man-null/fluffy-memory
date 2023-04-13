@@ -144,15 +144,11 @@ async function loginUser(req, res) {
 
                     req.user = userWithoutPassword;
 
-                    const response = res.status(200)
+                   return  res.status(200)
                         .cookie("__session", token, { httpOnly: true, secure: true  })
                         .json({
                             user: userWithoutPassword,
-                        });
-
-                        console.log(response.cookies)
-
-                        return response;
+                        });    
 
                 });
 
