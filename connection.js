@@ -14,20 +14,23 @@ const DB_NAME = process.env.DB_NAME;
 const DB_USER = process.env.DB_USER;
 const DB_PASS = process.env.DB_PASS;
 const DB_INSTANCE = process.env.INSTANCE_CONNECTION_NAME;
-// const DB_PUB_IP = process.env.DB_PUB_IP;
+const DB_PUB_IP = process.env.DB_PUB_IP;
 
 console.log(`DB_NAME = ${DB_NAME} \n
     DB_USER = ${DB_USER} \n
     DB_PASS = ${DB_PASS} \n
-    DB_INSTANCE = ${DB_INSTANCE}`)
+    DB_INSTANCE = ${DB_INSTANCE} \n
+    DB_PUB_IP = ${DB_PUB_IP}`)
 
 const sequelize = new Sequelize(
     DB_NAME,
     DB_USER,
     DB_PASS, {
+
+    host: DB_PUB_IP,
     dialect: 'postgres',
     dialectOptions: {
-        socketPath: DB_INSTANCE
+        socketPath: `/cloudsql/${DB_INSTANCE}.s.PGSQL.5432`
     }
 
 }
