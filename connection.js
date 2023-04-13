@@ -19,7 +19,7 @@ const DB_PUB_IP = process.env.DB_PUB_IP;
 console.log(`DB_NAME = ${DB_NAME} \n
     DB_USER = ${DB_USER} \n
     DB_PASS = ${DB_PASS} \n
-    DB_INSTANCE = ${INSTANCE_CONNECTION_NAME} \n
+    DB_INSTANCE = ${DB_INSTANCE} \n
     DB_PUB_IP = ${DB_PUB_IP}`)
 
 const sequelize = new Sequelize(
