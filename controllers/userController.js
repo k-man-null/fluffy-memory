@@ -145,7 +145,7 @@ async function loginUser(req, res) {
                     req.user = userWithoutPassword;
 
                    return  res.status(200)
-                        .cookie("__session", token, { httpOnly: true, secure: true  })
+                        .cookie("__session", token, { httpOnly: true, secure: true, sameSite: none  })
                         .json({
                             user: userWithoutPassword,
                         });    
