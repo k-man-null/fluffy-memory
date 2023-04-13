@@ -24,14 +24,15 @@ function uploadToGCS(file) {
 
     // Upload the buffer to GCS
 
-    const fileGCS = bucket.filename(filename);
+    const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
 
-    const filePublicUrl = fileGCS.publicUrl();
 
-    const fileStream = fileGCS.createWriteStream({
+    const fileStream = bucket.file(filename).createWriteStream({
         resumable: false,
         contentType: file.mimetype
     });
+
+    
 
     fileStream.on('error', (err) => {
         console.error(`Error uploading file ${filename}: ${err}`);
@@ -43,7 +44,7 @@ function uploadToGCS(file) {
 
     fileStream.end(file.buffer);
 
-    return filePublicUrl;
+    return publicUrl;
 }
 
 
