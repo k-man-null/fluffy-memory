@@ -35,7 +35,7 @@ function uploadToGCS(file) {
     fileStream.on('error', (err) => {
         console.error(`Error uploading file ${filename}: ${err}`);
         fileStream.end();
-        throw err;
+        t.rollback();
     });
 
 
