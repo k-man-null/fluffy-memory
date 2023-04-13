@@ -13,7 +13,7 @@ const { Sequelize } = require('sequelize');
 const DB_NAME = process.env.DB_NAME;
 const DB_USER = process.env.DB_USER;
 const DB_PASS = process.env.DB_PASS;
-const DB_INSTANCE = process.env.DB_INSTANCE;
+const DB_INSTANCE = process.env.INSTANCE_CONNECTION_NAME;
 
 const sequelize = new Sequelize(
     DB_NAME,
