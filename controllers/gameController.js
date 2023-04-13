@@ -3,10 +3,43 @@ const User = require('../models/user');
 
 const sequelize = require('../connection');
 
-const imageUploadServer = process.env.IMAGE_SERVER_URL
+const { Storage } = require('@google-cloud/storage');
+const storage = new Storage();
+
+const bucketName = "tikitiki-image-server";
+const bucket = storage.bucket(bucketName);
+const path = require('path');
+
 
 const { v4: uuidv4 } = require('uuid');
-const axios = require('axios');
+// const axios = require('axios');
+
+
+function uploadToGCS(file) {
+    // Get the file extension from the original filename
+    const fileExtension = path.extname(file.originalname);
+
+    // Generate a unique filename with the extension
+    const filename = `${uuidv4()}${fileExtension}`;
+
+    // Upload the buffer to GCS
+
+    const fileStream = bucket.file(filename).createWriteStream({
+        resumable: false,
+        contentType: file.mimetype
+    });
+
+    fileStream.on('error', (err) => {
+        console.error(`Error uploading file ${filename}: ${err}`);
+    });
+
+    fileStream.on('finish', () => {
+        console.log(`File ${filename} uploaded successfully to GCS bucket ${bucketName}`);
+    });
+
+    fileStream.end(file.buffer);
+}
+
 
 async function createGame(req, res) {
 
@@ -26,13 +59,24 @@ async function createGame(req, res) {
             EndDate,
         } = { ...req.body };
 
-        // TODO: Get host id from request.user
-        game.host_id = 1;
+        game.host_id = req.user.user_id;
         game.EndDate = new Date(game.EndDate);
 
         t = await sequelize.transaction();
 
-        const imageUploadPromises = req.files.images.map((file) => {
+        /**
+         * The sweet code here was before I picked google cloud storage 
+         * for user generated images for cdn delivery.
+         * 
+         * it sends the imgage buffers to a nodejs server
+         * thta compresses them and converts them to webp 
+         * returs success or failure
+         * 
+         * I will have to use cloud invocations (2 million free per month)
+         * to compress the images and convert them to webp
+         * 
+         * 
+         * const imageUploadPromises = req.files.images.map((file) => {
             const filename = uuidv4();
             const imageName = `${filename}.webp`;
 
@@ -53,6 +97,21 @@ async function createGame(req, res) {
         });
 
         const images = await Promise.all(imageUploadPromises);
+         * 
+         * 
+         */
+
+
+
+        const imageUploadPromises = req.files.images.map((file) => {
+
+            return uploadToGCS(file);
+
+        });
+
+        
+        const images = await Promise.all(imageUploadPromises);
+        console.log(images);
 
         // Create game in the database
         const new_game = await Game.create(
@@ -89,8 +148,6 @@ async function createGame(req, res) {
 }
 
 async function getGame(req, res) {
-
-    console.log("I got hit");
 
     try {
 
