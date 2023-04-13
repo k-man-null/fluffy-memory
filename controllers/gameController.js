@@ -32,20 +32,22 @@ function uploadToGCS(file) {
         contentType: file.mimetype
     });
 
-    
-
     fileStream.on('error', (err) => {
         console.error(`Error uploading file ${filename}: ${err}`);
+        fileStream.end();
         throw err;
     });
 
-    fileStream.on('finish', () => {
-        console.log(`File ${filename} uploaded successfully to GCS bucket ${bucketName}`);
-    });
 
     fileStream.end(file.buffer);
 
-    return publicUrl;
+    return new Promise((resolve, reject) => {
+        fileStream.on('finish', () => {
+            console.log(`File ${filename} uploaded successfully to GCS bucket ${bucketName}`);
+            const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
+            resolve(publicUrl);
+        });
+    });
 }
 
 
@@ -117,7 +119,7 @@ async function createGame(req, res) {
 
         });
 
-        
+
         const images = await Promise.all(imageUploadPromises);
         console.log(images);
 
