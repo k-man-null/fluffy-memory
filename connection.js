@@ -27,10 +27,10 @@ const sequelize = new Sequelize(
     DB_USER,
     DB_PASS, {
 
-    host: DB_PUB_IP,
+    host: `/cloudsql/${DB_INSTANCE}`,
     dialect: 'postgres',
     dialectOptions: {
-        socketPath: `/cloudsql/${DB_INSTANCE}.s.PGSQL.5432`
+        socketPath: `/cloudsql/${DB_INSTANCE}`
     }
 
 }
