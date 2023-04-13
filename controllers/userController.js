@@ -150,7 +150,7 @@ async function loginUser(req, res) {
                             user: userWithoutPassword,
                         });
 
-                        console.log(response)
+                        console.log(response.cookies)
 
                         return response;
 
