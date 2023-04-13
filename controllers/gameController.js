@@ -15,7 +15,7 @@ const { v4: uuidv4 } = require('uuid');
 // const axios = require('axios');
 
 
-function uploadToGCS(file) {
+function uploadToGCS(file, transactiongame) {
     // Get the file extension from the original filename
     const fileExtension = path.extname(file.originalname);
 
@@ -35,7 +35,7 @@ function uploadToGCS(file) {
     fileStream.on('error', (err) => {
         console.error(`Error uploading file ${filename}: ${err}`);
         fileStream.end();
-        t.rollback();
+        transactiongame.rollback();
     });
 
 
@@ -115,7 +115,7 @@ async function createGame(req, res) {
 
         const imageUploadPromises = req.files.images.map((file) => {
 
-            return uploadToGCS(file);
+            return uploadToGCS(file, t);
 
         });
 
