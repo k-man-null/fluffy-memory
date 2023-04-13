@@ -24,7 +24,11 @@ function uploadToGCS(file) {
 
     // Upload the buffer to GCS
 
-    const fileStream = bucket.file(filename).createWriteStream({
+    const file = bucket.filename(filename);
+
+    const filePublicUrl = file.publicUrl();
+
+    const fileStream = file.createWriteStream({
         resumable: false,
         contentType: file.mimetype
     });
@@ -38,6 +42,8 @@ function uploadToGCS(file) {
     });
 
     fileStream.end(file.buffer);
+
+    return filePublicUrl;
 }
 
 
