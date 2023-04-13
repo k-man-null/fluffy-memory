@@ -27,7 +27,7 @@ const sequelize = new Sequelize(
     DB_PASS, {
     dialect: 'postgres',
     dialectOptions: {
-        socketPath: `/cloudsql/${DB_INSTANCE}.s.PGSQL.5432`
+        socketPath: DB_INSTANCE
     }
 
 }
