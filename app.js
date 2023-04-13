@@ -53,6 +53,12 @@ const ticketBankRouter = require('./routes/ticketBank');
 const sessionRouter = require('./routes/session');
 
 const app = express();
+
+app.get("/loaderio-92a6e26cde027b115018383b18aeb08a/", (req,res) => {
+    res.send("loaderio-92a6e26cde027b115018383b18aeb08a")
+
+})
+
 app.use(cookieparser())
 app.use(express.json())
 
