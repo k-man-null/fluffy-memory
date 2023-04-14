@@ -48,6 +48,7 @@ async function createWallet(label) {
         let wallets = intasend.wallets();
 
         
+        
         await wallets.create({
                 label: `${label}`,
                 wallet_type: 'WORKING',

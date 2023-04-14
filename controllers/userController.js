@@ -27,7 +27,7 @@ async function saveUser(req, res) {
 
         const wallet = await createWallet(username);
 
-        console.log(wallet);
+        console.log(`wallet....->  ${wallet} `);
 
         const wallet_id = wallet.wallet_id;
 
@@ -53,6 +53,8 @@ async function saveUser(req, res) {
 
 
     } catch (error) {
+
+        console.log(error)
 
         try {
 
