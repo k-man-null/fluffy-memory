@@ -49,9 +49,11 @@ async function saveUser(req, res) {
             can_disburse: true
         });
 
-        const wallet_id = user_wallet.wallet_id;
+        console.log(user_wallet);
 
-        console.log(`wallet....->  ${wallet_id} `);
+        //const wallet_id = user_wallet.wallet_id;
+
+        //console.log(`wallet....->  ${wallet_id} `);
         
         const user = await User.create({
             first_name,
