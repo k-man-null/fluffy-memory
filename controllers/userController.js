@@ -65,7 +65,7 @@ async function saveUser(req, res) {
             
           })
 
-        console.log(user_wallet);
+        
 
         //const wallet_id = user_wallet.wallet_id;
 
