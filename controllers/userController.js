@@ -6,6 +6,10 @@ const jwt = require('jsonwebtoken');
 const AffiliateAccount = require('../models/affiliateaccount');
 const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
 const { createWallet } = require("../cashflow/cash");
+const IntaSend = require('intasend-node');
+
+const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
+const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 async function saveUser(req, res) {
 
@@ -21,15 +25,34 @@ async function saveUser(req, res) {
 
     try {
 
-        const { first_name, last_name, user_name, email, phone, password } = req.body;
 
         t = await sequelize.transaction();
 
-        const wallet = await createWallet(user_name);
+        let intasend;
 
-        console.log(`wallet....->  ${wallet} `);
+        if (intasendPublishable && intasendSecret) {
 
-        const wallet_id = wallet.wallet_id;
+            intasend = new IntaSend(
+                null,
+                intasendSecret,
+                false
+            );
+        }
+
+        let wallets = intasend.wallets();
+
+        const user_wallet = await wallets.create({
+            label: `${label}`,
+            wallet_type: 'WORKING',
+            currency: 'KES',
+            can_disburse: true
+        });
+
+        const wallet_id = user_wallet.wallet_id;
+
+        console.log(`wallet....->  ${wallet_id} `);
+        
+        const { first_name, last_name, user_name, email, phone, password } = req.body;
 
         const user = await User.create({
             first_name,
@@ -42,7 +65,7 @@ async function saveUser(req, res) {
         }, { transaction: t });
 
         //TODO : Create an intasend wallet for the user and store the id. 
-        
+
         const userWithoutPassword = user.getUserWithoutPassword();
 
         await t.commit();
@@ -59,11 +82,11 @@ async function saveUser(req, res) {
         try {
 
             await t.rollback();
-            
+
         } catch (error) {
 
             console.error("The database is not connected");
-            
+
         }
 
 
@@ -149,11 +172,11 @@ async function loginUser(req, res) {
 
                     req.user = userWithoutPassword;
 
-                   return  res.status(200)
-                        .cookie("__session", token, { httpOnly: true, secure: true, sameSite: 'none'  })
+                    return res.status(200)
+                        .cookie("__session", token, { httpOnly: true, secure: true, sameSite: 'none' })
                         .json({
                             user: userWithoutPassword,
-                        });    
+                        });
 
                 });
 

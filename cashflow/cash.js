@@ -1,5 +1,4 @@
 const IntaSend = require('intasend-node');
-const axios = require('axios');
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
