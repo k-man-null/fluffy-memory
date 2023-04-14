@@ -1,34 +1,28 @@
 const IntaSend = require('intasend-node');
+const axios = require('axios');
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 function listWallets() {
 
-    let intasend;
-
-    if (intasendPublishable && intasendSecret) {
-
-        intasend = new IntaSend(
-            intasendPublishable,
-            intasendSecret,
-            false
-        );
-
-        console.log("Listing wallets...........\n\n")
-        let wallets = intasend.wallets();
-        wallets
-            .list()
-            .then((resp) => {
-                console.log("Response: ${JSON.stringify(resp)}`");
-            })
-            .catch((err) => {
-                console.error(`Error: ${err}`);
-            });
-
-        console.log("\n\n\nListing wallets...........")
-
+    axios.get('/user?ID=12345', {
+        headers: {
+            Authorization: `Bearer ${intasendSecret}`
+        }
     }
+    )
+        .then(function (response) {
+            // handle success
+            console.log(response);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+        .finally(function () {
+            // always executed
+        });
 
 
 }
