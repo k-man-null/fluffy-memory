@@ -42,12 +42,28 @@ async function saveUser(req, res) {
 
         let wallets = intasend.wallets();
 
-        const user_wallet = await wallets.create({
+        let user;
+
+        wallets.create({
             label: `${user_name}`,
             wallet_type: 'WORKING',
             currency: 'KES',
             can_disburse: true
-        });
+        }).then(async (resp) => {
+
+            const wallet_id = resp.wallet_id;
+
+            user = await User.create({
+                first_name,
+                last_name,
+                user_name,
+                email,
+                phone,
+                password,
+                wallet_id
+            }, { transaction: t });
+            
+          })
 
         console.log(user_wallet);
 
@@ -55,15 +71,7 @@ async function saveUser(req, res) {
 
         //console.log(`wallet....->  ${wallet_id} `);
         
-        const user = await User.create({
-            first_name,
-            last_name,
-            user_name,
-            email,
-            phone,
-            password,
-            wallet_id
-        }, { transaction: t });
+        
 
         //TODO : Create an intasend wallet for the user and store the id. 
 
