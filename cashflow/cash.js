@@ -9,9 +9,6 @@ function listWallets() {
 
     if (intasendPublishable && intasendSecret) {
 
-        console.log(`Intasend publishable ${intasendPublishable} \n
-        Intasendsecret ${intasendSecret}`);
-
         intasend = new IntaSend(
             intasendPublishable,
             intasendSecret,
@@ -23,7 +20,7 @@ function listWallets() {
         wallets
             .list()
             .then((resp) => {
-                console.log(`Response: ${JSON.stringify(resp)}`);
+                console.log("Response: ${JSON.stringify(resp)}`");
             })
             .catch((err) => {
                 console.error(`Error: ${err}`);
@@ -71,7 +68,7 @@ function createWallet() {
 
 }
 
-createWallet();
+//createWallet();
 
 listWallets();
 
