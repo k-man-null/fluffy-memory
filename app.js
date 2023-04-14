@@ -15,8 +15,6 @@ const cookieparser = require('cookie-parser');
 
 const { listWallets, createWallet } = require("./cashflow/cash");
 
-
-
 class UserSkel {
     constructor(number) {
         this.user_name = `test${number}`;
