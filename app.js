@@ -13,6 +13,25 @@ const cookieparser = require('cookie-parser');
 
 //start()
 
+const { intasend } = require("./cashflow/cash");
+
+function listWallets() {
+
+    console.log("Listing wallets...........\n\n")
+    let wallets = intasend.wallets();
+    wallets
+        .list()
+        .then((resp) => {
+            console.log(`Response: ${JSON.stringify(resp)}`);
+        })
+        .catch((err) => {
+            console.error(`Error: ${err}`);
+        });
+
+    console.log("\n\n\nListing wallets...........")
+}
+
+listWallets();
 
 
 class UserSkel {
@@ -35,7 +54,7 @@ async function createDummyUsers() {
     try {
 
         await User.bulkCreate(users);
-        
+
     } catch (error) {
         console.log(error);
     }
@@ -51,10 +70,11 @@ const ticketRouter = require('./routes/tickets');
 const transactionRouter = require('./routes/transaction');
 const ticketBankRouter = require('./routes/ticketBank');
 const sessionRouter = require('./routes/session');
+const intasend = require('./cashflow/cash');
 
 const app = express();
 
-app.get("/loaderio-92a6e26cde027b115018383b18aeb08a/", (req,res) => {
+app.get("/loaderio-92a6e26cde027b115018383b18aeb08a/", (req, res) => {
     res.send("loaderio-92a6e26cde027b115018383b18aeb08a")
 
 })
@@ -65,7 +85,7 @@ app.use(express.json())
 var corsOptions = {
     origin: "https://tiki-a7763.web.app",
     credentials: true
-  }
+}
 
 app.use(cors(corsOptions))
 
