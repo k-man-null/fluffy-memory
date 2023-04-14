@@ -25,4 +25,4 @@ function listWallets() {
     console.log("\n\n\nListing wallets...........")
 }
 
-modules.exports = { listWallets };
+module.exports = { listWallets };
