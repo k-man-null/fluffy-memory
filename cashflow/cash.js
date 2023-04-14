@@ -5,24 +5,33 @@ const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 function listWallets() {
+    
 
-    axios.get("https://payment.intasend.com/api/v1/wallets/", {
-        headers: {
-            Authorization: `Bearer ${intasendSecret}`
-        }
+    let intasend;
+
+    if (intasendPublishable && intasendSecret) {
+
+        intasend = new IntaSend(
+            null,
+            intasendSecret,
+            false
+        );
+
+        console.log("Listing wallets...........\n\n")
+        let wallets = intasend.wallets();
+        wallets
+            .list()
+            .then((resp) => {
+                console.log(resp);
+                // console.log(`Response: ${JSON.stringify(resp)}`);
+            })
+            .catch((err) => {
+                console.error(`Error: ${err}`);
+            });
+
+        console.log("\n\n\nListing wallets...........")
+
     }
-    )
-        .then(function (response) {
-            // handle success
-            console.log(response.data);
-        })
-        .catch(function (error) {
-            // handle error
-            console.log(error);
-        })
-        .finally(function () {
-            // always executed
-        });
 
 
 }
@@ -37,7 +46,7 @@ function createWallet() {
         Intasendsecret ${intasendSecret}`);
 
         intasend = new IntaSend(
-            intasendPublishable,
+            null,
             intasendSecret,
             false
         );
