@@ -6,7 +6,7 @@ const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 function listWallets() {
 
-    axios.get('/user?ID=12345', {
+    axios.get("https://payment.intasend.com/api/v1/wallets/", {
         headers: {
             Authorization: `Bearer ${intasendSecret}`
         }
