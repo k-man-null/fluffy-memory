@@ -33,22 +33,11 @@ function uploadToGCS(file) {
     // });
 
 
-
-    // fileStream.on('error', (err) => {
-    //     console.error(`Error uploading file ${filename}: ${err}`);
-    // });
-
-    // fileStream.on('finish', () => {
-    //     console.log(`File ${filename} uploaded successfully to GCS bucket ${bucketName}`);
-    // });
-
-    // fileStream.end(file.buffer);
-
-    // return publicUrl;
-
     const blob = bucket.file(file.originalname);
     const blobStream = blob.createWriteStream({
         resumable: false,
+        contentType: file.mimetype,
+        
     });
 
     blobStream.on("error", (err) => {
@@ -61,15 +50,13 @@ function uploadToGCS(file) {
             `https://storage.googleapis.com/${bucket.name}/${filename}`
         );
 
-
-        res.status(200).send({
-            message: "Uploaded the file successfully: " + req.file.originalname,
-            url: publicUrl,
-        });
+        console.log("Uploaded the file successfully: " + file.originalname)
 
         return publicUrl;
 
     });
+
+    blobStream.end(file.buffer);
 
 
 }
