@@ -15,40 +15,63 @@ const { v4: uuidv4 } = require('uuid');
 // const axios = require('axios');
 
 
-function uploadToGCS(file, transactiongame) {
+function uploadToGCS(file) {
     // Get the file extension from the original filename
     const fileExtension = path.extname(file.originalname);
 
     // Generate a unique filename with the extension
     const filename = `${uuidv4()}${fileExtension}`;
 
-    // Upload the buffer to GCS
+    // // Upload the buffer to GCS
 
-    const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
+    // const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
 
 
-    const fileStream = bucket.file(filename).createWriteStream({
+    // const fileStream = bucket.file(filename).createWriteStream({
+    //     resumable: false,
+    //     contentType: file.mimetype
+    // });
+
+
+
+    // fileStream.on('error', (err) => {
+    //     console.error(`Error uploading file ${filename}: ${err}`);
+    // });
+
+    // fileStream.on('finish', () => {
+    //     console.log(`File ${filename} uploaded successfully to GCS bucket ${bucketName}`);
+    // });
+
+    // fileStream.end(file.buffer);
+
+    // return publicUrl;
+
+    const blob = bucket.file(file.originalname);
+    const blobStream = blob.createWriteStream({
         resumable: false,
-        contentType: file.mimetype
     });
 
-    fileStream.on('error', (err) => {
-        console.error(`Error uploading file ${filename}: ${err}`);
-        fileStream.end();
-        transactiongame.rollback();
-        return;
+    blobStream.on("error", (err) => {
+        res.status(500).send({ message: err.message });
     });
 
-    fileStream.on('finish', () => {
-        console.log(`File ${filename} uploaded successfully to GCS bucket ${bucketName}`);
-        
+    blobStream.on("finish", async (data) => {
+        // Create URL for directly file access via HTTP.
+        const publicUrl = format(
+            `https://storage.googleapis.com/${bucket.name}/${filename}`
+        );
+
+
+        res.status(200).send({
+            message: "Uploaded the file successfully: " + req.file.originalname,
+            url: publicUrl,
+        });
+
+        return publicUrl;
+
     });
 
-    fileStream.end(file.buffer);
 
-    return publicUrl;
-
-   
 }
 
 
@@ -116,13 +139,15 @@ async function createGame(req, res) {
 
         const imageUploadPromises = req.files.images.map((file) => {
 
-            return uploadToGCS(file, t);
+            return uploadToGCS(file);
 
         });
 
 
         const images = await Promise.all(imageUploadPromises);
-        console.log(images);
+
+        if (images)
+            console.log(images);
 
         // Create game in the database
         const new_game = await Game.create(
@@ -140,20 +165,17 @@ async function createGame(req, res) {
             { transaction: t }
         );
 
-        
+        console.log(new_game);
 
         await t.commit();
 
         return res.status(200).json({ done: new_game });
 
     } catch (error) {
-
-        try {
+        if (t && t.finished !== 'commit') {
             await t.rollback();
-        } catch (error) {
-            
         }
-       
+
         console.log(error);
 
         return res.status(400).send("Error creating the competition");
