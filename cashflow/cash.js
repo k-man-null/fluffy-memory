@@ -9,8 +9,20 @@ let intasend = new IntaSend(
     true, // Test ? Set true for test environment
 );
 
-console.log(intasend);
+function listWallets() {
 
+    console.log("Listing wallets...........\n\n")
+    let wallets = intasend.wallets();
+    wallets
+        .list()
+        .then((resp) => {
+            console.log(`Response: ${JSON.stringify(resp)}`);
+        })
+        .catch((err) => {
+            console.error(`Error: ${err}`);
+        });
 
+    console.log("\n\n\nListing wallets...........")
+}
 
-exports.intasend = intasend;
+modules.exports = { listWallets };

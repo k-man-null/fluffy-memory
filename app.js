@@ -13,26 +13,9 @@ const cookieparser = require('cookie-parser');
 
 //start()
 
-const intasend  = require('./cashflow/cash');
-
-function listWallets() {
-
-    console.log("Listing wallets...........\n\n")
-    let wallets = intasend.wallets();
-    wallets
-        .list()
-        .then((resp) => {
-            console.log(`Response: ${JSON.stringify(resp)}`);
-        })
-        .catch((err) => {
-            console.error(`Error: ${err}`);
-        });
-
-    console.log("\n\n\nListing wallets...........")
-}
+const { listWallets } = require("./cashflow/cash");
 
 listWallets();
-
 
 class UserSkel {
     constructor(number) {
