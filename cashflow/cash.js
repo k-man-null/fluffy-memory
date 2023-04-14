@@ -11,7 +11,7 @@ console.log(`intasendPublishable ${intasendPublishable}`);
 let intasend = new IntaSend(
     intasendSecret,
     intasendPublishable,
-    true, // Test ? Set true for test environment
+    false, // Test ? Set true for test environment
 );
 
 function listWallets() {
