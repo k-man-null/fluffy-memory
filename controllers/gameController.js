@@ -27,7 +27,7 @@ async function uploadFromMemory(file) {
     const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
 
     console.log(
-        `${destFileName} with contents ${contents} uploaded to ${bucketName}.`
+        `${filename} uploaded to ${bucketName}.`
     );
 
     return publicUrl;
