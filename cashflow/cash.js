@@ -13,8 +13,6 @@ function listWallets() {
         test_mode=false
     );
 
-    console.log(intasend.publishable_key)
-    console.log(intasend.secret_key)
 
     console.log("Listing wallets...........\n\n")
     let wallets = intasend.wallets();
@@ -38,8 +36,7 @@ function createWallet() {
         test_mode=false
     );
 
-    console.log(intasend.publishable_key)
-    console.log(intasend.secret_key)
+    
 
     let wallets = intasend.wallets();
     wallets
