@@ -3,13 +3,18 @@ const IntaSend = require('intasend-node');
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
-let intasend = new IntaSend(
-    publishable_key = intasendPublishable,
-    secret_key = intasendSecret,
-    test_mode=false
-);
+
 
 function listWallets() {
+
+    let intasend = new IntaSend(
+        publishable_key = intasendPublishable,
+        secret_key = intasendSecret,
+        test_mode=false
+    );
+
+    console.log(intasend.publishable_key)
+    console.log(intasend.secret_key)
 
     console.log("Listing wallets...........\n\n")
     let wallets = intasend.wallets();
@@ -26,6 +31,16 @@ function listWallets() {
 }
 
 function createWallet() {
+
+    let intasend = new IntaSend(
+        publishable_key = intasendPublishable,
+        secret_key = intasendSecret,
+        test_mode=false
+    );
+
+    console.log(intasend.publishable_key)
+    console.log(intasend.secret_key)
+
     let wallets = intasend.wallets();
     wallets
         .create({
