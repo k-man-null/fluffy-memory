@@ -13,7 +13,9 @@ const cookieparser = require('cookie-parser');
 
 //start()
 
-const { listWallets } = require("./cashflow/cash");
+const { listWallets, createWallet } = require("./cashflow/cash");
+
+createWallet();
 
 listWallets();
 

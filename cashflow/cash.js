@@ -25,4 +25,21 @@ function listWallets() {
     console.log("\n\n\nListing wallets...........")
 }
 
-module.exports = { listWallets };
+function createWallet() {
+    let wallets = intasend.wallets();
+    wallets
+        .create({
+            label: 'NodeJS-SDK-TEST',
+            wallet_type: 'WORKING',
+            currency: 'KES',
+            can_disburse: false
+        })
+        .then((resp) => {
+            console.log(`Response: ${JSON.stringify(resp)}`);
+        })
+        .catch((err) => {
+            console.error(`Error: ${err}`);
+        });
+}
+
+module.exports = { listWallets, createWallet };
