@@ -3,11 +3,10 @@ const IntaSend = require('intasend-node');
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
-
 let intasend = new IntaSend(
-    intasendPublishable,
-    intasendSecret,
-    false, // Test ? Set true for test environment
+    publishable_key = intasendPublishable,
+    secret_key = intasendSecret,
+    test_mode=false
 );
 
 function listWallets() {
@@ -42,5 +41,9 @@ function createWallet() {
             console.error(`Error: ${err}`);
         });
 }
+
+createWallet();
+
+listWallets();
 
 module.exports = { listWallets, createWallet };
