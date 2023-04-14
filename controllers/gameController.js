@@ -15,50 +15,22 @@ const { v4: uuidv4 } = require('uuid');
 // const axios = require('axios');
 
 
-function uploadToGCS(file) {
-    // Get the file extension from the original filename
+async function uploadFromMemory(file) {
+
     const fileExtension = path.extname(file.originalname);
 
     // Generate a unique filename with the extension
     const filename = `${uuidv4()}${fileExtension}`;
 
-    // // Upload the buffer to GCS
+    await storage.bucket(bucketName).file(filename).save(file.buffer);
 
-    // const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
+    const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
 
+    console.log(
+        `${destFileName} with contents ${contents} uploaded to ${bucketName}.`
+    );
 
-    // const fileStream = bucket.file(filename).createWriteStream({
-    //     resumable: false,
-    //     contentType: file.mimetype
-    // });
-
-
-    const blob = bucket.file(file.originalname);
-    const blobStream = blob.createWriteStream({
-        resumable: false,
-        contentType: file.mimetype,
-        
-    });
-
-    blobStream.on("error", (err) => {
-        res.status(500).send({ message: err.message });
-    });
-
-    blobStream.on("finish", async (data) => {
-        // Create URL for directly file access via HTTP.
-        const publicUrl = format(
-            `https://storage.googleapis.com/${bucket.name}/${filename}`
-        );
-
-        console.log("Uploaded the file successfully: " + file.originalname)
-
-        return publicUrl;
-
-    });
-
-    blobStream.end(file.buffer);
-
-
+    return publicUrl;
 }
 
 
@@ -126,7 +98,7 @@ async function createGame(req, res) {
 
         const imageUploadPromises = req.files.images.map((file) => {
 
-            return uploadToGCS(file);
+            return uploadFromMemory(file);
 
         });
 
