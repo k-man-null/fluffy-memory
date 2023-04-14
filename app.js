@@ -70,7 +70,7 @@ const ticketRouter = require('./routes/tickets');
 const transactionRouter = require('./routes/transaction');
 const ticketBankRouter = require('./routes/ticketBank');
 const sessionRouter = require('./routes/session');
-const intasend = require('./cashflow/cash');
+
 
 const app = express();
 
