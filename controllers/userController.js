@@ -25,7 +25,7 @@ async function saveUser(req, res) {
 
         t = await sequelize.transaction();
 
-        const wallet = await createWallet(username);
+        const wallet = await createWallet(user_name);
 
         console.log(`wallet....->  ${wallet} `);
 
