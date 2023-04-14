@@ -15,7 +15,7 @@ class User extends Model {
             user_name: this.user_name,
             email: this.email,
             phone: this.phone,
-
+            wallet_id: this.wallet_id
         }
     }
 
@@ -33,6 +33,11 @@ User.init({
         unique: false
     },
     user_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    wallet_id: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true

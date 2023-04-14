@@ -5,6 +5,7 @@ const sequelize = require('../connection');
 const jwt = require('jsonwebtoken');
 const AffiliateAccount = require('../models/affiliateaccount');
 const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
+const { createWallet } = require("../cashflow/cash");
 
 async function saveUser(req, res) {
 
@@ -20,10 +21,15 @@ async function saveUser(req, res) {
 
     try {
 
-    
         const { first_name, last_name, user_name, email, phone, password } = req.body;
 
         t = await sequelize.transaction();
+
+        const wallet = await createWallet(username);
+
+        console.log(wallet);
+
+        const wallet_id = wallet.wallet_id;
 
         const user = await User.create({
             first_name,
@@ -31,15 +37,12 @@ async function saveUser(req, res) {
             user_name,
             email,
             phone,
-            password
+            password,
+            wallet_id
         }, { transaction: t });
 
-        //I wont be needing the inventory, will be using intasend wallets
-
-        //await Inventory.create({ owner_id: user.user_id }, { transaction: t });
-
         //TODO : Create an intasend wallet for the user and store the id. 
-
+        
         const userWithoutPassword = user.getUserWithoutPassword();
 
         await t.commit();

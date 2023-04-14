@@ -13,7 +13,6 @@ const cookieparser = require('cookie-parser');
 
 //start()
 
-const { listWallets, createWallet } = require("./cashflow/cash");
 
 class UserSkel {
     constructor(number) {

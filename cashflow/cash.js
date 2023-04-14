@@ -17,33 +17,27 @@ function listWallets() {
             false
         );
 
-        console.log("Listing wallets...........\n\n")
+        
         let wallets = intasend.wallets();
         wallets
             .list()
             .then((resp) => {
                 console.log(resp);
-                // console.log(`Response: ${JSON.stringify(resp)}`);
             })
             .catch((err) => {
                 console.error(`Error: ${err}`);
             });
-
-        console.log("\n\n\nListing wallets...........")
 
     }
 
 
 }
 
-function createWallet() {
+async function createWallet(label) {
 
     let intasend;
 
     if (intasendPublishable && intasendSecret) {
-
-        console.log(`Intasend publishable ${intasendPublishable} \n
-        Intasendsecret ${intasendSecret}`);
 
         intasend = new IntaSend(
             null,
@@ -52,27 +46,21 @@ function createWallet() {
         );
 
         let wallets = intasend.wallets();
-        wallets
-            .create({
-                label: 'NodeJS-SDK-TEST',
+
+        
+        await wallets.create({
+                label: `${label}`,
                 wallet_type: 'WORKING',
                 currency: 'KES',
-                can_disburse: false
-            })
-            .then((resp) => {
-                console.log(`Response: ${JSON.stringify(resp)}`);
-            })
-            .catch((err) => {
-                console.error(`Error: ${err}`);
+                can_disburse: true
             });
+     
     }
-
-
 
 }
 
 //createWallet();
 
-listWallets();
+//listWallets();
 
 module.exports = { listWallets, createWallet };
