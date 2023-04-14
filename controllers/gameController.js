@@ -36,18 +36,19 @@ function uploadToGCS(file, transactiongame) {
         console.error(`Error uploading file ${filename}: ${err}`);
         fileStream.end();
         transactiongame.rollback();
+        return;
     });
 
+    fileStream.on('finish', () => {
+        console.log(`File ${filename} uploaded successfully to GCS bucket ${bucketName}`);
+        
+    });
 
     fileStream.end(file.buffer);
 
-    return new Promise((resolve, reject) => {
-        fileStream.on('finish', () => {
-            console.log(`File ${filename} uploaded successfully to GCS bucket ${bucketName}`);
-            const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
-            resolve(publicUrl);
-        });
-    });
+    return publicUrl;
+
+   
 }
 
 
