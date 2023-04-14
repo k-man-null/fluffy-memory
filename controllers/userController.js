@@ -43,7 +43,7 @@ async function saveUser(req, res) {
         let wallets = intasend.wallets();
 
         const user_wallet = await wallets.create({
-            label: `${label}`,
+            label: `${user_name}`,
             wallet_type: 'WORKING',
             currency: 'KES',
             can_disburse: true
@@ -53,8 +53,6 @@ async function saveUser(req, res) {
 
         console.log(`wallet....->  ${wallet_id} `);
         
-        
-
         const user = await User.create({
             first_name,
             last_name,
