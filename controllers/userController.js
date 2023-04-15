@@ -240,6 +240,9 @@ async function getUserWallet(req, res) {
             return res.status(400).json({ message: `User not found` });
         }
 
+
+        console.log(user)
+        
         const wallet_id = user.getDataValue("wallet_id");
 
         let intasend;
@@ -251,8 +254,7 @@ async function getUserWallet(req, res) {
                 intasendSecret,
                 false
             );
-    
-            
+      
             let wallets = intasend.wallets();
             wallets
                 .get(wallet_id)
@@ -270,7 +272,6 @@ async function getUserWallet(req, res) {
     
         }
 
-        
 
     } catch (error) {
 
