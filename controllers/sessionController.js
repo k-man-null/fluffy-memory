@@ -1,4 +1,10 @@
 const User = require('../models/user');
+const IntaSend = require('intasend-node');
+
+const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
+const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
+
+
 async function logout(req, res) {
 
         return res.status(200)
