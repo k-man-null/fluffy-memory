@@ -51,6 +51,8 @@ async function saveUser(req, res) {
             can_disburse: true
         }).then(async (resp) => {
 
+            console.log(`Response: ${JSON.stringify(resp)}`)
+
             const wallet_id = resp.wallet_id;
 
             user = await User.create({
@@ -71,14 +73,14 @@ async function saveUser(req, res) {
                 user: userWithoutPassword
             });
 
-        }).catch((err) => {
-            console.log(err)
+        }).catch((error) => {
+            console.log(`Error inside catch1 ${error}`)
         })
 
 
     } catch (error) {
 
-        console.log(error)
+        console.log(`Error inside catch2 ${error}`)
 
         try {
 
