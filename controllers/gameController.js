@@ -1,5 +1,6 @@
 const Game = require('../models/games');
 const User = require('../models/user');
+const sharp = require('sharp');
 
 const sequelize = require('../connection');
 
