@@ -71,6 +71,8 @@ async function saveUser(req, res) {
                 user: userWithoutPassword
             });
 
+        }).catch((err) => {
+            console.log(err)
         })
 
 
