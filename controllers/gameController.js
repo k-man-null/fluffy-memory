@@ -20,9 +20,11 @@ function uploadFromMemory(file) {
 
     const fileExtension = path.extname(file.originalname);
 
+    const uniqueId = uuidv4();
+
     // Generate a unique filename with the extension
-    const uploadfilename = `${uploadFolderName}/${uuidv4()}${fileExtension}`;
-    const servefilename = `${serveFolderName}/${uuidv4()}.webp`;
+    const uploadfilename = `${uploadFolderName}/${uniqueId}${fileExtension}`;
+    const servefilename = `${serveFolderName}/${uniqueId}.webp`;
 
 
     return storage.bucket(bucketName).file(uploadfilename).save(file.buffer).then(() => {
