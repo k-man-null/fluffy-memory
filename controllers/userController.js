@@ -262,6 +262,8 @@ async function getUserWallet(req, res) {
                     });
                 })
                 .catch((err) => {
+
+                    console.log(`Error Get wallet inside catch1 ${error}`)
                     return res.status(400).json({ message: `Wallet not found` });
 
                 });
@@ -271,6 +273,8 @@ async function getUserWallet(req, res) {
         
 
     } catch (error) {
+
+        console.log(`Error Get wallet inside catch2 ${error}`)
 
         res.status(500).send("Internal server error");
 
