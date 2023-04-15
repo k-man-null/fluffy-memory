@@ -1,5 +1,4 @@
 const User = require('../models/user');
-
 async function logout(req, res) {
 
         return res.status(200)
@@ -21,11 +20,16 @@ async function getUserWallet(req, res) {
 
         const id = req.user.user_id;
 
+        console.log(`User id ${id}`);
+
         const user = await User.findByPk(id);
 
         if (!user) {
             return res.status(400).json({ message: `User not found` });
         }
+
+
+        console.log(`Useruser  ..... ${user}`)
 
         const wallet_id = user.getDataValue("wallet_id");
 
@@ -49,6 +53,7 @@ async function getUserWallet(req, res) {
                 })
                 .catch((err) => {
 
+                    console.log(`Error Get wallet inside catch1 ${error}`)
                     return res.status(400).json({ message: `Wallet not found` });
 
                 });
@@ -57,6 +62,8 @@ async function getUserWallet(req, res) {
 
 
     } catch (error) {
+
+        console.log(`Error Get wallet inside catch2 ${error}`)
 
         res.status(500).send("Internal server error");
 
