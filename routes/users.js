@@ -3,14 +3,11 @@ const router = express.Router();
 const { 
     saveUser,
     loginUser,
-    changePassword 
+    changePassword,
+    getUserWallet 
 } = require('../controllers/userController')
 
-router.get('/', (req,res) => {
-    
-    res.send("You hit the get")
-
-});
+router.get('/wallet', getUserWallet);
 
 router.get('/:id', (req,res) => {
     const id =  req.params.id;
