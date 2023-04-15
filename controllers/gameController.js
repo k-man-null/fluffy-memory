@@ -15,24 +15,26 @@ const { v4: uuidv4 } = require('uuid');
 // const axios = require('axios');
 
 
-async function uploadFromMemory(file) {
+function uploadFromMemory(file) {
 
     const fileExtension = path.extname(file.originalname);
 
     // Generate a unique filename with the extension
-    const filename = `${foldername}${uuidv4()}${fileExtension}`;
+    const filename = `${foldername}/${uuidv4()}${fileExtension}`;
 
-    
+    return storage.bucket(bucketName).file(filename).save(file.buffer).then(() => {
 
-    await storage.bucket(bucketName).file(filename).save(file.buffer);
+        const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
 
-    const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
+        console.log(
+            `${filename} uploaded to ${bucketName}.`
+        );
 
-    console.log(
-        `${filename} uploaded to ${bucketName}.`
-    );
+        return publicUrl;
 
-    return publicUrl;
+    })
+
+
 }
 
 
