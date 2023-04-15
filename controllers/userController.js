@@ -62,26 +62,16 @@ async function saveUser(req, res) {
                 password,
                 wallet_id
             }, { transaction: t });
-            
-          })
 
-        
+            const userWithoutPassword = user.getUserWithoutPassword();
 
-        //const wallet_id = user_wallet.wallet_id;
+            await t.commit();
 
-        //console.log(`wallet....->  ${wallet_id} `);
-        
-        
+            return res.status(200).json({
+                user: userWithoutPassword
+            });
 
-        //TODO : Create an intasend wallet for the user and store the id. 
-
-        const userWithoutPassword = user.getUserWithoutPassword();
-
-        await t.commit();
-
-        return res.status(200).json({
-            user: userWithoutPassword
-        });
+        })
 
 
     } catch (error) {
