@@ -7,9 +7,9 @@ const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 async function logout(req, res) {
 
-        return res.status(200)
-            .clearCookie('token', { httpOnly: true })
-            .json({ message: "logged out"})
+    return res.status(200)
+        .clearCookie('token', { httpOnly: true })
+        .json({ message: "logged out" })
 
 }
 
@@ -25,6 +25,7 @@ async function getUserWallet(req, res) {
     try {
 
         const id = req.user.user_id;
+        const label = req.user.user_name;
 
         console.log(`User id ${id}`);
 
@@ -42,16 +43,19 @@ async function getUserWallet(req, res) {
         let intasend;
 
         if (intasendPublishable && intasendSecret) {
-    
+
             intasend = new IntaSend(
                 null,
                 intasendSecret,
                 false
             );
-      
+
             let wallets = intasend.wallets();
             wallets
-                .get({ id: wallet_id })
+                .get({
+                    id: wallet_id,
+                    label: label
+                  })
                 .then((resp) => {
                     return res.status(200).json({
                         resp
@@ -63,7 +67,7 @@ async function getUserWallet(req, res) {
                     return res.status(400).json({ message: `Wallet not found` });
 
                 });
-    
+
         }
 
 
@@ -78,5 +82,5 @@ async function getUserWallet(req, res) {
 }
 
 module.exports = {
-    logout, getMinProfile,getUserWallet
+    logout, getMinProfile, getUserWallet
 }
