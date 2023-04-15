@@ -22,7 +22,21 @@ async function uploadFromMemory(file) {
     // Generate a unique filename with the extension
     const filename = `${foldername}${uuidv4()}${fileExtension}`;
 
-    await storage.bucket(bucketName).file(filename).save(file.buffer);
+    
+
+    let transformer;
+    if (fileExtension === '.jpeg' || fileExtension === '.jpg') {
+      transformer = sharp(contents).jpeg({ quality: 80 });
+    } else if (fileExtension === '.png') {
+      transformer = sharp(contents).png({ compressionLevel: 8 });
+    } else {
+      console.log(`Unsupported fileExtension: ${fileExtension}`);
+      return;
+    }
+
+    const bufferFile = await transformer.toFormat("webp").toBuffer();
+
+    await storage.bucket(bucketName).file(filename).save(bufferFile);
 
     const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
 
