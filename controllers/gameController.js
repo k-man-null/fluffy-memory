@@ -7,7 +7,8 @@ const { Storage } = require('@google-cloud/storage');
 const storage = new Storage();
 
 const bucketName = process.env.IMAGE_BUCKET;
-const foldername = "uncompressed"
+const serveFolderName = "compressed";
+const uploadFolderName = "uncompressed";
 const path = require('path');
 
 
@@ -20,14 +21,16 @@ function uploadFromMemory(file) {
     const fileExtension = path.extname(file.originalname);
 
     // Generate a unique filename with the extension
-    const filename = `${foldername}/${uuidv4()}${fileExtension}`;
+    const uploadfilename = `${uploadFolderName}/${uuidv4()}${fileExtension}`;
+    const servefilename = `${serveFolderName}/${uuidv4()}${fileExtension}`;
 
-    return storage.bucket(bucketName).file(filename).save(file.buffer).then(() => {
 
-        const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
+    return storage.bucket(bucketName).file(uploadfilename).save(file.buffer).then(() => {
+
+        const publicUrl = `https://storage.googleapis.com/${bucketName}/${servefilename}`;
 
         console.log(
-            `${filename} uploaded to ${bucketName}.`
+            `${uploadfilename} uploaded to ${bucketName}.`
         );
 
         return publicUrl;
