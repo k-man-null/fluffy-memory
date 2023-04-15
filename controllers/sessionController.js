@@ -51,7 +51,7 @@ async function getUserWallet(req, res) {
       
             let wallets = intasend.wallets();
             wallets
-                .get(wallet_id)
+                .get({ id: wallet_id })
                 .then((resp) => {
                     return res.status(200).json({
                         resp
