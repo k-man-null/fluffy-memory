@@ -27,7 +27,7 @@ async function uploadFromMemory(file) {
 
     let transformer;
     if (fileExtension === '.jpeg' || fileExtension === '.jpg') {
-      transformer = sharp(contents).jpeg({ quality: 80 });
+      transformer = sharp(file.buffer).jpeg({ quality: 80 });
     } else if (fileExtension === '.png') {
       transformer = sharp(contents).png({ compressionLevel: 8 });
     } else {
