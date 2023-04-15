@@ -234,6 +234,8 @@ async function getUserWallet(req, res) {
 
         const id = req.user.user_id;
 
+        console.log(`User id ${id}`);
+
         const user = await User.findByPk(id);
 
         if (!user) {
@@ -241,8 +243,8 @@ async function getUserWallet(req, res) {
         }
 
 
-        console.log(user)
-        
+        console.log(`Useruser  ..... ${user}`)
+
         const wallet_id = user.getDataValue("wallet_id");
 
         let intasend;
