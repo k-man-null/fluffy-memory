@@ -28,6 +28,7 @@ async function getUserWallet(req, res) {
         const label = req.user.user_name;
 
         console.log(`User id ${id}`);
+        console.log(`Label ${label}`);
 
         const user = await User.findByPk(id);
 
