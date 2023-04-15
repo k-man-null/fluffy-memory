@@ -1,6 +1,5 @@
 const Game = require('../models/games');
 const User = require('../models/user');
-const sharp = require('sharp');
 
 const sequelize = require('../connection');
 
@@ -25,19 +24,7 @@ async function uploadFromMemory(file) {
 
     
 
-    let transformer;
-    if (fileExtension === '.jpeg' || fileExtension === '.jpg') {
-      transformer = sharp(file.buffer).jpeg({ quality: 80 });
-    } else if (fileExtension === '.png') {
-      transformer = sharp(contents).png({ compressionLevel: 8 });
-    } else {
-      console.log(`Unsupported fileExtension: ${fileExtension}`);
-      return;
-    }
-
-    const bufferFile = await transformer.toFormat("webp").toBuffer();
-
-    await storage.bucket(bucketName).file(filename).save(bufferFile);
+    await storage.bucket(bucketName).file(filename).save(file.buffer);
 
     const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
 
