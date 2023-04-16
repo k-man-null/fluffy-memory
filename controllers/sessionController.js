@@ -68,9 +68,7 @@ async function getUserWallet(req, res) {
                     return res.status(400).json({ message: `Wallet not found` });
 
                 });
-
         }
-
 
     } catch (error) {
 
