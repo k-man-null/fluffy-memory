@@ -55,12 +55,11 @@ async function getUserWallet(req, res) {
             wallets
                 .get(wallet_id)
                 .then((resp) => {
-                    return res.status(200).json({
+                    return res.status(200).json(
                         resp
-                    });
+                    );
                 })
                 .catch((error) => {
-
                     console.log(`Error Get wallet inside catch1 ${error}`)
                     return res.status(400).json({ message: `Wallet not found` });
 
