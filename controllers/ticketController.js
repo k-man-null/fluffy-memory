@@ -229,9 +229,8 @@ async function enterGame(req, res) {
 
             let game = await Game.findByPk(game_id, { lock: true, transaction: t });
 
-            let user = await User.findByPk(user_id, { transaction: t });
 
-            const wallet_id = user.getDataValue("wallet_id");
+            const wallet_id = req.user.wallet_id;
 
             let intasend;
 
