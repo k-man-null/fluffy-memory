@@ -260,24 +260,40 @@ async function enterGame(req, res) {
             let wallets = intasend.wallets();
             let narrative = 'Payment';
 
-            wallets
-                .get(wallet_id)
+            // wallets
+            //     .get(wallet_id)
+            //     .then((resp) => {
+            //         let customerAvailableBal = resp.available_balance;
+
+            //         if (totalPrice > customerAvailableBal) {
+            //             throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
+            //         }
+            //     })
+
+            // //charge wallet... transfer from user wallet to mainwallet (intra transfer)
+
+            // wallets
+            //     .intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
+            //     .then((resp) => {
+            //         console.log(`Intra Transfer response: ${resp}`);
+            //     })
+
+            await wallets.get(wallet_id)
                 .then((resp) => {
                     let customerAvailableBal = resp.available_balance;
 
                     if (totalPrice > customerAvailableBal) {
                         throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
                     }
-                })
+                });
 
             //charge wallet... transfer from user wallet to mainwallet (intra transfer)
 
-            wallets
-                .intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
+            await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
                 .then((resp) => {
                     console.log(`Intra Transfer response: ${resp}`);
-                })
-                
+                });
+
 
             await game.increment({ tickets_sold: total_tickets }, { transaction: t });
 
