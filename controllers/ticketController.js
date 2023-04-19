@@ -4,6 +4,11 @@ const TicketBank = require('../models/affiliateaccount')
 const Ticket = require('../models/ticket');
 const sequelize = require('../connection');
 
+const IntaSend = require('intasend-node');
+
+const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
+const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
+
 async function getMytickets(req, res) {
 
     const tickets = [
@@ -111,7 +116,7 @@ async function getMytickets(req, res) {
 
     try {
 
-        const { user_id } = req.user;
+        const { user_id } = req.user.user_id;
 
         // let tickets = await Ticket.findAll({
         //     where: {
@@ -201,25 +206,68 @@ async function enterGame(req, res) {
         //TODO: Get the user id fom request after implementing auth
 
         const { game_id, total_tickets } = req.body;
+
         const user_id = req.user.id;
+
+        //get the user wallet
+
+        //check the current balance
+        //compute the  total amount.. game.ticketprice * total_tickets
+        //if the total amount is greater than the current balance,
+        //resspond with failed, need to topup
+        //else 
+        //check if there are enough remaining tickets to fulfil purchase
+        //if there are not enough, respond with not enoug tickets remaining only X amount remaining
+        //else ...proceed
+        //charge the wallet the wallet the total amount
+        //if charge was not successful, respond with reason
+        //else create the tickets of the total number and respond with tickets
+
+        //TODO: also include notify to firebase to communicate with game creatores that the user has purcahed tickets.
+
 
         const result = await sequelize.transaction(async (t) => {
 
             let game = await Game.findByPk(game_id, { lock: true, transaction: t });
 
-            let host_id = game.getDataValue("host_id");
+            const wallet_id = user.getDataValue("wallet_id");
+
+            let user = await User.findByPk(user_id, { transaction: t });
+
+            let intasend;
+
+            let customerWallet;
+
+            if (intasendPublishable && intasendSecret) {
+
+                intasend = new IntaSend(
+                    null,
+                    intasendSecret,
+                    false
+                );
+
+                let wallets = intasend.wallets();
+                wallets
+                    .get(wallet_id)
+                    .then((resp) => {
+                        customerWallet = resp;
+                    })
+                    .catch((error) => {
+                        throw new Error(error);
+
+                    });
+            }
+
 
             let ticketsTotal = await game.getDataValue("tickets_total", { transaction: t });
 
-            let maxPossibleTickets = Math.abs(0.05 * ticketsTotal);
 
-            if (total_tickets > maxPossibleTickets) {
-                throw new Error("You cannot buy more than 5% of the tickets");
-            }
+            // if (total_tickets > maxPossibleTickets) {
+            //     throw new Error("You cannot buy more than 5% of the tickets");
+            // }
 
             let totalTicketsSold = await game.getDataValue("tickets_sold", { transaction: t });
 
-            let user = await User.findByPk(user_id, { transaction: t });
 
             if (totalTicketsSold + total_tickets > ticketsTotal) {
 
@@ -231,25 +279,30 @@ async function enterGame(req, res) {
 
             let totalPrice = ticketPrice * total_tickets;
 
-            let inventory = await user.getInventory({ transaction: t });
-
-            let cash = await inventory.getDataValue("cash", { transaction: t });
+            let cash = customerWallet.available_balance;
 
             if (totalPrice > cash) {
                 throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
             }
 
-            let ticketBank = await TicketBank.findOne({
-                where: {
-                    host_id: host_id
-                }
-            }, { transaction: t });
+            //charge wallet... transfer from user wallet to mainwallet (intra transfer)
 
-            await ticketBank.decrement({ [ticketPrice]: total_tickets }, { transaction: t });
+            let wallet = intasend.wallet();
 
-            let updatedInve = await inventory.decrement({ cash: totalPrice }, { transaction: t });
+            let amount = totalPrice;
+            let narrative = 'Payment';
 
-            let addedTickets = await game.increment({ tickets_sold: total_tickets }, { transaction: t });
+            wallet
+                .intraTransfer(customerWallet.wallet_id, "WY7JRD0", amount, narrative)
+                .then((resp) => {
+                    console.log(`Intra Transfer response: ${resp}`);
+                })
+                .catch((err) => {
+                    console.error(`Intra Transfer error: ${err}`);
+                    throw new Error(err);
+                });
+
+            await game.increment({ tickets_sold: total_tickets }, { transaction: t });
 
             const tickets = []
 
@@ -265,7 +318,6 @@ async function enterGame(req, res) {
 
             let result = {
                 tickets: tickets,
-                updatedInventory: updatedInve
             }
 
             return result;
@@ -278,6 +330,8 @@ async function enterGame(req, res) {
         });
 
     } catch (error) {
+
+        console.log(error);
 
         return res.status(400).json(error.message);
 
