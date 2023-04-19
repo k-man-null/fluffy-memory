@@ -228,12 +228,28 @@ async function enterGame(req, res) {
         const result = await sequelize.transaction(async (t) => {
 
             let game = await Game.findByPk(game_id, { lock: true, transaction: t });
-            
+
             const wallet_id = req.user.wallet_id;
 
-            let intasend;
+            let ticketsTotal = game.tickets_total;
 
-            let customerWallet;
+            // if (total_tickets > maxPossibleTickets) {
+            //     throw new Error("You cannot buy more than 5% of the tickets");
+            // }
+
+            let totalTicketsSold = game.tickets_sold;
+
+            if (totalTicketsSold + total_tickets > ticketsTotal) {
+
+                throw new Error("All tickets are sold for this game, please join another")
+
+            }
+
+            let ticketPrice = await game.ticket_price;
+
+            let totalPrice = ticketPrice * total_tickets;
+
+            let intasend;
 
             if (intasendPublishable && intasendSecret) {
 
@@ -244,10 +260,19 @@ async function enterGame(req, res) {
                 );
 
                 let wallets = intasend.wallets();
+                let narrative = 'Payment';
                 wallets
                     .get(wallet_id)
                     .then((resp) => {
-                        customerWallet =  { ...resp };
+                        let customerAvailableBal = resp.available_balance;
+
+                        if (totalPrice > customerAvailableBal) {
+                            throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
+                        }
+                    })
+                    .intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
+                    .then((resp) => {
+                        console.log(`Intra Transfer response: ${resp}`);
                     })
                     .catch((error) => {
                         throw new Error(error);
@@ -255,49 +280,20 @@ async function enterGame(req, res) {
                     });
             }
 
-            let ticketsTotal = await game.getDataValue("tickets_total", { transaction: t });
-
-            // if (total_tickets > maxPossibleTickets) {
-            //     throw new Error("You cannot buy more than 5% of the tickets");
-            // }
-
-            let totalTicketsSold = await game.getDataValue("tickets_sold", { transaction: t });
 
 
-            if (totalTicketsSold + total_tickets > ticketsTotal) {
-
-                throw new Error("All tickets are sold for this game, please join another")
-
-            }
-
-            let ticketPrice = await game.getDataValue("ticket_price", { transaction: t });
-
-            let totalPrice = ticketPrice * total_tickets;
-
-            console.log(customerWallet)
-
-            let cash = customerWallet.available_balance;
-
-            if (totalPrice > cash) {
-                throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
-            }
 
             //charge wallet... transfer from user wallet to mainwallet (intra transfer)
 
-            let wallet = intasend.wallet();
-
-            let amount = totalPrice;
-            let narrative = 'Payment';
-
-            wallet
-                .intraTransfer(customerWallet.wallet_id, "WY7JRD0", amount, narrative)
-                .then((resp) => {
-                    console.log(`Intra Transfer response: ${resp}`);
-                })
-                .catch((err) => {
-                    console.error(`Intra Transfer error: ${err}`);
-                    throw new Error(err);
-                });
+            // wallet
+            //     .intraTransfer(customerWallet.wallet_id, "WY7JRD0", amount, narrative)
+            //     .then((resp) => {
+            //         console.log(`Intra Transfer response: ${resp}`);
+            //     })
+            //     .catch((err) => {
+            //         console.error(`Intra Transfer error: ${err}`);
+            //         throw new Error(err);
+            //     });
 
             await game.increment({ tickets_sold: total_tickets }, { transaction: t });
 
