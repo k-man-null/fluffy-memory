@@ -292,7 +292,12 @@ async function enterGame(req, res) {
             await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
                 .then((resp) => {
                     console.log(`Intra Transfer response: ${resp}`);
-                });
+                })
+                .catch((err) => {
+                    console.log(`Intra Transfer err: ${err}`);
+                    throw new Error(err);
+
+                })
 
 
             await game.increment({ tickets_sold: total_tickets }, { transaction: t });
