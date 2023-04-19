@@ -282,7 +282,7 @@ async function enterGame(req, res) {
                 .then((resp) => {
                     let customerAvailableBal = resp.available_balance;
 
-                    if (totalPrice > customerAvailableBal) {
+                    if (0 > customerAvailableBal) {
                         throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
                     }
                 });
