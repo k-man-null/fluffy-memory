@@ -251,49 +251,41 @@ async function enterGame(req, res) {
 
             let intasend;
 
-            if (intasendPublishable && intasendSecret) {
+            intasend = new IntaSend(
+                null,
+                intasendSecret,
+                false
+            );
 
-                intasend = new IntaSend(
-                    null,
-                    intasendSecret,
-                    false
-                );
+            let wallets = intasend.wallets();
+            let narrative = 'Payment';
 
-                let wallets = intasend.wallets();
-                let narrative = 'Payment';
-                wallets
-                    .get(wallet_id)
-                    .then((resp) => {
-                        let customerAvailableBal = resp.available_balance;
+            wallets
+                .get(wallet_id)
+                .then((resp) => {
+                    let customerAvailableBal = resp.available_balance;
 
-                        if (totalPrice > customerAvailableBal) {
-                            throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
-                        }
-                    })
-                    .intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
-                    .then((resp) => {
-                        console.log(`Intra Transfer response: ${resp}`);
-                    })
-                    .catch((error) => {
-                        throw new Error(error);
+                    if (0 > customerAvailableBal) {
+                        throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
+                    }
+                })
+                .catch((error) => {
+                    throw new Error(error);
 
-                    });
-            }
-
-
+                });
 
 
             //charge wallet... transfer from user wallet to mainwallet (intra transfer)
 
-            // wallet
-            //     .intraTransfer(customerWallet.wallet_id, "WY7JRD0", amount, narrative)
-            //     .then((resp) => {
-            //         console.log(`Intra Transfer response: ${resp}`);
-            //     })
-            //     .catch((err) => {
-            //         console.error(`Intra Transfer error: ${err}`);
-            //         throw new Error(err);
-            //     });
+            wallets
+                .intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
+                .then((resp) => {
+                    console.log(`Intra Transfer response: ${resp}`);
+                })
+                .catch((err) => {
+                    console.error(`Intra Transfer error: ${err}`);
+                    throw new Error(err);
+                });
 
             await game.increment({ tickets_sold: total_tickets }, { transaction: t });
 
