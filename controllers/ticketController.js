@@ -265,7 +265,7 @@ async function enterGame(req, res) {
                 .then((resp) => {
                     let customerAvailableBal = resp.available_balance;
 
-                    if (0 > customerAvailableBal) {
+                    if (totalPrice > customerAvailableBal) {
                         throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
                     }
                 })
@@ -274,7 +274,6 @@ async function enterGame(req, res) {
 
                 });
 
-
             //charge wallet... transfer from user wallet to mainwallet (intra transfer)
 
             wallets
@@ -282,10 +281,7 @@ async function enterGame(req, res) {
                 .then((resp) => {
                     console.log(`Intra Transfer response: ${resp}`);
                 })
-                .catch((err) => {
-                    console.error(`Intra Transfer error: ${err}`);
-                    throw new Error(err);
-                });
+                
 
             await game.increment({ tickets_sold: total_tickets }, { transaction: t });
 
