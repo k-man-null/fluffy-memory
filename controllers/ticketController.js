@@ -229,8 +229,12 @@ async function enterGame(req, res) {
 
             let game = await Game.findByPk(game_id, { lock: true, transaction: t });
 
+            console.log(req.user);
+
 
             const wallet_id = req.user.wallet_id;
+
+            console.log(`Wallet id ${wallet_id}`)
 
             let intasend;
 
@@ -248,6 +252,7 @@ async function enterGame(req, res) {
                 wallets
                     .get(wallet_id)
                     .then((resp) => {
+                        console.log(`Get wallet response  ... ${resp}`);
                         customerWallet = resp;
                     })
                     .catch((error) => {
@@ -256,9 +261,7 @@ async function enterGame(req, res) {
                     });
             }
 
-
             let ticketsTotal = await game.getDataValue("tickets_total", { transaction: t });
-
 
             // if (total_tickets > maxPossibleTickets) {
             //     throw new Error("You cannot buy more than 5% of the tickets");
