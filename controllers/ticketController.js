@@ -206,7 +206,7 @@ async function enterGame(req, res) {
 
         const { game_id, total_tickets } = req.body;
 
-        const user_id = req.user.id;
+        const user_id = req.user.user_id;
 
         //get the user wallet
 
