@@ -10,118 +10,15 @@ const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 async function getMytickets(req, res) {
 
-    const tickets = [
-        {
-            ticket_id: 1,
-            ticket_price: 50,
-            status: 'won',
-            createdAt: '2023-04-11T11:26:33.928Z',
-            updatedAt: '2023-04-11T11:26:33.928Z',
-            ticketgame_id: 1,
-            ticketowner_id: 1
-        },
-        {
-            ticket_id: 2,
-            ticket_price: 50,
-            status: 'lost',
-            createdAt: '2023-04-11T11:26:33.928Z',
-            updatedAt: '2023-04-11T11:26:33.928Z',
-            ticketgame_id: 1,
-            ticketowner_id: 1
-        },
-        {
-            ticket_id: 3,
-            ticket_price: 50,
-            status: 'live',
-            createdAt: '2023-04-11T11:26:33.928Z',
-            updatedAt: '2023-04-11T11:26:33.928Z',
-            ticketgame_id: 1,
-            ticketowner_id: 1
-        },
-        {
-            ticket_id: 4,
-            ticket_price: 50,
-            status: 'lost',
-            createdAt: '2023-04-11T11:26:33.928Z',
-            updatedAt: '2023-04-11T11:26:33.928Z',
-            ticketgame_id: 1,
-            ticketowner_id: 1
-        },
-        {
-            ticket_id: 5,
-            ticket_price: 50,
-            status: 'live',
-            createdAt: '2023-04-11T11:26:33.928Z',
-            updatedAt: '2023-04-11T11:26:33.928Z',
-            ticketgame_id: 1,
-            ticketowner_id: 1
-        },
-        {
-            ticket_id: 6,
-            ticket_price: 200,
-            status: 'won',
-            createdAt: '2023-04-11T11:26:33.928Z',
-            updatedAt: '2023-04-11T11:26:33.928Z',
-            ticketgame_id: 1,
-            ticketowner_id: 1
-        },
-        {
-            ticket_id: 7,
-            ticket_price: 100,
-            status: 'live',
-            createdAt: '2023-04-11T11:26:33.928Z',
-            updatedAt: '2023-04-11T11:26:33.928Z',
-            ticketgame_id: 1,
-            ticketowner_id: 1
-        },
-        {
-            ticket_id: 8,
-            ticket_price: 300,
-            status: 'lost',
-            createdAt: '2023-04-11T11:26:33.928Z',
-            updatedAt: '2023-04-11T11:26:33.928Z',
-            ticketgame_id: 1,
-            ticketowner_id: 1
-        },
-        {
-            ticket_id: 9,
-            ticket_price: 200,
-            status: 'won',
-            createdAt: '2023-04-11T11:26:33.928Z',
-            updatedAt: '2023-04-11T11:26:33.928Z',
-            ticketgame_id: 1,
-            ticketowner_id: 1
-        },
-        {
-            ticket_id: 10,
-            ticket_price: 200,
-            status: 'live',
-            createdAt: '2023-04-11T11:26:33.928Z',
-            updatedAt: '2023-04-11T11:26:33.928Z',
-            ticketgame_id: 1,
-            ticketowner_id: 10
-        },
-        {
-            ticket_id: 11,
-            ticket_price: 100,
-            status: 'live',
-            createdAt: '2023-04-11T11:26:33.928Z',
-            updatedAt: '2023-04-11T11:26:33.928Z',
-            ticketgame_id: 1,
-            ticketowner_id: 11
-        },
-
-    ]
-
     try {
 
         const { user_id } = req.user.user_id;
 
-        // let tickets = await Ticket.findAll({
-        //     where: {
-        //         ticketowner_id: user_id
-        //     }
-        // })
+        let tickets = await Ticket.findAll({
+            where: {
+                ticketowner_id: user_id
+            }
+        })
 
         return res.status(200).json({
             tickets
@@ -260,29 +157,13 @@ async function enterGame(req, res) {
             let wallets = intasend.wallets();
             let narrative = 'Payment';
 
-            // wallets
-            //     .get(wallet_id)
-            //     .then((resp) => {
-            //         let customerAvailableBal = resp.available_balance;
-
-            //         if (totalPrice > customerAvailableBal) {
-            //             throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
-            //         }
-            //     })
-
-            // //charge wallet... transfer from user wallet to mainwallet (intra transfer)
-
-            // wallets
-            //     .intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
-            //     .then((resp) => {
-            //         console.log(`Intra Transfer response: ${resp}`);
-            //     })
+          
 
             await wallets.get(wallet_id)
                 .then((resp) => {
                     let customerAvailableBal = resp.available_balance;
 
-                    if (0 > customerAvailableBal) {
+                    if (totalPrice > customerAvailableBal) {
                         throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
                     }
                 });
