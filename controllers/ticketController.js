@@ -228,13 +228,8 @@ async function enterGame(req, res) {
         const result = await sequelize.transaction(async (t) => {
 
             let game = await Game.findByPk(game_id, { lock: true, transaction: t });
-
-            console.log(req.user);
-
-
+            
             const wallet_id = req.user.wallet_id;
-
-            console.log(`Wallet id ${wallet_id}`)
 
             let intasend;
 
@@ -252,7 +247,6 @@ async function enterGame(req, res) {
                 wallets
                     .get(wallet_id)
                     .then((resp) => {
-                        console.log(`Get wallet response  ... ${resp}`);
                         customerWallet =  { ...resp };
                     })
                     .catch((error) => {
@@ -279,6 +273,8 @@ async function enterGame(req, res) {
             let ticketPrice = await game.getDataValue("ticket_price", { transaction: t });
 
             let totalPrice = ticketPrice * total_tickets;
+
+            console.log(customerWallet)
 
             let cash = customerWallet.available_balance;
 
