@@ -269,10 +269,6 @@ async function enterGame(req, res) {
                         throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
                     }
                 })
-                .catch((error) => {
-                    throw new Error(error);
-
-                });
 
             //charge wallet... transfer from user wallet to mainwallet (intra transfer)
 
