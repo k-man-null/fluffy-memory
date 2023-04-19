@@ -1,6 +1,5 @@
 const User = require('../models/user');
 const Game = require('../models/games');
-const TicketBank = require('../models/affiliateaccount')
 const Ticket = require('../models/ticket');
 const sequelize = require('../connection');
 
@@ -230,9 +229,9 @@ async function enterGame(req, res) {
 
             let game = await Game.findByPk(game_id, { lock: true, transaction: t });
 
-            const wallet_id = user.getDataValue("wallet_id");
-
             let user = await User.findByPk(user_id, { transaction: t });
+
+            const wallet_id = user.getDataValue("wallet_id");
 
             let intasend;
 
