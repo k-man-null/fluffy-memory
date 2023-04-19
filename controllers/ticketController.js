@@ -253,7 +253,7 @@ async function enterGame(req, res) {
                     .get(wallet_id)
                     .then((resp) => {
                         console.log(`Get wallet response  ... ${resp}`);
-                        customerWallet = resp.json();
+                        customerWallet =  { ...resp };
                     })
                     .catch((error) => {
                         throw new Error(error);
