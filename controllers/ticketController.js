@@ -12,7 +12,7 @@ async function getMytickets(req, res) {
 
     try {
 
-        const { user_id } = req.user.user_id;
+        const user_id  = req.user.user_id;
 
         let tickets = await Ticket.findAll({
             where: {
