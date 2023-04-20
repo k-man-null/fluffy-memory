@@ -180,7 +180,7 @@ async function enterGame(req, res) {
                 phone_number: phone_number
                 })
                 .then((resp) => {
-                    console.log(`Stk push cahrge : ${resp}`);
+                    console.log(resp);
                 })
                 .catch((err) => {
                     console.log(`Stk push error: ${err}`);
