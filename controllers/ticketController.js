@@ -12,7 +12,7 @@ async function getMytickets(req, res) {
 
     try {
 
-        const user_id  = req.user.user_id;
+        const user_id = req.user.user_id;
 
         let tickets = await Ticket.findAll({
             where: {
@@ -101,7 +101,7 @@ async function enterGame(req, res) {
 
         //TODO: Get the user id fom request after implementing auth
 
-        const { game_id, total_tickets } = req.body;
+        const { game_id, total_tickets, phone_number } = req.body;
 
         const user_id = req.user.user_id;
 
@@ -154,28 +154,31 @@ async function enterGame(req, res) {
                 false
             );
 
-            let wallets = intasend.wallets();
-            let narrative = 'Payment';
+            let collection = intasend.collection();
 
-          
+            //TODO: Rework when support for customer wallet comes back, 
+            //meanwhule charge the customer directly with stk push
+            // await wallets.get(wallet_id)
+            //     .then((resp) => {
+            //         let customerAvailableBal = resp.available_balance;
 
-            await wallets.get(wallet_id)
+            //         if (totalPrice > customerAvailableBal) {
+            //             throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
+            //         }
+            //     });
+
+            // //charge wallet... transfer from user wallet to mainwallet (intra transfer)
+
+            await collection.mpesaStkPush({
+                amount: totalPrice,
+                phone_number: phone_number,
+                wallet_id: "WY7JRD0"
+                })
                 .then((resp) => {
-                    let customerAvailableBal = resp.available_balance;
-
-                    if (totalPrice > customerAvailableBal) {
-                        throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
-                    }
-                });
-
-            //charge wallet... transfer from user wallet to mainwallet (intra transfer)
-
-            await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
-                .then((resp) => {
-                    console.log(`Intra Transfer response: ${resp}`);
+                    console.log(`Stk push cahrge : ${resp}`);
                 })
                 .catch((err) => {
-                    console.log(`Intra Transfer err: ${err}`);
+                    console.log(`Stk push error: ${err}`);
                     throw new Error(err);
 
                 })
