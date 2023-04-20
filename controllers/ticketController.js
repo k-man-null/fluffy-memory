@@ -169,16 +169,15 @@ async function enterGame(req, res) {
 
             // //charge wallet... transfer from user wallet to mainwallet (intra transfer)
 
-            console.log({
-                amount: totalPrice,
-                phone_number: phone_number,
-                wallet_id: "WY7JRD0"
-            })
+            // console.log({
+            //     amount: totalPrice,
+            //     phone_number: phone_number,
+            //     wallet_id: "WY7JRD0"
+            // })
 
             await collection.mpesaStkPush({
                 amount: totalPrice,
-                phone_number: phone_number,
-                wallet_id: "WY7JRD0"
+                phone_number: phone_number
                 })
                 .then((resp) => {
                     console.log(`Stk push cahrge : ${resp}`);
