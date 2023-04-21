@@ -149,7 +149,7 @@ async function enterGame(req, res) {
             let intasend;
 
             intasend = new IntaSend(
-                intasendPublishable,
+                null,
                 intasendSecret,
                 false
             );
