@@ -176,10 +176,10 @@ async function enterGame(req, res) {
 
             let narrative = 'Payment';
 
-            await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
+            await wallets.intraTransfer(wallet_id, "WY7JRD0", 49.50, narrative)
                 .then((resp) => {
                     console.log("Intra transfer response");
-                    console.log(resp);
+                    console.log(resp.toJSON());
 
                 })
                 .catch((err) => {
