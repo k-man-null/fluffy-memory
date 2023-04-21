@@ -149,7 +149,7 @@ async function enterGame(req, res) {
             let intasend;
 
             intasend = new IntaSend(
-                null,
+                intasendPublishable,
                 intasendSecret,
                 false
             );
@@ -176,7 +176,7 @@ async function enterGame(req, res) {
 
             let narrative = 'Payment';
 
-            await wallets.intraTransfer(wallet_id, "WY7JRD0", 49.50, narrative)
+            await wallets.intraTransfer(wallet_id, "WY7JRD0", 40, narrative)
                 .then((resp) => {
                     console.log("Intra transfer response");
                     console.log(resp);
