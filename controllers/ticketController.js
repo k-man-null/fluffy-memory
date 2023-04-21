@@ -101,7 +101,7 @@ async function enterGame(req, res) {
 
         //TODO: Get the user id fom request after implementing auth
 
-        const { game_id, total_tickets, phone_number } = req.body;
+        const { game_id, total_tickets } = req.body;
 
         const user_id = req.user.user_id;
 
@@ -167,7 +167,8 @@ async function enterGame(req, res) {
                     }
                 })
                 .catch((err) => {
-                    console.log(`Intasend wallet transfer error ${err}`);
+                    console.log(`Intasend get wallet error`);
+                    console.log(err);
                     throw new Error(err);
                 });
 
@@ -177,11 +178,14 @@ async function enterGame(req, res) {
 
             await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
                 .then((resp) => {
-                    console.log(`Intratransfer response ${resp}`)
+                    console.log("Intra transfer response");
+                    console.log(resp);
 
                 })
                 .catch((err) => {
-                    console.log(`Intratransfer error ${err}`)
+                    console.log(`Intratransfer error`)
+                    console.log(err);
+                    throw new Error(err);
 
                 });
 

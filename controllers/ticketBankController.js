@@ -176,7 +176,7 @@ async function createWithdrawalRequest(req, res) {
 
 async function approveWithdrawRequest(req, res) {
 
-    //TODO: Figure out wh
+   
 
     let t;
 
