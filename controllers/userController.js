@@ -1,11 +1,8 @@
 const User = require('../models/user');
-const Inventory = require('../models/inventory');
 const bcrypt = require('bcrypt');
 const sequelize = require('../connection');
 const jwt = require('jsonwebtoken');
-const AffiliateAccount = require('../models/affiliateaccount');
 const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
-const { createWallet } = require("../cashflow/cash");
 const IntaSend = require('intasend-node');
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
