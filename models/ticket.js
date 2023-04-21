@@ -21,6 +21,10 @@ Ticket.init({
         allowNull: false,
         defaultValue: "live"
     },
+    invoice_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    }
 
 }, { sequelize, modelName: 'Ticket' });
 

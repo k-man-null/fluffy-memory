@@ -154,20 +154,36 @@ async function enterGame(req, res) {
                 false
             );
 
-            let collection = intasend.collection();
+            // let collection = intasend.collection();
+            let wallets = intasend.wallets();
 
-            //TODO: Rework when support for customer wallet comes back, 
-            //meanwhule charge the customer directly with stk push
-            // await wallets.get(wallet_id)
-            //     .then((resp) => {
-            //         let customerAvailableBal = resp.available_balance;
 
-            //         if (totalPrice > customerAvailableBal) {
-            //             throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
-            //         }
-            //     });
+            await wallets.get(wallet_id)
+                .then((resp) => {
+                    let customerAvailableBal = resp.available_balance;
 
-            // //charge wallet... transfer from user wallet to mainwallet (intra transfer)
+                    if (totalPrice > customerAvailableBal) {
+                        throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
+                    }
+                })
+                .catch((err) => {
+                    console.log(`Intasend wallet transfer error ${err}`);
+                    throw new Error(err);
+                });
+
+            //charge wallet... transfer from user wallet to mainwallet (intra transfer)'
+
+            let narrative = 'Payment';
+
+            await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
+                .then((resp) => {
+                    console.log(`Intratransfer response ${resp}`)
+
+                })
+                .catch((err) => {
+                    console.log(`Intratransfer error ${err}`)
+
+                });
 
             // console.log({
             //     amount: totalPrice,
@@ -175,18 +191,38 @@ async function enterGame(req, res) {
             //     wallet_id: "WY7JRD0"
             // })
 
-            await collection.mpesaStkPush({
-                amount: totalPrice,
-                phone_number: phone_number
-                })
-                .then((resp) => {
-                    console.log(resp);
-                })
-                .catch((err) => {
-                    console.log(`Stk push error: ${err}`);
-                    throw new Error(err);
+            // const { data } = await collection.mpesaStkPush({
+            //     amount: totalPrice,
+            //     phone_number: phone_number
+            // })
+            //     .then((resp) => {
+            //         return resp;
+            //     })
+            //     .catch((err) => {
 
-                })
+            //         throw new Error(err);
+
+            //     })
+
+            // const { invoice: { invoice_id } } = data;
+
+            // await new Promise((resolve) => setTimeout(resolve, 5000));
+
+            // const { completed_transaction } = await collection
+            //     .status(invoice_id)
+            //     .then((resp) => {
+            //         // Redirect user to URL to complete payment
+            //         if(resp.invoice.state !== "COMPLETE") {
+            //             throw new Error("Transaction failed")
+            //         } else {
+            //             return resp;
+            //         }
+            //     })
+            //     .catch((err) => {
+            //         throw new Error(err);
+            //     });
+
+            //TODO : store transaction
 
 
             await game.increment({ tickets_sold: total_tickets }, { transaction: t });
@@ -197,7 +233,8 @@ async function enterGame(req, res) {
                 const ticket = await Ticket.create({
                     ticketgame_id: game_id,
                     ticketowner_id: user_id,
-                    ticket_price: game.ticket_price
+                    ticket_price: game.ticket_price,
+                    invoice_id: invoice_id
                 }, { transaction: t })
 
                 tickets.push(ticket.toJSON());

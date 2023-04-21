@@ -19,7 +19,6 @@ async function getMinProfile(req, res) {
 
 }
 
-
 async function getUserWallet(req, res) {
 
     try {
@@ -27,17 +26,11 @@ async function getUserWallet(req, res) {
         const id = req.user.user_id;
         const label = req.user.user_name;
 
-        console.log(`User id ${id}`);
-        console.log(`Label ${label}`);
-
         const user = await User.findByPk(id);
 
         if (!user) {
             return res.status(400).json({ message: `User not found` });
         }
-
-
-        console.log(`Useruser  ..... ${user}`)
 
         const wallet_id = user.getDataValue("wallet_id");
 
@@ -76,6 +69,59 @@ async function getUserWallet(req, res) {
 
 }
 
+async function loadUserWallet(req, res) {
+
+
+    try {
+
+        const phone_number = req.body.phone_number;
+
+        const amount = req.body.amount;
+
+        const wallet_id = req.user.wallet_id;
+
+        const narrative = "Deposit";
+
+        let intasend;
+
+        if (intasendPublishable && intasendSecret) {
+
+            intasend = new IntaSend(
+                null,
+                intasendSecret,
+                false
+            );
+
+            let collection = intasend.collection();
+
+            await collection.mpesaStkPush({
+                wallet_id: wallet_id,
+                phone_number: phone_number,
+                amount: amount,
+                narrative: narrative
+            })
+            .then((response) => {
+                console.log(`Intasend loadwallet response ${response}`);
+                return res.status(200).json({ message: "We have received your deposit request"});
+            })
+            .catch((error) => {
+                console.log(`Intasend loadwallet error ${error}`)
+                return res.status(400).json({ message: `Wallet not found` });
+
+            });
+
+        }
+
+    } catch (error) {
+
+        console.log(`Error loading wallet catch2 ${error}`);
+
+        res.status(500).send("Internal server error");
+
+    }
+
+}
+
 module.exports = {
-    logout, getMinProfile, getUserWallet
+    logout, getMinProfile, getUserWallet, loadUserWallet
 }
