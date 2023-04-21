@@ -1,8 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const Game = require('./games');
 const Ticket = require('./ticket');
-const Inventory = require('./ticket_sale');
-const AffiliateAccount = require('./affiliateaccount');
 
 const bcrypt = require('bcrypt');
 
