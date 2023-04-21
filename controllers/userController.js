@@ -3,10 +3,10 @@ const bcrypt = require('bcrypt');
 const sequelize = require('../connection');
 const jwt = require('jsonwebtoken');
 const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
-const IntaSend = require('intasend-node');
+// const IntaSend = require('intasend-node');
 
-const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
-const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
+// const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
+// const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 async function saveUser(req, res) {
 
@@ -26,53 +26,81 @@ async function saveUser(req, res) {
 
         t = await sequelize.transaction();
 
-        let intasend;
+        // let intasend;
 
-        if (intasendPublishable && intasendSecret) {
+        // if (intasendPublishable && intasendSecret) {
 
-            intasend = new IntaSend(
-                null,
-                intasendSecret,
-                false
-            );
-        }
+        //     intasend = new IntaSend(
+        //         null,
+        //         intasendSecret,
+        //         false
+        //     );
+        // }
 
-        let wallets = intasend.wallets();
+        // let wallets = intasend.wallets();
 
-        let user;
+        // let user;
 
-        wallets.create({
-            label: `${user_name}`,
-            wallet_type: 'WORKING',
-            currency: 'KES',
-            can_disburse: true
-        }).then(async (resp) => {
+        // wallets.create({
+        //     label: `${user_name}`,
+        //     wallet_type: 'WORKING',
+        //     currency: 'KES',
+        //     can_disburse: true
+        // }).then(async (resp) => {
 
-            console.log(`Response: ${JSON.stringify(resp)}`)
+        //     console.log(`Response: ${JSON.stringify(resp)}`)
 
-            const wallet_id = resp.wallet_id;
+        //     const wallet_id = resp.wallet_id;
 
-            user = await User.create({
-                first_name,
-                last_name,
-                user_name,
-                email,
-                phone,
-                password,
-                wallet_id
-            }, { transaction: t });
+        //     user = await User.create({
+        //         first_name,
+        //         last_name,
+        //         user_name,
+        //         email,
+        //         phone,
+        //         password,
+        //         wallet_id
+        //     }, { transaction: t });
 
-            const userWithoutPassword = user.getUserWithoutPassword();
+        //     await User.create({
+        //         first_name,
+        //         last_name,
+        //         user_name,
+        //         email,
+        //         phone,
+        //         password,
+        //         wallet_id
+        //     }, { transaction: t });
+
+        //     const userWithoutPassword = user.getUserWithoutPassword();
+
+        //     await t.commit();
+
+        //     return res.status(200).json({
+        //         user: userWithoutPassword
+        //     });
+
+        // })
+
+        const wallet_id = "0XZZQEY"
+
+        await User.create({
+            first_name,
+            last_name,
+            user_name,
+            email,
+            phone,
+            password,
+            wallet_id
+        }, { transaction: t });
+
+        const userWithoutPassword = user.getUserWithoutPassword();
 
             await t.commit();
 
             return res.status(200).json({
                 user: userWithoutPassword
             });
-
-        }).catch((error) => {
-            console.log(`Error inside catch1 ${error}`)
-        })
 
 
     } catch (error) {
