@@ -84,7 +84,7 @@ async function saveUser(req, res) {
 
         const wallet_id = "0XZZQEY"
 
-        await User.create({
+        const user = await User.create({
             first_name,
             last_name,
             user_name,
