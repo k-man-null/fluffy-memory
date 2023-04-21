@@ -30,7 +30,7 @@ async function checkConnection(sequelize) {
 
         console.error("Connection established successfully");
 
-        await sequelize.sync({  force : true });
+        await sequelize.sync({ alter: true });
 
     } catch (error) {
         console.error(error);
