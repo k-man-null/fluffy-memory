@@ -1,14 +1,5 @@
 const { Sequelize } = require('sequelize');
 
-// const sequelize = new Sequelize('postgres://postgres:pgpassword@localhost:5432', {
-//     pool: {
-//         max: 1000,
-//         min: 0,
-//         acquire: 30000,
-//         idle: 1000
-//     },
-// },
-// );
 
 const DB_NAME = process.env.DB_NAME;
 const DB_USER = process.env.DB_USER;

@@ -5,10 +5,6 @@ const sequelize = require('../connection');
 
 class Game extends Model {
 
-    getTotalRevenue() {
-        const total = this.ticket_price * this.tickets_total;
-        return total;
-    }
 
 }
 
@@ -73,6 +69,14 @@ Game.init({
         type: DataTypes.INTEGER,
         allowNull: true
     },
+    release_transaction_id: {
+        type: DataTypes.JSON,
+        allowNull: true
+    },
+    closed_date: {
+        type: DataTypes.DATE,
+        allowNull: true
+    }
 
 
 }, { sequelize, modelName: 'Game' });

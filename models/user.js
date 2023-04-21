@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const Game = require('./games');
 const Ticket = require('./ticket');
-const Inventory = require('./inventory');
+const Inventory = require('./ticket_sale');
 const AffiliateAccount = require('./affiliateaccount');
 
 const bcrypt = require('bcrypt');
@@ -22,6 +22,11 @@ class User extends Model {
 }
 
 User.init({
+    user_id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
     first_name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -41,11 +46,6 @@ User.init({
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
-    },
-    user_id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
     },
     email: {
         type: DataTypes.STRING,
@@ -67,11 +67,8 @@ User.init({
     },
     verifed: {
         type: DataTypes.BOOLEAN,
-        allowNull: true
-    },
-    isAffiliate: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true
+        allowNull: false,
+        defaultValue: false
     }
 
 }, { sequelize, modelName: 'User' });
@@ -90,19 +87,9 @@ User.hasMany(Ticket, {
     }
 });
 
-User.hasOne(Inventory, {
-    foreignKey: {
-        name: 'owner_id',
-        allowNull: false,
-    }
-});
 
-User.hasOne(AffiliateAccount, {
-    foreignKey: {
-        name: 'affiliate_id',
-        allowNull: false
-    }
-});
+
+
 
 // (async () => {
 //     await User.sync({ force: true });

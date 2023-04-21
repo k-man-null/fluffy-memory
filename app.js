@@ -45,10 +45,7 @@ async function createDummyUsers() {
 
 const userRouter = require('./routes/users');
 const gamesRouter = require('./routes/games');
-const inventoryRouter = require('./routes/inventory');
 const ticketRouter = require('./routes/tickets');
-const transactionRouter = require('./routes/transaction');
-const ticketBankRouter = require('./routes/ticketBank');
 const sessionRouter = require('./routes/session');
 
 
@@ -77,10 +74,7 @@ app.use(verifyToken);
 
 
 app.use('/games', gamesRouter);
-app.use('/inventory', inventoryRouter);
 app.use('/tickets', ticketRouter);
-app.use('/transactions', transactionRouter);
-app.use('/ticketbank', ticketBankRouter);
 app.use('/session', sessionRouter);
 
 
