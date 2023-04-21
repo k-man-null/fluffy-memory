@@ -179,7 +179,7 @@ async function enterGame(req, res) {
             await wallets.intraTransfer(wallet_id, "WY7JRD0", 49.50, narrative)
                 .then((resp) => {
                     console.log("Intra transfer response");
-                    console.log(resp.toJSON());
+                    console.log(resp);
 
                 })
                 .catch((err) => {
