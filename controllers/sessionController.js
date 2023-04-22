@@ -122,6 +122,48 @@ async function loadUserWallet(req, res) {
 
 }
 
+async function userWalletTransactions(req, res) {
+
+    try {
+
+
+        const wallet_id = req.user.wallet_id;
+
+        let intasend;
+
+        if (intasendPublishable && intasendSecret) {
+
+            intasend = new IntaSend(
+                null,
+                intasendSecret,
+                false
+            );
+
+            let wallets = intasend.wallets();
+
+            await wallets.transactions(wallet_id)
+            .then((response) => {
+                console.log(`Intasend wallet transactions response ${response}`);
+                return res.status(200).json(response);
+            })
+            .catch((error) => {
+                console.log(`Intasend wallet transactions error ${error}`)
+                return res.status(400).json({ message: `Wallet not found` });
+
+            });
+
+        }
+
+    } catch (error) {
+
+        console.log(`Error retrieving wallet transcations catch2 ${error}`);
+
+        res.status(500).send("Internal server error");
+
+    }
+
+}
+
 module.exports = {
     logout, getMinProfile, getUserWallet, loadUserWallet
 }

@@ -189,45 +189,6 @@ async function enterGame(req, res) {
 
                 });
 
-            // console.log({
-            //     amount: totalPrice,
-            //     phone_number: phone_number,
-            //     wallet_id: "WY7JRD0"
-            // })
-
-            // const { data } = await collection.mpesaStkPush({
-            //     amount: totalPrice,
-            //     phone_number: phone_number
-            // })
-            //     .then((resp) => {
-            //         return resp;
-            //     })
-            //     .catch((err) => {
-
-            //         throw new Error(err);
-
-            //     })
-
-            // const { invoice: { invoice_id } } = data;
-
-            // await new Promise((resolve) => setTimeout(resolve, 5000));
-
-            // const { completed_transaction } = await collection
-            //     .status(invoice_id)
-            //     .then((resp) => {
-            //         // Redirect user to URL to complete payment
-            //         if(resp.invoice.state !== "COMPLETE") {
-            //             throw new Error("Transaction failed")
-            //         } else {
-            //             return resp;
-            //         }
-            //     })
-            //     .catch((err) => {
-            //         throw new Error(err);
-            //     });
-
-            //TODO : store transaction
-
 
             await game.increment({ tickets_sold: total_tickets }, { transaction: t });
 
