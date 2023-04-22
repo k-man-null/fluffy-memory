@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const IntaSend = require('intasend-node');
+const { uploadFromMemory } = require("../controllers/gameController");
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
