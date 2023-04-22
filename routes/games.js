@@ -27,9 +27,9 @@ router.get('/all', getAllGames);
 
 router.get('/live', getAllLiveGames);
 
-router.get('/my/live/:id', getMyLiveGames);
+router.get('/my/live/', getMyLiveGames);
 
-router.get('/my/ended/:id', getMyEndedGames);
+router.get('/my/ended/', getMyEndedGames);
 
 router.get('/:id', getGame);
 

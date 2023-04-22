@@ -211,12 +211,7 @@ async function uploadAvatar(req, res) {
 
         const images = await Promise.all(imageUploadPromises);
 
-        if (images)
-            console.log(images);
-
         // get the current user profile
-
-        
 
         await user.update({ profile_image: images[0]}, { transaction: t});
        

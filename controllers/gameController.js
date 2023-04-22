@@ -39,7 +39,6 @@ function uploadFromMemory(file) {
 
     })
 
-
 }
 
 
@@ -114,9 +113,6 @@ async function createGame(req, res) {
 
         const images = await Promise.all(imageUploadPromises);
 
-        if (images)
-            console.log(images);
-
         // Create game in the database
         const new_game = await Game.create(
             {
@@ -133,8 +129,6 @@ async function createGame(req, res) {
             { transaction: t }
         );
 
-        console.log(new_game);
-
         await t.commit();
 
         return res.status(200).json({ done: new_game });
@@ -143,8 +137,6 @@ async function createGame(req, res) {
         if (t && t.finished !== 'commit') {
             await t.rollback();
         }
-
-        console.log(error);
 
         return res.status(400).send("Error creating the competition");
     }
@@ -204,7 +196,7 @@ async function getMyLiveGames(req, res) {
 
     try {
 
-        const id = req.params.id;
+        const id = req.user.user_id;
 
         const games = await Game.findAll({
             where: {
@@ -231,7 +223,7 @@ async function getMyEndedGames(req, res) {
 
     try {
 
-        const id = req.params.id;
+        const id = req.user.user_id;
 
         const games = await Game.findAll({
             where: {
