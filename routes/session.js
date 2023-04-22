@@ -5,7 +5,8 @@ const {
     logout,
     getMinProfile,
     getUserWallet,
-    loadUserWallet
+    loadUserWallet,
+    userWalletTransactions
 } = require('../controllers/sessionController');
 
 router.get('/logout', logout);
@@ -15,5 +16,7 @@ router.get('/wallet', getUserWallet);
 router.get('/minProfile', getMinProfile);
 
 router.post('/deposit', loadUserWallet);
+
+router.get('/transactionhistory', userWalletTransactions);
 
 module.exports = router;

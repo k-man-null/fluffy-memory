@@ -165,5 +165,5 @@ async function userWalletTransactions(req, res) {
 }
 
 module.exports = {
-    logout, getMinProfile, getUserWallet, loadUserWallet
+    logout, getMinProfile, getUserWallet, loadUserWallet, userWalletTransactions
 }
