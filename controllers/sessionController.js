@@ -29,9 +29,9 @@ async function getFullProfile(req, res) {
 
     try {
 
-        const user = await User.findByPk(req.user_id);
+        const user = await User.findByPk(req.user.user_id);
 
-        const full_profile = user.getFullUser;
+        const full_profile = user.getFullUser();
 
         return res.status(200).json(full_profile);
 
