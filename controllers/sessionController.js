@@ -201,12 +201,13 @@ async function uploadAvatar(req, res) {
 
         t = await sequelize.transaction();
 
+        const user = await User.findByPk(req.user.user_id, { transaction: t });
+
         const imageUploadPromises = req.files.avatar.map((file) => {
 
             return uploadFromMemory(file);
 
         });
-
 
         const images = await Promise.all(imageUploadPromises);
 
@@ -215,7 +216,7 @@ async function uploadAvatar(req, res) {
 
         // get the current user profile
 
-        const user = User.findByPk(req.user.user_id, { transaction: t});
+        
 
         await user.update({ profile_image: images[0]}, { transaction: t});
        
