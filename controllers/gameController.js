@@ -304,5 +304,6 @@ module.exports = {
     getAllLiveGames,
     getMyEndedGames,
     getMyLiveGames,
-    getGameCreator
+    getGameCreator,
+    uploadFromMemory
 }

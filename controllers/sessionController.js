@@ -4,6 +4,8 @@ const IntaSend = require('intasend-node');
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
+const sequelize = require('../connection');
+
 
 async function logout(req, res) {
 
@@ -21,7 +23,7 @@ async function getMinProfile(req, res) {
 
 async function verifyEmail(req, res) {
 
-    return res.status(200).json({message: "Implement Verify email"});
+    return res.status(200).json({ message: "Implement Verify email" });
 
 }
 
@@ -189,6 +191,49 @@ async function userWalletTransactions(req, res) {
 
 }
 
+async function uploadAvatar(req, res) {
+
+    let t;
+
+    try {
+
+
+        t = await sequelize.transaction();
+
+        const imageUploadPromises = req.files.avatar.map((file) => {
+
+            return uploadFromMemory(file);
+
+        });
+
+
+        const images = await Promise.all(imageUploadPromises);
+
+        if (images)
+            console.log(images);
+
+        // get the current user profile
+
+        const user = User.findByPk(req.user.user_id, { transaction: t});
+
+        await user.update({ profile_image: images[0]}, { transaction: t});
+       
+        await t.commit();
+
+        return res.status(200).json({ message: "Done uploading avatar" });
+
+    } catch (error) {
+        if (t && t.finished !== 'commit') {
+            await t.rollback();
+        }
+
+        console.log(error);
+
+        return res.status(400).send("Error uploading avatar");
+    }
+
+}
+
 module.exports = {
     logout,
     getMinProfile,
@@ -196,5 +241,6 @@ module.exports = {
     loadUserWallet,
     userWalletTransactions,
     getFullProfile,
-    verifyEmail
+    verifyEmail,
+    uploadAvatar
 }

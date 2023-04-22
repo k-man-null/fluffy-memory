@@ -1,6 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
+const multer = require('multer');
+
+const storage = multer.memoryStorage();
+
+const upload = multer({ storage });
+
 const { 
     logout,
     getMinProfile,
@@ -8,7 +14,8 @@ const {
     loadUserWallet,
     userWalletTransactions,
     getFullProfile,
-    verifyEmail
+    verifyEmail,
+    uploadAvatar
 } = require('../controllers/sessionController');
 
 router.get('/logout', logout);
@@ -24,5 +31,8 @@ router.get('/transactionhistory', userWalletTransactions);
 router.get('/fullProfile', getFullProfile)
 
 router.get('/verifyemail', verifyEmail)
+
+router.post('/avatar', upload.fields([{ name: 'avatar', maxCount: 1 }]), uploadAvatar);
+
 
 module.exports = router;
