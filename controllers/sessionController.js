@@ -19,12 +19,31 @@ async function getMinProfile(req, res) {
 
 }
 
+async function getFullProfile(req, res) {
+
+    try {
+
+        const user = await User.findByPk(req.user_id);
+        
+        const full_profile = user.getFullUser;
+
+        return res.status(200).json(full_profile);
+        
+    } catch (error) {
+        return res.status(400).json({message: "User not found"});
+
+        
+    }
+
+    
+
+}
+
 async function getUserWallet(req, res) {
 
     try {
 
         const id = req.user.user_id;
-        const label = req.user.user_name;
 
         const user = await User.findByPk(id);
 
@@ -165,5 +184,5 @@ async function userWalletTransactions(req, res) {
 }
 
 module.exports = {
-    logout, getMinProfile, getUserWallet, loadUserWallet, userWalletTransactions
+    logout, getMinProfile, getUserWallet, loadUserWallet, userWalletTransactions, getFullProfile
 }

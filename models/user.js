@@ -17,6 +17,21 @@ class User extends Model {
         }
     }
 
+    getFullUser() {
+        return {
+
+            user_id: this.user_id,
+            user_name: this.user_name,
+            email: this.email,
+            phone_number: this.phone,
+            wallet_id: this.wallet_id,
+            full_name: `${this.first_name} ${this.last_name}`,
+            avatar: this.profile_image,
+            verifed: this.verifed
+
+        }
+    }
+
 }
 
 User.init({
