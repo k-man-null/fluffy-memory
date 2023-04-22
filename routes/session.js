@@ -7,7 +7,8 @@ const {
     getUserWallet,
     loadUserWallet,
     userWalletTransactions,
-    getFullProfile
+    getFullProfile,
+    verifyEmail
 } = require('../controllers/sessionController');
 
 router.get('/logout', logout);
@@ -21,5 +22,7 @@ router.post('/deposit', loadUserWallet);
 router.get('/transactionhistory', userWalletTransactions);
 
 router.get('/fullProfile', getFullProfile)
+
+router.get('/verifyemail', verifyEmail)
 
 module.exports = router;

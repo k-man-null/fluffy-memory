@@ -19,23 +19,29 @@ async function getMinProfile(req, res) {
 
 }
 
+async function verifyEmail(req, res) {
+
+    return res.status(200).json({message: "Implement Verify email"});
+
+}
+
 async function getFullProfile(req, res) {
 
     try {
 
         const user = await User.findByPk(req.user_id);
-        
+
         const full_profile = user.getFullUser;
 
         return res.status(200).json(full_profile);
-        
-    } catch (error) {
-        return res.status(400).json({message: "User not found"});
 
-        
+    } catch (error) {
+        return res.status(400).json({ message: "User not found" });
+
+
     }
 
-    
+
 
 }
 
@@ -119,15 +125,15 @@ async function loadUserWallet(req, res) {
                 amount: amount,
                 narrative: narrative
             })
-            .then((response) => {
-                console.log(`Intasend loadwallet response ${response}`);
-                return res.status(200).json({ message: "We have received your deposit request"});
-            })
-            .catch((error) => {
-                console.log(`Intasend loadwallet error ${error}`)
-                return res.status(400).json({ message: `Wallet not found` });
+                .then((response) => {
+                    console.log(`Intasend loadwallet response ${response}`);
+                    return res.status(200).json({ message: "We have received your deposit request" });
+                })
+                .catch((error) => {
+                    console.log(`Intasend loadwallet error ${error}`)
+                    return res.status(400).json({ message: `Wallet not found` });
 
-            });
+                });
 
         }
 
@@ -161,15 +167,15 @@ async function userWalletTransactions(req, res) {
             let wallets = intasend.wallets();
 
             await wallets.transactions(wallet_id)
-            .then((response) => {
-                console.log(`Intasend wallet transactions response ${response}`);
-                return res.status(200).json(response);
-            })
-            .catch((error) => {
-                console.log(`Intasend wallet transactions error ${error}`)
-                return res.status(400).json({ message: `Wallet not found` });
+                .then((response) => {
+                    console.log(`Intasend wallet transactions response ${response}`);
+                    return res.status(200).json(response);
+                })
+                .catch((error) => {
+                    console.log(`Intasend wallet transactions error ${error}`)
+                    return res.status(400).json({ message: `Wallet not found` });
 
-            });
+                });
 
         }
 
@@ -184,5 +190,11 @@ async function userWalletTransactions(req, res) {
 }
 
 module.exports = {
-    logout, getMinProfile, getUserWallet, loadUserWallet, userWalletTransactions, getFullProfile
+    logout,
+    getMinProfile,
+    getUserWallet,
+    loadUserWallet,
+    userWalletTransactions,
+    getFullProfile,
+    verifyEmail
 }
