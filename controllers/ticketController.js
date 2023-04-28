@@ -203,7 +203,7 @@ async function enterGame(req, res) {
                     ticketgame_id: game_id,
                     ticketowner_id: user_id,
                     ticket_price: game.ticket_price,
-                    invoice_id: invoice_id
+                    invoice_id: "invoice_id"
                 }, { transaction: t })
 
                 tickets.push(ticket.toJSON());
