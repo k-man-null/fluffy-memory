@@ -2,7 +2,6 @@ const User = require('../models/user');
 const Game = require('../models/games');
 const Ticket = require('../models/ticket');
 const sequelize = require('../connection');
-const Inventory = require('../models/inventory');
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);

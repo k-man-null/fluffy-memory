@@ -41,21 +41,23 @@ async function saveUser(req, res) {
 
         // let user;
 
-       const { wallet_id } = await wallets.create({
-            label: `${user_name}`,
-            wallet_type: 'WORKING',
-            currency: 'KES',
-            can_disburse: true
-        })
-        .then((res) => {
-            return res
-        })
-        .catch((err) => {
-            console.log(err)
-            throw new Error("Intasend walet create error");
-        });
+        //TODO : Uncomment in production...to avoid creating unnceccessary wallets
 
-        // const wallet_id = "0XZZQEY"
+    //    const { wallet_id } = await wallets.create({
+    //         label: `${user_name}`,
+    //         wallet_type: 'WORKING',
+    //         currency: 'KES',
+    //         can_disburse: true
+    //     })
+    //     .then((res) => {
+    //         return res
+    //     })
+    //     .catch((err) => {
+    //         console.log(err)
+    //         throw new Error("Intasend walet create error");
+    //     });
+
+        const wallet_id = "0XZZQEY"
 
         const user = await User.create({
             first_name,
