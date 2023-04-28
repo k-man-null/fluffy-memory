@@ -98,6 +98,8 @@ async function saveUser(req, res) {
 
             const field = Object.keys(error.fields)[0];
 
+            console.log(field);
+
             switch (field) {
                 case "user_name":
                     res.status(416).json({
