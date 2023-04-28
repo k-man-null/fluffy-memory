@@ -7,11 +7,11 @@ const { verifyToken } = require("./utils/encryption");
 const cors = require('cors');
 const cookieparser = require('cookie-parser');
 
-// async function start() {
-//     await conn.sync({ force: true });
-// }
+async function start() {
+    await conn.sync({ force: true });
+}
 
-//start()
+start()
 
 
 class UserSkel {

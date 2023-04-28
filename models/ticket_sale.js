@@ -24,10 +24,7 @@ TicketSale.init({
 
 }, { sequelize, modelName: 'TicketSale' });
 
-(async () => {
-    await TicketSale.sync({ alter : true });
-    // Code here
-})();
+
 
 
 module.exports = TicketSale;
