@@ -100,6 +100,8 @@ async function saveUser(req, res) {
 
             console.log(field);
 
+            //TODO: change wallet_id in model to unique true...
+
             switch (field) {
                 case "user_name":
                     res.status(416).json({
