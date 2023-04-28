@@ -193,6 +193,8 @@ async function enterGame(req, res) {
 
             //     });
 
+            //TODO: Get the invice id of the transfer for tranasction reference
+
 
             await game.increment({ tickets_sold: total_tickets }, { transaction: t });
 

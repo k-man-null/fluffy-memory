@@ -80,7 +80,7 @@ async function saveUser(req, res) {
 
     } catch (error) {
 
-        console.log(`Error inside catch2 ${error}`)
+        //console.log(`Error inside catch2 ${error}`)
 
         try {
 
@@ -93,6 +93,8 @@ async function saveUser(req, res) {
         }
 
         if (error.name === 'SequelizeUniqueConstraintError') {
+
+            console.log(error.name);
 
             const field = Object.keys(error.fields)[0];
 
