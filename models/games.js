@@ -88,6 +88,11 @@ Game.hasMany(Ticket, {
     }
 });
 
+(async () => {
+    await Game.sync({ alter : true });
+    // Code here
+})();
+
 // (async () => {
 //     await sequelize.sync({ force: true });
 //     // Code here

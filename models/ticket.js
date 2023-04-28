@@ -28,6 +28,11 @@ Ticket.init({
 
 }, { sequelize, modelName: 'Ticket' });
 
+(async () => {
+    await Ticket.sync({ alter : true });
+    // Code here
+})();
+
 
 
 module.exports = Ticket;

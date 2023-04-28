@@ -104,10 +104,10 @@ User.hasMany(Ticket, {
 
 
 
-// (async () => {
-//     await User.sync({ force: true });
-//     // Code here
-// })();
+(async () => {
+    await User.sync({ alter : true });
+    // Code here
+})();
 
 User.beforeCreate(async (user) => {
     const hashedPassword = await bcrypt.hash(user.password, 10);
