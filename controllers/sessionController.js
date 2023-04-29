@@ -6,6 +6,7 @@ const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 const sequelize = require('../connection');
+const Ticket = require('../models/ticket');
 
 
 async function logout(req, res) {
@@ -24,9 +25,13 @@ async function getMinProfile(req, res) {
 
 async function getWinnerProfile(req, res) {
 
-    const id = req.params.id
+    const winning_ticket_id = req.params.id
 
     try {
+
+        const ticket = await Ticket.findByPk(winning_ticket_id);
+
+        const id = ticket.ticketowner_id;
 
         const data = await User.findByPk(id);
 
