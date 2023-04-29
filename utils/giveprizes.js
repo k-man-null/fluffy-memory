@@ -74,6 +74,8 @@ async function pickWinner(game_id) {
 
 async function endGame() {
 
+    console.log("Cron running");
+
     try {
 
         const result = await sequelize.transaction(async (t) => {
