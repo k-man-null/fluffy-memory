@@ -97,7 +97,9 @@ async function endGame() {
               return gamesPendingCompletion;
         });
 
-        console.table(result);
+        for(let game of result) {
+            console.log(`Game Id: ${game.game_id}`)
+        }
 
         return result;
 
