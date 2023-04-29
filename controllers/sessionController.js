@@ -11,7 +11,7 @@ const sequelize = require('../connection');
 async function logout(req, res) {
 
     return res.status(200)
-        .clearCookie('token', { httpOnly: true })
+        .clearCookie('__session', { httpOnly: true, secure: true, sameSite: 'none' })
         .json({ message: "logged out" })
 
 }
