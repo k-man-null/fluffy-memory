@@ -1,6 +1,6 @@
 const express = require('express');
 const logger = require('morgan');
-// const conn = require('./connection');
+const conn = require('./connection');
 const User = require('./models/user');
 // const { pickWinner } = require('./utils/giveprizes');
 const { verifyToken } = require("./utils/encryption");
@@ -12,7 +12,6 @@ async function start() {
 }
 
 start()
-
 
 class UserSkel {
     constructor(number) {
