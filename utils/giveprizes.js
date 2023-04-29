@@ -13,7 +13,7 @@ function getRandomInt(min, max) {
 }
 
 async function pickWinner(game_id) {
-
+    console.log("Picking Winner");
     try {
 
         const result = await sequelize.transaction(async (t) => {
@@ -66,7 +66,7 @@ async function pickWinner(game_id) {
 
     } catch (error) {
 
-        console.log(error.message)
+        console.log(error)
 
     }
 
@@ -102,7 +102,7 @@ async function endGame() {
 
     } catch (error) {
 
-        console.log(error.message)
+        console.log(error)
 
     }
 
