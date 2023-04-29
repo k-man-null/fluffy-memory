@@ -15,7 +15,8 @@ const {
     userWalletTransactions,
     getFullProfile,
     verifyEmail,
-    uploadAvatar
+    uploadAvatar,
+    getWinnerProfile
 } = require('../controllers/sessionController');
 
 router.get('/logout', logout);
@@ -23,6 +24,8 @@ router.get('/logout', logout);
 router.get('/wallet', getUserWallet);
 
 router.get('/minProfile', getMinProfile);
+
+router.get('/winner/:id', getWinnerProfile);
 
 router.post('/deposit', loadUserWallet);
 

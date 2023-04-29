@@ -22,6 +22,35 @@ async function getMinProfile(req, res) {
 
 }
 
+async function getWinnerProfile(req, res) {
+
+    const id = req.params.id
+
+    try {
+
+        const data = await User.findByPk(id);
+
+        const { user_name, profile_image, first_name, last_name } = data.toJSON();
+
+        return res.status(200).json(
+            {
+                user_name,
+                profile_image,
+                first_name,
+                last_name
+            });
+
+    } catch (error) {
+
+        return res.status(400).json({ message: "User not found" });
+
+
+    }
+
+
+
+}
+
 async function verifyEmail(req, res) {
 
     return res.status(200).json({ message: "Implement Verify email" });
@@ -213,8 +242,8 @@ async function uploadAvatar(req, res) {
 
         // get the current user profile
 
-        await user.update({ profile_image: images[0]}, { transaction: t});
-       
+        await user.update({ profile_image: images[0] }, { transaction: t });
+
         await t.commit();
 
         return res.status(200).json({ message: "Done uploading avatar" });
@@ -239,5 +268,6 @@ module.exports = {
     userWalletTransactions,
     getFullProfile,
     verifyEmail,
-    uploadAvatar
+    uploadAvatar,
+    getWinnerProfile
 }
