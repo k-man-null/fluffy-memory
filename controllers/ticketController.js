@@ -103,6 +103,8 @@ async function enterGame(req, res) {
 
         const { game_id, total_tickets } = req.body;
 
+        
+
         const user_id = req.user.user_id;
 
         //get the user wallet
@@ -136,7 +138,7 @@ async function enterGame(req, res) {
 
             let totalTicketsSold = game.tickets_sold;
 
-            if (totalTicketsSold + total_tickets > ticketsTotal) {
+            if (totalTicketsSold + parseInt(total_tickets) > ticketsTotal) {
 
                 throw new Error("All tickets are sold for this game, please join another")
 
