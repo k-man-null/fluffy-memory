@@ -3,6 +3,8 @@ const Game = require('../models/games');
 const Ticket = require('../models/ticket');
 const sequelize = require('../connection');
 const { Op } = require('sequelize');
+const currentDate = new Date();
+
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
