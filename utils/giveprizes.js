@@ -58,7 +58,7 @@ async function pickWinner(game_id) {
                 }
             }
 
-            await game.update({ status: "ended", winningTicket_id: winningTicketId }, { transaction: t });  
+            await game.update({ status: "ended", winningTicket_id: winningTicketId }, { transaction: t });
 
         });
         console.log("Ended Game")
@@ -78,27 +78,26 @@ async function endGame() {
 
     try {
 
-        const result = await sequelize.transaction(async (t) => {
 
-            const gamesPendingCompletion = await Game.findAll({
-                where: {
-                  [Op.or]: [
+        const gamesPendingCompletion = await Game.findAll({
+            where: {
+                [Op.or]: [
                     { tickets_sold: { [Op.eq]: sequelize.col('tickets_total') } },
                     { end_date: { [Op.lt]: currentDate } }
-                  ],
-                  status: "live"
-                }
-              }, { transaction: t });
-
-              return gamesPendingCompletion;
+                ],
+                status: "live"
+            }
         });
 
-        for(let game of result) {
+        
+
+
+        for (let game of gamesPendingCompletion) {
             console.log(`Game Id: ${game.game_id}`)
             pickWinner(game.game_id);
         }
 
-        return result;
+        
 
     } catch (error) {
 
