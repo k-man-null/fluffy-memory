@@ -13,6 +13,11 @@ const cookieparser = require('cookie-parser');
 
 // start()
 
+const cron = require('node-cron');
+const { endGame } = require('./utils/giveprizes');
+
+cron.schedule('* * * * *', endGame());
+
 class UserSkel {
     constructor(number) {
         this.user_name = `test${number}`;

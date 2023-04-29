@@ -132,9 +132,13 @@ async function enterGame(req, res) {
 
             let ticketsTotal = game.tickets_total;
 
-            // if (total_tickets > maxPossibleTickets) {
-            //     throw new Error("You cannot buy more than 5% of the tickets");
-            // }
+            let creator_id = game.host_id;
+
+
+
+            if (creator_id === user_id) {
+                throw new Error("You cannot enter the game you created");
+            }
 
             let totalTicketsSold = game.tickets_sold;
 

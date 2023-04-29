@@ -2,12 +2,13 @@ const User = require('../models/user');
 const Game = require('../models/games');
 const Ticket = require('../models/ticket');
 const sequelize = require('../connection');
+const { Op } = require('sequelize');
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
-  }
+}
 
 async function pickWinner(game_id) {
 
@@ -17,7 +18,7 @@ async function pickWinner(game_id) {
 
             let game = await Game.findByPk(game_id, { transaction: t });
 
-            if(game.released){
+            if (game.released) {
                 throw new Error("The game has already been drawn")
             }
 
@@ -33,7 +34,7 @@ async function pickWinner(game_id) {
 
             let winningTicket = tickets[randomIndex];
 
-            let winningTicketId = await winningTicket.getDataValue("ticket_id",{ transaction: t })
+            let winningTicketId = await winningTicket.getDataValue("ticket_id", { transaction: t })
 
             await winningTicket.update({ status: "won" }, { transaction: t });
 
@@ -57,8 +58,8 @@ async function pickWinner(game_id) {
 
             await hostWallet.increment({ cash: hostTakeAway }, { transaction: t });
 
-            for( let ticket of tickets) {
-                if(ticket.ticket_id != winningTicketId) {
+            for (let ticket of tickets) {
+                if (ticket.ticket_id != winningTicketId) {
                     await ticket.update({ status: "lost" }, { transaction: t });
                 }
             }
@@ -75,4 +76,35 @@ async function pickWinner(game_id) {
 
 }
 
-module.exports = { pickWinner };
+async function endGame() {
+
+    try {
+
+        const result = await sequelize.transaction(async (t) => {
+
+            const gamesPendingCompletion = await Game.findAll({
+                where: {
+                  [Op.or]: [
+                    { tickets_sold: { [Op.eq]: sequelize.col('tickets_total') } },
+                    { end_date: { [Op.lt]: currentDate } }
+                  ],
+                  released: false
+                }
+              }, { transaction: t });
+
+              return gamesPendingCompletion;
+        });
+
+        console.table(result);
+
+        return result;
+
+    } catch (error) {
+
+        console.log(error.message)
+
+    }
+
+}
+
+module.exports = { pickWinner, endGame };
