@@ -20,15 +20,15 @@ async function pickWinner(game_id) {
 
             let game = await Game.findByPk(game_id, { transaction: t });
 
-            if (game.released) {
+            if (game.status === 'ended') {
                 throw new Error("The game has already been drawn")
             }
 
             let totalTicketsSold = await game.getDataValue("tickets_sold", { transaction: t });
 
-            let ticketPrice = await game.getDataValue("ticket_price", { transaction: t });
+            //let ticketPrice = await game.getDataValue("ticket_price", { transaction: t });
 
-            let hostId = await game.getDataValue("host_id", { transaction: t });
+            //let hostId = await game.getDataValue("host_id", { transaction: t });
 
             let tickets = await game.getTickets({ transaction: t });
 
@@ -40,25 +40,17 @@ async function pickWinner(game_id) {
 
             await winningTicket.update({ status: "won" }, { transaction: t });
 
-            let winnerId = winningTicket.getDataValue("ticketowner_id", { transaction: t });
+            //let winnerId = winningTicket.getDataValue("ticketowner_id", { transaction: t });
 
-            let winner = await User.findByPk(winnerId, { transaction: t });
+            // let cashPrize = totalTicketsSold * ticketPrice;
 
-            let host = await User.findByPk(hostId, { transaction: t });
+            // let winnerTakeWay = 0.7 * cashPrize;
 
-            let winnerWallet = await winner.getInventory({ transaction: t });
+            // let hostTakeAway = 0.2 * cashPrize;
 
-            let hostWallet = await host.getInventory({ transaction: t });
+            // await winnerWallet.increment({ cash: winnerTakeWay }, { transaction: t });
 
-            let cashPrize = totalTicketsSold * ticketPrice;
-
-            let winnerTakeWay = 0.7 * cashPrize;
-
-            let hostTakeAway = 0.2 * cashPrize;
-
-            await winnerWallet.increment({ cash: winnerTakeWay }, { transaction: t });
-
-            await hostWallet.increment({ cash: hostTakeAway }, { transaction: t });
+            // await hostWallet.increment({ cash: hostTakeAway }, { transaction: t });
 
             for (let ticket of tickets) {
                 if (ticket.ticket_id != winningTicketId) {
@@ -66,9 +58,11 @@ async function pickWinner(game_id) {
                 }
             }
 
-            await game.update({ status: "ended", released: true, winningTicket_id: winningTicketId }, { transaction: t });
+            await game.update({ status: "ended", winningTicket_id: winningTicketId }, { transaction: t });  
 
         });
+        console.log("Ended Game")
+        return result;
 
     } catch (error) {
 
@@ -90,7 +84,7 @@ async function endGame() {
                     { tickets_sold: { [Op.eq]: sequelize.col('tickets_total') } },
                     { end_date: { [Op.lt]: currentDate } }
                   ],
-                  released: false
+                  status: "live"
                 }
               }, { transaction: t });
 
@@ -99,6 +93,7 @@ async function endGame() {
 
         for(let game of result) {
             console.log(`Game Id: ${game.game_id}`)
+            pickWinner(game.game_id);
         }
 
         return result;
