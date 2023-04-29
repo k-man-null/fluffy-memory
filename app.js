@@ -1,17 +1,17 @@
 const express = require('express');
 const logger = require('morgan');
-const conn = require('./connection');
+// const conn = require('./connection');
 const User = require('./models/user');
 // const { pickWinner } = require('./utils/giveprizes');
 const { verifyToken } = require("./utils/encryption");
 const cors = require('cors');
 const cookieparser = require('cookie-parser');
 
-async function start() {
-    await conn.sync({ force: true });
-}
+// async function start() {
+//     await conn.sync({ force: true });
+// }
 
-start()
+// start()
 
 class UserSkel {
     constructor(number) {
