@@ -259,7 +259,7 @@ async function getAllGames(req, res) {
 
         const games = gamesSnapshot.docs.map((doc) => {
             const data = doc.data();
-            const endDate = data.end_date.toDate().toISOString();
+            const endDate = new Date(data.end_date._seconds * 1000).toISOString();
 
             return {
                 id: doc.id,
@@ -267,6 +267,7 @@ async function getAllGames(req, res) {
                 end_date: endDate
             };
         });
+
 
         return res.status(200).json(games);
 
