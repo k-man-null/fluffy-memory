@@ -84,13 +84,17 @@ async function getUserWallet(req, res) {
 
         const id = req.user.user_id;
 
-        const user = await User.findByPk(id);
+        const wallet_id = req.user.wallet_id;
 
-        if (!user) {
+        const usersCollection = db.collection('users');
+
+        const userDocRef = await usersCollection.doc(id);
+
+        const user = await userDocRef.get();
+
+        if (!user.exists) {
             return res.status(400).json({ message: `User not found` });
         }
-
-        const wallet_id = user.getDataValue("wallet_id");
 
         let intasend;
 
