@@ -1,11 +1,11 @@
 const User = require('../models/user');
 const IntaSend = require('intasend-node');
+const db = require('../firebase');
 const { uploadFromMemory } = require("../controllers/gameController");
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
-const sequelize = require('../connection');
 const Ticket = require('../models/ticket');
 
 async function logout(req, res) {
