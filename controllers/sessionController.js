@@ -77,7 +77,7 @@ async function getFullProfile(req, res) {
             throw new Error("User not found")  // or throw an error
         }
 
-        const userData = querySnapshot.docs[0].data();
+        const userData = user.docs[0].data();
 
 
         const full_profile = {
