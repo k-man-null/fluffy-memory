@@ -258,7 +258,12 @@ async function getAllGames(req, res) {
         }
 
         const games = gamesSnapshot.docs.map((doc) => {
-            return { id: doc.id, ...doc.data() };
+            const data = doc.data();
+            return {
+                id: doc.id,
+                ...data,
+                end_date: new Date(data.end_date._seconds * 1000).toISOString()
+            };
         });
 
         return res.status(200).json(games);
