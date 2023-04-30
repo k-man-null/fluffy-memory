@@ -61,7 +61,7 @@ async function createGame(req, res) {
         } = { ...req.body };
 
         game.host_id = req.user.user_id;
-        game.EndDate =  Timestamp.fromDate(new Date(game.EndDate));
+        game.EndDate = Timestamp.fromDate(new Date(game.EndDate));
 
         /**
          * The sweet code here was before I picked google cloud storage 
@@ -136,7 +136,7 @@ async function createGame(req, res) {
         return res.status(200).json({ done: "Success" });
 
     } catch (error) {
-        
+
         return res.status(400).send("Error creating the competition");
     }
 
@@ -251,11 +251,16 @@ async function getAllGames(req, res) {
 
     try {
 
-        const games = await db.collection('games').get();
+        const gamesSnapshot = await db.collection('games').get();
 
-        if (games === null) {
+        if (gamesSnapshot.empty) {
             return res.status(400).json({ message: "No games found" });
         }
+
+        const games = gamesSnapshot.docs.map((doc) => {
+            return { id: doc.id, ...doc.data() };
+        });
+
         return res.status(200).json(games);
 
     } catch (error) {
