@@ -1,15 +1,9 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-const sequelize = require('../connection');
 const jwt = require('jsonwebtoken');
 const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
-const IntaSend = require('intasend-node');
 const db = require('../firebase');
 const { Timestamp } = require('firebase-admin/firestore');
-
-
-const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
-const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 async function saveUser(req, res) {
 
@@ -205,6 +199,8 @@ async function loginUser(req, res) {
 }
 
 async function changePassword(req, res) {
+
+    //TODO: migrate
 
     try {
 

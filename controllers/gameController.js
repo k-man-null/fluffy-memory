@@ -2,6 +2,8 @@ const Game = require('../models/games');
 const User = require('../models/user');
 
 const sequelize = require('../connection');
+const db = require("../firebase");
+const { Timestamp } = require('firebase-admin/firestore');
 
 const { Storage } = require('@google-cloud/storage');
 const storage = new Storage();
@@ -44,8 +46,6 @@ function uploadFromMemory(file) {
 
 async function createGame(req, res) {
 
-    let t;
-
     try {
 
         const game = {
@@ -61,9 +61,7 @@ async function createGame(req, res) {
         } = { ...req.body };
 
         game.host_id = req.user.user_id;
-        game.EndDate = new Date(game.EndDate);
-
-        t = await sequelize.transaction();
+        game.EndDate =  Timestamp.fromDate(new Date(game.EndDate));
 
         /**
          * The sweet code here was before I picked google cloud storage 
@@ -114,30 +112,31 @@ async function createGame(req, res) {
         const images = await Promise.all(imageUploadPromises);
 
         // Create game in the database
-        const new_game = await Game.create(
-            {
-                title: game.title,
-                game_description: game.description,
-                prize_description: game.PrizeDescription,
-                ticket_price: game.TicketPrice,
-                tickets_total: game.TotalTickets,
-                delivery: game.Delivery,
-                end_date: game.EndDate,
-                host_id: game.host_id,
-                prize_images: images,
-            },
-            { transaction: t }
-        );
-
-        await t.commit();
-
-        return res.status(200).json({ done: new_game });
-
-    } catch (error) {
-        if (t && t.finished !== 'commit') {
-            await t.rollback();
+        const new_game_data =
+        {
+            title: game.title,
+            game_description: game.description,
+            prize_description: game.PrizeDescription,
+            ticket_price: game.TicketPrice,
+            tickets_total: game.TotalTickets,
+            delivery: game.Delivery,
+            end_date: game.EndDate,
+            host_id: game.host_id,
+            prize_images: images,
+            tickets_sold: 0,
+            status: "live",
+            released: false,
+            winningTicket_id: null,
+            release_transaction_id: null,
+            closed_date: null
         }
 
+        await db.collection('games').add(new_game_data);
+
+        return res.status(200).json({ done: "Success" });
+
+    } catch (error) {
+        
         return res.status(400).send("Error creating the competition");
     }
 
@@ -149,12 +148,13 @@ async function getGame(req, res) {
 
         const id = req.params.id;
 
-        const game = await Game.findByPk(id);
+        const game = await db.collection("games").doc(id).get();
 
-        if (game === null) {
+
+        if (!game.exists) {
             return res.status(400).json({ message: "Game not found" });
         }
-        return res.status(200).json(game);
+        return res.status(200).json(game.data());
 
     } catch (error) {
 
