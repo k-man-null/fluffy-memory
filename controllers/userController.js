@@ -99,7 +99,7 @@ async function saveUser(req, res) {
 
     } catch (error) {
 
-        switch (error.name) {
+        switch (error.message) {
             case "Username":
                 res.status(416).json({
                     error: {
