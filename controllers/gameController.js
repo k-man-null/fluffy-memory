@@ -251,7 +251,7 @@ async function getAllGames(req, res) {
 
     try {
 
-        const games = await Game.findAll();
+        const games = await db.collection('games').get();
 
         if (games === null) {
             return res.status(400).json({ message: "No games found" });
