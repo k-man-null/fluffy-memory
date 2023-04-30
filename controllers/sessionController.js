@@ -8,7 +8,6 @@ const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 const sequelize = require('../connection');
 const Ticket = require('../models/ticket');
 
-
 async function logout(req, res) {
 
     return res.status(200)
@@ -75,10 +74,7 @@ async function getFullProfile(req, res) {
     } catch (error) {
         return res.status(400).json({ message: "User not found" });
 
-
     }
-
-
 
 }
 
@@ -131,8 +127,78 @@ async function getUserWallet(req, res) {
 
 }
 
-async function loadUserWallet(req, res) {
+async function createUserWallet(req, res) {
 
+    try {
+
+        const id = req.user.user_id;
+
+        const user_name = req.user.user_name;
+
+        const usersCollection = db.collection('users');
+
+        const userDocRef = await usersCollection.doc(id);
+
+        const user = await userDocRef.get();
+
+        if (!user.exists) {
+            return res.status(400).json({ message: `User not found` });
+        }
+
+        // let intasend;
+
+        // if (intasendPublishable && intasendSecret) {
+
+        //     intasend = new IntaSend(
+        //         null,
+        //         intasendSecret,
+        //         false
+        //     );
+        // }
+
+        // let wallets = intasend.wallets();
+
+        // let user;
+
+        //TODO : Uncomment in production...to avoid creating unnceccessary wallets
+
+        //    const { wallet_id } = await wallets.create({
+        //         label: `${user_name}`,
+        //         wallet_type: 'WORKING',
+        //         currency: 'KES',
+        //         can_disburse: true
+        //     })
+        //     .then((res) => {
+        //         return res
+        //     })
+        //     .catch((err) => {
+        //         console.log(err)
+        //         throw new Error("Intasend wallet create error");
+        //     });
+
+        // const wallet_id = "0XZZQEY"
+
+        const updateData = { wallet_id: 'new_wallet_id_value' };
+        await userDocRef.set(updateData, { merge: true });
+
+        return res.status(200).json({
+            
+            message: `User wallet for ${user_name} created`
+        });
+
+
+    } catch (error) {
+
+        console.log(`Error wallet inside catch2 ${error}`)
+
+        res.status(500).send("Internal server error");
+
+    }
+
+}
+
+
+async function loadUserWallet(req, res) {
 
     try {
 
@@ -188,7 +254,6 @@ async function userWalletTransactions(req, res) {
 
     try {
 
-
         const wallet_id = req.user.wallet_id;
 
         let intasend;
@@ -228,14 +293,13 @@ async function userWalletTransactions(req, res) {
 
 async function uploadAvatar(req, res) {
 
-    let t;
-
     try {
 
+        const id = req.body.user_id;
 
-        t = await sequelize.transaction();
+        const usersCollection = db.collection('users');
 
-        const user = await User.findByPk(req.user.user_id, { transaction: t });
+        const userDocRef = await usersCollection.doc(id);
 
         const imageUploadPromises = req.files.avatar.map((file) => {
 
@@ -245,19 +309,14 @@ async function uploadAvatar(req, res) {
 
         const images = await Promise.all(imageUploadPromises);
 
-        // get the current user profile
+        const updateData = { profile_image: images[0] };
 
-        await user.update({ profile_image: images[0] }, { transaction: t });
-
-        await t.commit();
+        await userDocRef.set(updateData, { merge: true });
 
         return res.status(200).json({ message: "Done uploading avatar" });
 
     } catch (error) {
-        if (t && t.finished !== 'commit') {
-            await t.rollback();
-        }
-
+       
         console.log(error);
 
         return res.status(400).send("Error uploading avatar");
@@ -274,5 +333,6 @@ module.exports = {
     getFullProfile,
     verifyEmail,
     uploadAvatar,
-    getWinnerProfile
+    getWinnerProfile,
+    createUserWallet
 }

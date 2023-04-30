@@ -165,6 +165,8 @@ async function loginUser(req, res) {
         
         const { password:userpass, ...userWithoutPassword } = userData;
 
+        userWithoutPassword.user_id = existingUser.docs[0].id;
+
         if (correctUser) {
 
             jwt.sign(userWithoutPassword,
