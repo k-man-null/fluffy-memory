@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
 const IntaSend = require('intasend-node');
 const db  = require('../firebase');
+const { Timestamp} = require('firebase-admin/firestore');
+
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
@@ -49,7 +51,7 @@ async function saveUser(req, res) {
             email,
             phone,
             password: hashedPassword,
-            created_at: firebase.firestore.Timestamp.now(),
+            created_at: Timestamp.now(),
         });
 
         const newUser = await newUserRef.get();
