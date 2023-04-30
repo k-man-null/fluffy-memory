@@ -4,8 +4,8 @@ const sequelize = require('../connection');
 const jwt = require('jsonwebtoken');
 const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
 const IntaSend = require('intasend-node');
-const db  = require('../firebase');
-const { Timestamp} = require('firebase-admin/firestore');
+const db = require('../firebase');
+const { Timestamp } = require('firebase-admin/firestore');
 
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
@@ -32,13 +32,13 @@ async function saveUser(req, res) {
         const existingPhone = await usersCollection.where('phone', '==', phone).get();
 
         if (!existingUser.empty) {
-            throw new Error('Username must be unique');
+            throw new Error('Username');
         }
         if (!existingEmail.empty) {
-            throw new Error('Email must be unique');
+            throw new Error('Email');
         }
         if (!existingPhone.empty) {
-            throw new Error('Phone must be unique');
+            throw new Error('Phone');
         }
 
 
@@ -91,7 +91,7 @@ async function saveUser(req, res) {
 
         // const wallet_id = "0XZZQEY"
 
-    
+
         return res.status(200).json({
             user: newUserData
         });
@@ -99,7 +99,40 @@ async function saveUser(req, res) {
 
     } catch (error) {
 
-        console.log(error);
+        switch (error.name) {
+            case "Username":
+                res.status(416).json({
+                    error: {
+                        type: "UniqueConstraint",
+                        field: "user_name",
+                        message: "Username is already taken, try another one"
+                    }
+                });
+                break;
+
+            case "Email":
+                res.status(416).json({
+                    error: {
+                        type: "UniqueConstraint",
+                        field: "email",
+                        message: "There is a user with the same email, please make sure the email is correct"
+                    }
+                });
+                break;
+
+            case "Phone":
+                res.status(416).json({
+                    error: {
+                        type: "UniqueConstraint",
+                        field: "phone",
+                        message: "Phone Number is already taken, try another one"
+                    }
+                });
+                break;
+
+            default:
+                break;
+        }
 
     }
 
