@@ -30,13 +30,13 @@ async function pickWinner(game_id) {
 
             //let hostId = await game.getDataValue("host_id", { transaction: t });
 
-            let tickets = await game.getTickets({ transaction: t });
+            let tickets = await game.getTickets();
 
             let randomIndex = getRandomInt(0, totalTicketsSold);
 
             let winningTicket = tickets[randomIndex];
 
-            let winningTicketId = await winningTicket.getDataValue("ticket_id", { transaction: t })
+            let winningTicketId = await winningTicket.getDataValue("ticket_id")
 
             await winningTicket.update({ status: "won" }, { transaction: t });
 
@@ -54,7 +54,7 @@ async function pickWinner(game_id) {
 
             for (let ticket of tickets) {
                 if (ticket.ticket_id != winningTicketId) {
-                    await ticket.update({ status: "lost" }, { transaction: t });
+                    await ticket.update({ status: "lost" });
                 }
             }
 
