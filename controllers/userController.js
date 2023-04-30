@@ -150,17 +150,14 @@ async function loginUser(req, res) {
 
         const existingUser = await usersCollection.where('email', '==', email).get();
 
-        if (!existingUser.empty) {
+        if (existingUser.empty) {
             return res.status(417).json({
                 field: "email",
                 message: `User with email ${email} not found`
             });
         }
 
-
         const userPassword = existingUser.docs[0].data().password;
-
-        
 
         const correctUser = await bcrypt.compare(password, userPassword);
 
@@ -196,8 +193,6 @@ async function loginUser(req, res) {
         }
 
     } catch (error) {
-
-        console.log(error)
 
         res.status(500).send("Internal server error");
 
