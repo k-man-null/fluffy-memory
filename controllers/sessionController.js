@@ -65,14 +65,37 @@ async function getFullProfile(req, res) {
 
     try {
 
-        const user = await User.findByPk(req.user.user_id);
+        const id = req.user.user_id;
 
-        const full_profile = user.getFullUser();
+        const usersCollection = db.collection('users');
+
+        const userDocRef = await usersCollection.doc(id);
+
+        const user = await userDocRef.get();
+
+        if (user.empty) {
+            throw new Error("User not found")  // or throw an error
+        }
+
+        const userData = querySnapshot.docs[0].data();
+
+
+        const full_profile = {
+            user_id: req.user.user_id,
+            user_name: userData.user_name,
+            email: userData.email,
+            phone_number: userData.phone,
+            wallet_id: userData.wallet_id,
+            full_name: `${userData.first_name} ${userData.last_name}`,
+            avatar: userData.avatar,
+            verified: userData.verified
+        };
+
 
         return res.status(200).json(full_profile);
 
     } catch (error) {
-        return res.status(400).json({ message: "User not found" });
+        return res.status(400).json({ message: error.message });
 
     }
 
@@ -186,7 +209,7 @@ async function createUserWallet(req, res) {
         await userDocRef.set(updateData, { merge: true });
 
         return res.status(200).json({
-            
+
             message: `User wallet for ${user_name} created`
         });
 
@@ -320,7 +343,7 @@ async function uploadAvatar(req, res) {
         return res.status(200).json({ message: "Done uploading avatar" });
 
     } catch (error) {
-       
+
         console.log(error);
 
         return res.status(400).send("Error uploading avatar");

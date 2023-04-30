@@ -52,6 +52,8 @@ async function saveUser(req, res) {
             phone,
             password: hashedPassword,
             created_at: Timestamp.now(),
+            verified: false,
+            avatar: ""
         });
 
         const newUser = await newUserRef.get();
