@@ -144,20 +144,29 @@ async function loginUser(req, res) {
 
         const { email, password } = req.body;
 
-        const user = await User.findOne({ where: { email: email } });
+        // const user = await User.findOne({ where: { email: email } });
 
-        if (!user) {
+        const usersCollection = db.collection('users');
+
+        const existingUser = await usersCollection.where('email', '==', email).get();
+
+        if (!existingUser.empty) {
             return res.status(417).json({
                 field: "email",
                 message: `User with email ${email} not found`
             });
         }
 
-        const userPassword = await user.password
+
+        const userPassword = existingUser.docs[0].data().password;
+
+        
 
         const correctUser = await bcrypt.compare(password, userPassword);
 
-        const userWithoutPassword = user.getUserWithoutPassword();
+        const userData = existingUser.docs[0].data();
+        
+        const { password:userpass, ...userWithoutPassword } = userData;
 
         if (correctUser) {
 
