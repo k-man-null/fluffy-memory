@@ -4,7 +4,7 @@ const sequelize = require('../connection');
 const jwt = require('jsonwebtoken');
 const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
 const IntaSend = require('intasend-node');
-const { db } = require('../firebase');
+const db  = require('../firebase');
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
