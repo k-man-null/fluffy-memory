@@ -18,13 +18,13 @@ async function pickWinner(game_id) {
 
         const result = await sequelize.transaction(async (t) => {
 
-            let game = await Game.findByPk(game_id, { transaction: t });
+            let game = await Game.findByPk(game_id);
 
             if (game.status === 'ended') {
                 throw new Error("The game has already been drawn")
             }
 
-            let totalTicketsSold = await game.getDataValue("tickets_sold", { transaction: t });
+            let totalTicketsSold = await game.getDataValue("tickets_sold");
 
             //let ticketPrice = await game.getDataValue("ticket_price", { transaction: t });
 
@@ -62,6 +62,7 @@ async function pickWinner(game_id) {
 
         });
         console.log("Ended Game")
+
         return result;
 
     } catch (error) {
@@ -75,6 +76,9 @@ async function pickWinner(game_id) {
 async function endGame() {
 
     console.log("Cron running");
+
+
+    //TODO : Push into task cue for processing...if the game is not already on the queue.
 
     try {
 
@@ -90,8 +94,6 @@ async function endGame() {
         });
 
         
-
-
         for (let game of gamesPendingCompletion) {
             console.log(`Game Id: ${game.game_id}`)
             pickWinner(game.game_id);

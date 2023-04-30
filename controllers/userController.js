@@ -4,6 +4,7 @@ const sequelize = require('../connection');
 const jwt = require('jsonwebtoken');
 const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
 const IntaSend = require('intasend-node');
+const { db } = require('../firebase');
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
@@ -18,128 +19,85 @@ async function saveUser(req, res) {
      * to secure the email, somehow send a token to ensure it comes from us
      */
 
-    let t;
-
     try {
 
         const { first_name, last_name, user_name, email, phone, password } = req.body;
 
-        t = await sequelize.transaction();
+        const usersCollection = db.collection('users');
 
-        let intasend;
+        const existingUser = await usersCollection.where('user_name', '==', user_name).get();
+        const existingEmail = await usersCollection.where('email', '==', email).get();
+        const existingPhone = await usersCollection.where('phone', '==', phone).get();
 
-        if (intasendPublishable && intasendSecret) {
-
-            intasend = new IntaSend(
-                null,
-                intasendSecret,
-                false
-            );
+        if (!existingUser.empty) {
+            throw new Error('Username must be unique');
+        }
+        if (!existingEmail.empty) {
+            throw new Error('Email must be unique');
+        }
+        if (!existingPhone.empty) {
+            throw new Error('Phone must be unique');
         }
 
-        let wallets = intasend.wallets();
 
-        // let user;
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        //TODO : Uncomment in production...to avoid creating unnceccessary wallets
-
-    //    const { wallet_id } = await wallets.create({
-    //         label: `${user_name}`,
-    //         wallet_type: 'WORKING',
-    //         currency: 'KES',
-    //         can_disburse: true
-    //     })
-    //     .then((res) => {
-    //         return res
-    //     })
-    //     .catch((err) => {
-    //         console.log(err)
-    //         throw new Error("Intasend walet create error");
-    //     });
-
-        const wallet_id = "0XZZQEY"
-
-        const user = await User.create({
+        const newUserRef = await usersCollection.add({
             first_name,
             last_name,
             user_name,
             email,
             phone,
-            password,
-            wallet_id
-        }, { transaction: t });
+            password: hashedPassword,
+            created_at: firebase.firestore.Timestamp.now(),
+        });
 
-        const userWithoutPassword = user.getUserWithoutPassword();
+        const newUser = await newUserRef.get();
+        const newUserData = newUser.data();
 
-            await t.commit();
 
-            return res.status(200).json({
-                user: userWithoutPassword
-            });
+        // let intasend;
+
+        // if (intasendPublishable && intasendSecret) {
+
+        //     intasend = new IntaSend(
+        //         null,
+        //         intasendSecret,
+        //         false
+        //     );
+        // }
+
+        // let wallets = intasend.wallets();
+
+        // let user;
+
+        //TODO : Uncomment in production...to avoid creating unnceccessary wallets
+
+        //    const { wallet_id } = await wallets.create({
+        //         label: `${user_name}`,
+        //         wallet_type: 'WORKING',
+        //         currency: 'KES',
+        //         can_disburse: true
+        //     })
+        //     .then((res) => {
+        //         return res
+        //     })
+        //     .catch((err) => {
+        //         console.log(err)
+        //         throw new Error("Intasend walet create error");
+        //     });
+
+        // const wallet_id = "0XZZQEY"
+
+    
+        return res.status(200).json({
+            user: newUserData
+        });
 
 
     } catch (error) {
 
-        //console.log(`Error inside catch2 ${error}`)
-
-        try {
-
-            await t.rollback();
-
-        } catch (error) {
-
-            console.error("The database is not connected");
-
-        }
-
-        if (error.name === 'SequelizeUniqueConstraintError') {
-
-            console.log(error.name);
-
-            const field = Object.keys(error.fields)[0];
-
-            console.log(field);
-
-            //TODO: change wallet_id in model to unique true...
-
-            switch (field) {
-                case "user_name":
-                    res.status(416).json({
-                        error: {
-                            type: "UniqueConstraint",
-                            field: "user_name",
-                            message: "Username is already taken, try another one"
-                        }
-                    });
-                    break;
-
-                case "email":
-                    res.status(416).json({
-                        error: {
-                            type: "UniqueConstraint",
-                            field: "email",
-                            message: "There is a user with the same email, please make sure the email is correct"
-                        }
-                    });
-                    break;
-
-                case "phone":
-                    res.status(416).json({
-                        error: {
-                            type: "UniqueConstraint",
-                            field: "phone",
-                            message: "Phone Number is already taken, try another one"
-                        }
-                    });
-                    break;
-
-                default:
-                    break;
-            }
-        } else {
-            return res.sendStatus(500);
-        }
-
+        console.log(error);
 
     }
 
