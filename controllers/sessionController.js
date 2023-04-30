@@ -24,6 +24,8 @@ async function getMinProfile(req, res) {
 
 async function getWinnerProfile(req, res) {
 
+    //TODO: migrate
+
     const winning_ticket_id = req.params.id
 
     try {
@@ -77,7 +79,7 @@ async function getFullProfile(req, res) {
             throw new Error("User not found")  // or throw an error
         }
 
-        const userData = user.docs[0].data();
+        const userData = user.data();
 
 
         const full_profile = {
@@ -155,6 +157,8 @@ async function getUserWallet(req, res) {
 }
 
 async function createUserWallet(req, res) {
+
+    //TODO: migrate
 
     try {
 
