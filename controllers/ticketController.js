@@ -135,7 +135,6 @@ async function enterGame(req, res) {
         const result = await db.runTransaction(async (transaction) => {
             const gameDoc = await transaction.get(gameRef);
 
-
             const creator_id = gameDoc.data().host_id;
             const ticketsTotal = gameDoc.data().tickets_total;
             const totalTicketsSold = gameDoc.data().tickets_sold;
@@ -218,7 +217,7 @@ async function enterGame(req, res) {
 
 
             for (let i = 0; i < newTicketsSold; i++) {
-                transaction.add(ticketsCollectionRef, {
+                transaction.set(ticketsCollectionRef, {
                     ticket_owner_username: user_name,
                     ticketowner_id: user_id,
                     avatar: avatar,
