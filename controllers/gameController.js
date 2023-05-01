@@ -154,13 +154,10 @@ async function getGame(req, res) {
             return res.status(400).json({ message: "Game not found" });
         }
 
-        const data = gameSnapshot.doc();
-
-        const endDate = new Date(data.end_date._seconds * 1000).toISOString();
+        const data = gameSnapshot.data();
 
         const gameFormatted = {
             game_id: data.id,
-            end_data: endDate,
             ...data
         }
 
@@ -261,7 +258,6 @@ async function getAllGames(req, res) {
 
     //TODO: paginate due to the possible large response size
 
-
     try {
 
         const gamesSnapshot = await db.collection('games').get();
@@ -274,10 +270,11 @@ async function getAllGames(req, res) {
             const data = doc.data();
             const endDate = new Date(data.end_date._seconds * 1000).toISOString();
 
+            console.log(data.end_date)
             return {
                 game_id: doc.id,
-                end_date: endDate,
                 ...data,
+                end_data: endDate
             };
         });
 
