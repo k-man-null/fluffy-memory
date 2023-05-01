@@ -129,7 +129,7 @@ async function enterGame(req, res) {
 
 
         const gameRef = db.collection('games').doc(game_id);
-        const ticketsCollectionRef = gameRef.collection('tickets');
+        const ticketsCollectionRef = gameRef.collection('tickets').doc();
 
 
         const result = await db.runTransaction(async (transaction) => {
