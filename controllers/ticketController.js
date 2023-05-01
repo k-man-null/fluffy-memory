@@ -222,7 +222,7 @@ async function enterGame(req, res) {
                     ticket_owner_username: user_name,
                     ticketowner_id: user_id,
                     avatar: avatar,
-                    ticket_price: game.ticket_price,
+                    ticket_price: ticketPrice,
                     invoice_id: "invoice_id",
                     status: "live"
                 })
