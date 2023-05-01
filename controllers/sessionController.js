@@ -328,9 +328,9 @@ async function uploadAvatar(req, res) {
 
         const id = req.body.user_id;
 
-        const usersCollection = db.collection('users');
+        console.log(`ID ${id}`)
 
-        const userDocRef = usersCollection.doc(id);
+        const userDocRef = db.collection('users').doc(id);
 
         const imageUploadPromises = req.files.avatar.map((file) => {
 
