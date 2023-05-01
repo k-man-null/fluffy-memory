@@ -27,8 +27,14 @@ function uploadFromMemory(file) {
     const uploadfilename = `${uploadFolderName}/${uniqueId}${fileExtension}`;
     const servefilename = `${serveFolderName}/${uniqueId}.webp`;
 
+    const metadata = {
+        metadata: {
+            type: file.fieldname
+        }
+    }
 
-    return storage.bucket(bucketName).file(uploadfilename).save(file.buffer).then(() => {
+
+    return storage.bucket(bucketName).file(uploadfilename).save(file.buffer, { metadata }).then(() => {
 
         const publicUrl = `https://storage.googleapis.com/${bucketName}/${servefilename}`;
 
