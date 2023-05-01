@@ -207,9 +207,9 @@ async function enterGame(req, res) {
 
             //TODO: Get the invice id of the transfer for tranasction reference
 
-            if (!chargeSuccessful) {
-                throw new Error(`Charge failed for wallet ${wallet_id}`);
-            }
+            // if (!chargeSuccessful) {
+            //     throw new Error(`Charge failed for wallet ${wallet_id}`);
+            // }
 
             const newTicketsSold = totalTicketsSold + parseInt(total_tickets);
             transaction.update(gameRef, {
