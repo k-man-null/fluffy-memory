@@ -330,7 +330,7 @@ async function uploadAvatar(req, res) {
 
         const usersCollection = db.collection('users');
 
-        const userDocRef = await usersCollection.doc(id);
+        const userDocRef = usersCollection.doc(id);
 
         const imageUploadPromises = req.files.avatar.map((file) => {
 
@@ -342,9 +342,9 @@ async function uploadAvatar(req, res) {
 
         const images = await Promise.all(imageUploadPromises);
 
-        const updateData = { profile_image: images[0] };
+        const updateData = { avatar: images[0] };
 
-        await userDocRef.set(updateData, { merge: true });
+        await userDocRef.update(updateData);
 
         return res.status(200).json({ message: "Done uploading avatar" });
 
