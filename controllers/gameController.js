@@ -147,13 +147,26 @@ async function getGame(req, res) {
 
         const id = req.params.id;
 
-        const game = await db.collection("games").doc(id).get();
+        const gameSnapshot = await db.collection("games").doc(id).get();
 
 
-        if (!game.exists) {
+        if (!gameSnapshot.exists) {
             return res.status(400).json({ message: "Game not found" });
         }
-        return res.status(200).json(game.data());
+
+        const data = gameSnapshot.doc();
+
+        const endDate = new Date(data.end_date._seconds * 1000).toISOString();
+
+        const gameFormatted = {
+            game_id: data.id,
+            end_data: endDate,
+            ...data
+        }
+
+        return res.status(200).json(
+                gameFormatted
+            );
 
     } catch (error) {
 
@@ -262,8 +275,8 @@ async function getAllGames(req, res) {
 
             return {
                 game_id: doc.id,
+                end_date: endDate,
                 ...data,
-                end_date: endDate
             };
         });
 
