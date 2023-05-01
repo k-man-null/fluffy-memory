@@ -214,15 +214,13 @@ async function getMyLiveGames(req, res) {
 
         const id = req.user.user_id;
 
-        console.log(id);
-
         const gamesRef = db.collection('games');
-        const query = gamesRef.where('host_id', '==', `${id}`).where('status', '==', 'live');
+        const query = gamesRef.where('host_id', '==', id).where('status', '==', 'live');
         const querySnapshot = await query.get();
 
         
 
-        if (!querySnapshot.exists) {
+        if (querySnapshot.empty) {
             return res.status(400).json({ message: "You have no live games" });
         }
 
@@ -258,7 +256,7 @@ async function getMyEndedGames(req, res) {
         const querySnapshot = await query.get();
 
 
-        if (!querySnapshot.exists) {
+        if (querySnapshot.empty) {
             return res.status(400).json({ message: "You have no ended games" });
         }
 
