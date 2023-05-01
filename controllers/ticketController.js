@@ -1,12 +1,13 @@
 const User = require('../models/user');
 const Game = require('../models/games');
 const Ticket = require('../models/ticket');
-const sequelize = require('../connection');
+const db = require('../firebase');
 
 const IntaSend = require('intasend-node');
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
+const MAX_TICKETS_PER_TRANSACTION = 300;
 
 async function getMytickets(req, res) {
 
@@ -103,9 +104,12 @@ async function enterGame(req, res) {
 
         const { game_id, total_tickets } = req.body;
 
-        
 
         const user_id = req.user.user_id;
+        const user_name = req.user.user_name;
+        const avatar = req.user.avatar;
+        const wallet_id = req.user.wallet_id;
+
 
         //get the user wallet
 
@@ -124,33 +128,33 @@ async function enterGame(req, res) {
         //TODO: also include notify to firebase to communicate with game creatores that the user has purcahed tickets.
 
 
-        const result = await sequelize.transaction(async (t) => {
+        const gameRef = db.collection('games').doc(game_id);
+        const ticketsCollectionRef = gameRef.collection('tickets');
 
-            let game = await Game.findByPk(game_id, { lock: true, transaction: t });
 
-            const wallet_id = req.user.wallet_id;
+        const result = await db.runTransaction(async (transaction) => {
+            const gameDoc = await transaction.get(gameRef);
 
-            let ticketsTotal = game.tickets_total;
 
-            let creator_id = game.host_id;
-
+            const creator_id = gameDoc.data().host_id;
+            const ticketsTotal = gameDoc.data().tickets_total;
+            const totalTicketsSold = gameDoc.data().tickets_sold;
+            const ticketPrice = gameDoc.data().ticket_price;
 
 
             if (creator_id === user_id) {
                 throw new Error("You cannot enter the game you created");
             }
 
-            let totalTicketsSold = game.tickets_sold;
-
-            if (totalTicketsSold + parseInt(total_tickets) > ticketsTotal) {
-
-                throw new Error("All tickets are sold for this game, please join another")
-
+            if (parseInt(total_tickets) > MAX_TICKETS_PER_TRANSACTION) {
+                throw new Error("You can only buy a maximum of 300 tickets per transaction")
             }
 
-            let ticketPrice = await game.ticket_price;
+            if (totalTicketsSold + parseInt(total_tickets) > ticketsTotal) {
+                throw new Error("All tickets are sold for this game, please join another")
+            }
 
-            let totalPrice = ticketPrice * total_tickets;
+            let totalPrice = ticketPrice * parseInt(total_tickets);
 
             let intasend;
 
@@ -162,7 +166,6 @@ async function enterGame(req, res) {
 
             // let collection = intasend.collection();
             let wallets = intasend.wallets();
-
 
             await wallets.get(wallet_id)
                 .then((resp) => {
@@ -186,57 +189,133 @@ async function enterGame(req, res) {
 
             // let narrative = 'Payment';
 
-            // await wallets.intraTransfer(wallet_id, "WY7JRD0", 40, narrative)
+            //const chargeSuccessful =  await wallets.intraTransfer(wallet_id, "WY7JRD0", 40, narrative)
             //     .then((resp) => {
             //         console.log("Intra transfer response");
             //         console.log(resp);
+
+            //          return true
 
             //     })
             //     .catch((err) => {
             //         console.log(`Intratransfer error`)
             //         console.log(err);
+            //         return false
             //         throw new Error(err);
 
             //     });
 
             //TODO: Get the invice id of the transfer for tranasction reference
 
+            if (!chargeSuccessful) {
+                throw new Error(`Charge failed for wallet ${wallet_id}`);
+            }
 
-            await game.increment({ tickets_sold: total_tickets }, { transaction: t });
+            const newTicketsSold = totalTicketsSold + parseInt(total_tickets);
+            transaction.update(gameRef, {
+                tickets_sold: newTicketsSold
+            });
 
-            const tickets = []
 
-            for (let i = 0; i < total_tickets; i++) {
-                const ticket = await Ticket.create({
-                    ticketgame_id: game_id,
+            for (let i = 0; i < newTicketsSold; i++) {
+                transaction.add(ticketsCollectionRef, {
+                    ticket_owner_username: user_name,
                     ticketowner_id: user_id,
+                    avatar: avatar,
                     ticket_price: game.ticket_price,
-                    invoice_id: "invoice_id"
-                }, { transaction: t })
-
-                tickets.push(ticket.toJSON());
+                    invoice_id: "invoice_id",
+                    status: "live"
+                })
             }
 
-            let result = {
-                tickets: tickets,
-            }
+            return { message: "Transaction completed successfully" };
 
-            return result;
+        })
 
-        });
+        // let game = await Game.findByPk(game_id, { lock: true, transaction: t });
 
-        return res.status(200).json({
-            message: "Transaction was successful",
-            purchaseResult: result
-        });
+        // // const wallet_id = req.user.wallet_id;
 
-    } catch (error) {
+        // let ticketsTotal = game.tickets_total;
 
-        console.log(error);
+        // let creator_id = game.host_id;
 
-        return res.status(400).json(error.message);
+        // if (creator_id === user_id) {
+        //     throw new Error("You cannot enter the game you created");
+        // }
 
-    }
+        // let totalTicketsSold = game.tickets_sold;
+
+        // if (totalTicketsSold + parseInt(total_tickets) > ticketsTotal) {
+
+        //     throw new Error("All tickets are sold for this game, please join another")
+
+        // }
+
+        // let ticketPrice = await game.ticket_price;
+
+        // let totalPrice = ticketPrice * total_tickets;
+
+        // let intasend;
+
+        // intasend = new IntaSend(
+        //     null,
+        //     intasendSecret,
+        //     false
+        // );
+
+        // // let collection = intasend.collection();
+        // let wallets = intasend.wallets();
+
+
+        // await wallets.get(wallet_id)
+        //     .then((resp) => {
+        //         let customerAvailableBal = resp.available_balance;
+
+        //         //TODO: Convert back to customerAvailableBal < totalprice
+
+        //         if (0 > customerAvailableBal) {
+        //             throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         console.log(`Intasend get wallet error`);
+        //         console.log(err);
+        //         throw new Error(err);
+        //     });
+
+        //charge wallet... transfer from user wallet to mainwallet (intra transfer)'
+
+        //TODO: In production, make sure the wallet is charged (Uncomment)
+
+        // let narrative = 'Payment';
+
+        // await wallets.intraTransfer(wallet_id, "WY7JRD0", 40, narrative)
+        //     .then((resp) => {
+        //         console.log("Intra transfer response");
+        //         console.log(resp);
+
+        //     })
+        //     .catch((err) => {
+        //         console.log(`Intratransfer error`)
+        //         console.log(err);
+        //         throw new Error(err);
+
+        //     });
+
+        //TODO: Get the invice id of the transfer for tranasction reference
+
+    return res.status(200).json({
+        result
+    });
+
+} catch (error) {
+
+    console.log(error);
+
+    return res.status(400).json(error.message);
+
+}
 
 }
 

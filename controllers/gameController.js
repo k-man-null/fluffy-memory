@@ -1,7 +1,6 @@
 const Game = require('../models/games');
 const User = require('../models/user');
 
-const sequelize = require('../connection');
 const db = require("../firebase");
 const { Timestamp } = require('firebase-admin/firestore');
 
