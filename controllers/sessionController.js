@@ -334,6 +334,8 @@ async function uploadAvatar(req, res) {
 
         const imageUploadPromises = req.files.avatar.map((file) => {
 
+            console.log(file)
+
             return uploadFromMemory(file);
 
         });
