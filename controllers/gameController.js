@@ -156,14 +156,17 @@ async function getGame(req, res) {
 
         const data = gameSnapshot.data();
 
+        const endDate = new Date(data.end_date._seconds * 1000).toISOString();
+
         const gameFormatted = {
             game_id: data.id,
-            ...data
+            ...data,
+            end_date: endDate
         }
 
         return res.status(200).json(
-                gameFormatted
-            );
+            gameFormatted
+        );
 
     } catch (error) {
         console.log(error)
@@ -180,16 +183,19 @@ async function getGameCreator(req, res) {
 
         const id = req.params.id;
 
-        const gameCreator = await User.findByPk(id);
+        const userSnapshot = await db.collection("users").doc(id).get();
 
-        if (gameCreator === null) {
+
+        if (!userSnapshot.exists) {
             return res.status(400).json({ message: "Creator not found" });
         }
 
+        const gameCreator = userSnapshot.data();
+
         const creatorPartial = {
             name: gameCreator.user_name,
-            avatar: gameCreator.profile_image,
-            id: gameCreator.user_id
+            avatar: gameCreator.avatar,
+            id: gameCreator.id
         }
 
         return res.status(200).json(creatorPartial);
@@ -208,16 +214,25 @@ async function getMyLiveGames(req, res) {
 
         const id = req.user.user_id;
 
-        const games = await Game.findAll({
-            where: {
-                host_id: id,
-                status: 'live'
-            }
-        });
+        const gamesRef = db.collection('games');
+        const query = gamesRef.where('host_id', '==', id).where('status', '==', 'live');
+        const querySnapshot = await query.get();
 
-        if (games === null) {
+
+        if (!querySnapshot.exists) {
             return res.status(400).json({ message: "You have no live games" });
         }
+
+        const games = querySnapshot.docs.map((doc) => {
+            const data = doc.data();
+            const endDate = new Date(data.end_date._seconds * 1000).toISOString();
+
+            return {
+                game_id: doc.id,
+                ...data,
+                end_date: endDate
+            };
+        });
 
         return res.status(200).json(games);
 
@@ -235,15 +250,25 @@ async function getMyEndedGames(req, res) {
 
         const id = req.user.user_id;
 
-        const games = await Game.findAll({
-            where: {
-                host_id: id,
-                status: 'ended'
-            }
-        });
-        if (games === null) {
+        const gamesRef = db.collection('games');
+        const query = gamesRef.where('host_id', '==', id).where('status', '==', 'ended');
+        const querySnapshot = await query.get();
+
+
+        if (!querySnapshot.exists) {
             return res.status(400).json({ message: "You have no ended games" });
         }
+
+        const games = querySnapshot.docs.map((doc) => {
+            const data = doc.data();
+            const endDate = new Date(data.end_date._seconds * 1000).toISOString();
+
+            return {
+                game_id: doc.id,
+                ...data,
+                end_date: endDate
+            };
+        });
         return res.status(200).json(games);
 
     } catch (error) {
@@ -270,7 +295,6 @@ async function getAllGames(req, res) {
             const data = doc.data();
             const endDate = new Date(data.end_date._seconds * 1000).toISOString();
 
-            console.log(data.end_date)
             return {
                 game_id: doc.id,
                 ...data,
