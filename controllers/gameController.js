@@ -261,7 +261,7 @@ async function getAllGames(req, res) {
             const endDate = new Date(data.end_date._seconds * 1000).toISOString();
 
             return {
-                id: doc.id,
+                game_id: doc.id,
                 ...data,
                 end_date: endDate
             };
