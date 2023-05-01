@@ -326,7 +326,7 @@ async function uploadAvatar(req, res) {
 
     try {
 
-        const id = req.body.user_id;
+        const id = req.user.user_id;
 
         console.log(`ID ${id}`)
 
