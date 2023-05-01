@@ -47,7 +47,8 @@ async function saveUser(req, res) {
             password: hashedPassword,
             created_at: Timestamp.now(),
             verified: false,
-            avatar: ""
+            avatar: "",
+            wallet_id: "0XZZQEY"
         });
 
         const newUser = await newUserRef.get();
