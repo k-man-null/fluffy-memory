@@ -274,7 +274,7 @@ async function getAllGames(req, res) {
             return {
                 game_id: doc.id,
                 ...data,
-                end_data: endDate
+                end_date: endDate
             };
         });
 
