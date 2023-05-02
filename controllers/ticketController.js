@@ -34,14 +34,27 @@ async function getMyLiveTickets(req, res) {
 
     try {
 
-        const { user_id } = req.user;
+        const user_id  = req.user.user_id;
 
-        let tickets = await Ticket.findAll({
-            where: {
-                ticketowner_id: user_id,
-                status: "live"
-            }
-        })
+        const ticketQuery = db.collectionGroup('tickets')
+            .where('user_id', '==', user_id)
+            .where('status', '==', 'live');
+
+        const ticketSnapshot = await ticketQuery.get();
+
+        if (ticketSnapshot.empty) {
+            throw new Error("You have no live tickets");
+        }
+
+        const tickets = ticketSnapshot.docs.map((doc) => {
+            const data = doc.data();
+
+            return {
+                ticket_id: doc.id,
+                ...data,
+                
+            };
+        });
 
         return res.status(200).json({
             tickets
@@ -309,17 +322,17 @@ async function enterGame(req, res) {
 
         //TODO: Get the invice id of the transfer for tranasction reference
 
-    return res.status(200).json({
-        result
-    });
+        return res.status(200).json({
+            result
+        });
 
-} catch (error) {
+    } catch (error) {
 
-    console.log(error);
+        console.log(error);
 
-    return res.status(400).json(error.message);
+        return res.status(400).json(error.message);
 
-}
+    }
 
 }
 
