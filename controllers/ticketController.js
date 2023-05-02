@@ -16,7 +16,7 @@ async function getMytickets(req, res) {
         const user_id = req.user.user_id;
 
         const ticketQuery = db.collectionGroup('tickets')
-            .where('user_id', '==', user_id)
+            .where('ticketowner_id', '==', user_id)
             .where('status', '==', 'live');
 
         const ticketSnapshot = await ticketQuery.get();
@@ -51,7 +51,7 @@ async function getMyLiveTickets(req, res) {
         const user_id = req.user.user_id;
 
         const ticketQuery = db.collectionGroup('tickets')
-            .where('user_id', '==', user_id)
+            .where('ticketowner_id', '==', user_id)
             .where('status', '==', 'live');
 
         const ticketSnapshot = await ticketQuery.get();
