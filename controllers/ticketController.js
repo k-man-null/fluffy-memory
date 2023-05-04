@@ -238,15 +238,16 @@ async function enterGame(req, res) {
             // }
 
             const newTicketsSold = totalTicketsSold + parseInt(total_tickets);
+
             transaction.update(gameRef, {
                 tickets_sold: newTicketsSold
             });
 
             let ticketsCollectionRef = gameRef.collection('tickets').doc();
 
-            for (let i = 0; i < newTicketsSold; i++) {
+            for (let i = 0; i < parseInt(total_tickets); i++) {
 
-                
+
                 transaction.set(ticketsCollectionRef, {
                     ticket_owner_username: user_name,
                     ticketowner_id: user_id,
