@@ -127,40 +127,40 @@ async function endGame() {
         const results = pastdue.concat(fullySold);
 
 
-        // if(results.length > 0) {
+        if(results.length > 0) {
 
-        //     console.log("Found something ..................")
+            console.log("Found something ..................")
 
-        //     results.forEach(async docSnapshot => {
+            results.forEach(async docSnapshot => {
                 
     
-        //         const docId = docSnapshot.id;
+                const docId = docSnapshot.id;
     
-        //         const { tickets_sold } = docSnapshot.data();
+                const { tickets_sold } = docSnapshot.data();
     
-        //         const random_int = getRandomInt(0, tickets_sold);
+                const random_int = getRandomInt(0, tickets_sold);
     
-        //         await docSnapshot.ref.update(
-        //             {
-        //                 status: 'ended',
-        //                 random_number: random_int
-        //             }
-        //         );
+                await docSnapshot.ref.update(
+                    {
+                        status: 'ended',
+                        random_number: random_int
+                    }
+                );
     
-        //         console.log(`Document ${docId} updated successfully`);
+                console.log(`Document ${docId} updated successfully`);
     
-        //         //publish message here...
+                //publish message here...
     
-        //         const message = JSON.stringify({ game_to_process: docId })
+                const message = JSON.stringify({ game_to_process: docId })
     
-        //         publishMessage(topicName, message);
+                publishMessage(topicName, message);
     
     
-        //     });
+            });
 
-        // } else {
-        //     console.log("Try again later");
-        // }
+        } else {
+            console.log("Try again later");
+        }
 
 
         
