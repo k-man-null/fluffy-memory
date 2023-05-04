@@ -125,32 +125,35 @@ async function endGame() {
             )
             .get();
 
+        const docIds = snapshot.docs.map(doc => doc.id);
 
-        snapshot.docs.forEach(async doc => {
+        docIds.forEach(async (docId) => {
 
-            console.log("I am here");
-            // const { tickets_sold } = doc.data();
+            const docRef = db.collection('games').doc(docId);
+            const docSnapshot = await docRef.get();
 
-            // const random_int = getRandomInt(0, tickets_sold);
+            const { tickets_sold } = docSnapshot.data();
 
-            // // Update desired properties
-            // await db.collection('games').doc(doc.id).update({
-            //     // Update desired properties here
-            //     status: 'ended',
-            //     random_number: random_int
-            // });
+            const random_int = getRandomInt(0, tickets_sold);
 
-            // console.log(`Document ${doc.id} updated successfully`);
+            // Update desired properties
+            await docRef.update({
+                status: 'ended',
+                random_number: random_int
+            });
 
-            // //publish message here...
+            console.log(`Document ${docId} updated successfully`);
 
-            // const message = JSON.stringify({ game_to_process: doc.id })
+            //publish message here...
 
-            // publishMessage(topicName, message);
+            const message = JSON.stringify({ game_to_process: docId })
 
+            publishMessage(topicName, message);
+
+            
         });
 
-        
+
 
     } catch (error) {
 
