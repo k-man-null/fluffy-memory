@@ -125,9 +125,35 @@ async function endGame() {
 
         const results = pastdue.concat(fullySold);
 
-
-        results.forEach(docSnapshot => {
+        if(results.length == 0) {
+            return;
+        }
+        
+        results.forEach(async docSnapshot => {
             console.log(docSnapshot.data());
+
+            const docId = docSnapshot.id;
+
+            const { tickets_sold } = docSnapshot.data();
+
+            const random_int = getRandomInt(0, tickets_sold);
+
+            await docSnapshot.ref.update(
+                {
+                    status: 'ended',
+                    random_number: random_int
+                }
+            );
+
+            console.log(`Document ${docId} updated successfully`);
+
+            //publish message here...
+
+            const message = JSON.stringify({ game_to_process: docId })
+
+            publishMessage(topicName, message);
+
+
         });
 
 
@@ -139,7 +165,7 @@ async function endGame() {
         //     const docRef = db.collection('games').doc(docId);
         //     const docSnapshot = await docRef.get();
 
-        //     const { tickets_sold } = docSnapshot.data();
+        //     
 
         //     const random_int = getRandomInt(0, tickets_sold);
 
