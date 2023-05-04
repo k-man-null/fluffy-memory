@@ -6,7 +6,7 @@ const currentDate = new Date();
 
 const pubSubClient = new PubSub();
 const db = require("../firebase");
-const firebase = require('firebase-admin');
+
 
 async function publishMessage(topicNameOrId, data) {
     // Publishes the message as a string, e.g. "Hello, world!" or JSON.stringify(someObject)
@@ -112,7 +112,7 @@ async function endGame() {
             .get();
 
         const isLiveAndFullySold = gamesRef
-            .where('tickets_sold', '==', 'tickets_total')
+            .where('sold_out', '==', true)
             .where('status', '==', 'live')
 
 
@@ -125,66 +125,43 @@ async function endGame() {
 
         const results = pastdue.concat(fullySold);
 
-        if(results.length == 0) {
-            return;
+
+        if(results.length > 0) {
+
+            console.log("Found something ..................")
+
+            results.forEach(async docSnapshot => {
+                console.log(docSnapshot.data());
+    
+                const docId = docSnapshot.id;
+    
+                const { tickets_sold } = docSnapshot.data();
+    
+                const random_int = getRandomInt(0, tickets_sold);
+    
+                await docSnapshot.ref.update(
+                    {
+                        status: 'ended',
+                        random_number: random_int
+                    }
+                );
+    
+                console.log(`Document ${docId} updated successfully`);
+    
+                //publish message here...
+    
+                const message = JSON.stringify({ game_to_process: docId })
+    
+                publishMessage(topicName, message);
+    
+    
+            });
+
+        } else {
+            console.log("Try again later");
         }
+
         
-        results.forEach(async docSnapshot => {
-            console.log(docSnapshot.data());
-
-            const docId = docSnapshot.id;
-
-            const { tickets_sold } = docSnapshot.data();
-
-            const random_int = getRandomInt(0, tickets_sold);
-
-            await docSnapshot.ref.update(
-                {
-                    status: 'ended',
-                    random_number: random_int
-                }
-            );
-
-            console.log(`Document ${docId} updated successfully`);
-
-            //publish message here...
-
-            const message = JSON.stringify({ game_to_process: docId })
-
-            publishMessage(topicName, message);
-
-
-        });
-
-
-
-        // const docIds = snapshot.docs.map(doc => doc.id);
-
-        // docIds.forEach(async (docId) => {
-
-        //     const docRef = db.collection('games').doc(docId);
-        //     const docSnapshot = await docRef.get();
-
-        //     
-
-        //     const random_int = getRandomInt(0, tickets_sold);
-
-        //     // Update desired properties
-        //     await docRef.update({
-        //         status: 'ended',
-        //         random_number: random_int
-        //     });
-
-        //     console.log(`Document ${docId} updated successfully`);
-
-        //     //publish message here...
-
-        //     const message = JSON.stringify({ game_to_process: docId })
-
-        //     publishMessage(topicName, message);
-
-
-        // });
 
 
 

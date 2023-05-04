@@ -239,6 +239,12 @@ async function enterGame(req, res) {
 
             const newTicketsSold = totalTicketsSold + parseInt(total_tickets);
 
+            if(newTicketsSold == ticketsTotal) {
+                transaction.update(gameRef, {
+                    sold_out: true
+                });
+            }
+
             transaction.update(gameRef, {
                 tickets_sold: newTicketsSold
             });

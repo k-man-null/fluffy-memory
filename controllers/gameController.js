@@ -129,6 +129,7 @@ async function createGame(req, res) {
             host_id: game.host_id,
             prize_images: images,
             tickets_sold: 0,
+            sold_out: false,
             status: "live",
             released: false,
             winningTicket_id: null,
