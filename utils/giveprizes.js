@@ -104,54 +104,61 @@ async function endGame() {
 
     try {
 
-        const snapshot = await db.collection('games')
+        const gamesRef = db.collection('games');
+
+        const isLiveAndPastDue = gamesRef
+            .where('end_date', '<', currentDate)
             .where('status', '==', 'live')
-            .where(
-                firebase.firestore.FieldPath.documentId(),
-                'in',
-                db.collection('games')
-                    .where('tickets_sold', '==', 'tickets_total')
-                    .get()
-                    .then(snapshot => snapshot.docs.map(doc => doc.id))
-                    .then(ids => {
-                        return db.collection('games')
-                            .where('end_date', '<', currentDate)
-                            .get()
-                            .then(snapshot => {
-                                const docIds = snapshot.docs.map(doc => doc.id);
-                                return docIds.concat(ids);
-                            });
-                    })
-            )
             .get();
 
-        const docIds = snapshot.docs.map(doc => doc.id);
+        const isLiveAndFullySold = gamesRef
+            .where('tickets_sold', '==', 'tickets_total')
+            .where('status', '==', 'live')
 
-        docIds.forEach(async (docId) => {
 
-            const docRef = db.collection('games').doc(docId);
-            const docSnapshot = await docRef.get();
+        const [isLiveAndPastDueSnp, isLiveAndFullySoldSnp] = await Promise.all(
+            [isLiveAndPastDue, isLiveAndFullySold]
+        );
 
-            const { tickets_sold } = docSnapshot.data();
+        const pastdue = isLiveAndPastDueSnp.docs;
+        const fullySold = isLiveAndFullySoldSnp.docs;
 
-            const random_int = getRandomInt(0, tickets_sold);
+        const results = pastdue.concat(fullySold);
 
-            // Update desired properties
-            await docRef.update({
-                status: 'ended',
-                random_number: random_int
-            });
 
-            console.log(`Document ${docId} updated successfully`);
-
-            //publish message here...
-
-            const message = JSON.stringify({ game_to_process: docId })
-
-            publishMessage(topicName, message);
-
-            
+        results.forEach(docSnapshot => {
+            console.log(docSnapshot.data());
         });
+
+
+
+        // const docIds = snapshot.docs.map(doc => doc.id);
+
+        // docIds.forEach(async (docId) => {
+
+        //     const docRef = db.collection('games').doc(docId);
+        //     const docSnapshot = await docRef.get();
+
+        //     const { tickets_sold } = docSnapshot.data();
+
+        //     const random_int = getRandomInt(0, tickets_sold);
+
+        //     // Update desired properties
+        //     await docRef.update({
+        //         status: 'ended',
+        //         random_number: random_int
+        //     });
+
+        //     console.log(`Document ${docId} updated successfully`);
+
+        //     //publish message here...
+
+        //     const message = JSON.stringify({ game_to_process: docId })
+
+        //     publishMessage(topicName, message);
+
+
+        // });
 
 
 
