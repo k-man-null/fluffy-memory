@@ -114,6 +114,7 @@ async function endGame() {
         const isLiveAndFullySold = gamesRef
             .where('sold_out', '==', true)
             .where('status', '==', 'live')
+            .get();
 
 
         const [isLiveAndPastDueSnp, isLiveAndFullySoldSnp] = await Promise.all(
@@ -162,7 +163,7 @@ async function endGame() {
         // }
 
 
-        console.log(results)
+        
         
 
 
