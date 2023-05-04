@@ -105,18 +105,30 @@ async function endGame() {
 
     try {
 
+
+        const snapshot = await db.collection('games')
+            .where('tickets_sold', '==', 'tickets_total')
+            .where('end_date', '<', currentDate)
+            .get();
+        const docIds = snapshot.docs.map(doc => doc.id);
+
         const gamesPendingCompletion = await db.collection('games')
             .where('status', '==', 'live')
-            .where(
-                FieldPath.documentId(),
-                'in',
-                db.collection('games')
-                    .where('tickets_sold', '==', 'tickets_total')
-                    .where('end_date', '<', currentDate)
-                    .get()
-                    .then(snapshot => snapshot.docs.map(doc => doc.id))
-            )
+            .where(FieldPath.documentId(), 'in', docIds)
             .get();
+
+        // const gamesPendingCompletion = await db.collection('games')
+        //     .where('status', '==', 'live')
+        //     .where(
+        //         FieldPath.documentId(),
+        //         'in',
+        //         db.collection('games')
+        //             .where('tickets_sold', '==', 'tickets_total')
+        //             .where('end_date', '<', currentDate)
+        //             .get()
+        //             .then(snapshot => snapshot.docs.map(doc => doc.id))
+        //     )
+        //     .get();
 
         gamesPendingCompletion.forEach(async (doc) => {
             try {
@@ -128,7 +140,7 @@ async function endGame() {
                     tickets_sold
                 } = gameSnapshot.data();
 
-                const random_int = getRandomInt(0,tickets_sold);
+                const random_int = getRandomInt(0, tickets_sold);
 
                 await gameRef.update({
                     status: 'ended',
