@@ -157,4 +157,4 @@ async function endGame() {
 
 }
 
-module.exports = { pickWinner, endGame };
+module.exports = { endGame };
