@@ -6,8 +6,7 @@ const currentDate = new Date();
 
 const pubSubClient = new PubSub();
 const db = require("../firebase");
-const { FieldPath } = require('firebase-admin/firestore');
-
+const firebase = require('firebase-admin');
 
 async function publishMessage(topicNameOrId, data) {
     // Publishes the message as a string, e.g. "Hello, world!" or JSON.stringify(someObject)
@@ -105,56 +104,51 @@ async function endGame() {
 
     try {
 
-
         const snapshot = await db.collection('games')
-            .where('tickets_sold', '==', 'tickets_total')
-            .where('end_date', '<', currentDate)
+            .where('status', '==', 'live')
+            .where(
+                firebase.firestore.FieldPath.documentId(),
+                'in',
+                db.collection('games')
+                    .where('tickets_sold', '==', 'tickets_total')
+                    .get()
+                    .then(snapshot => snapshot.docs.map(doc => doc.id))
+                    .then(ids => {
+                        return db.collection('games')
+                            .where('end_date', '<', currentDate)
+                            .get()
+                            .then(snapshot => {
+                                const docIds = snapshot.docs.map(doc => doc.id);
+                                return docIds.concat(ids);
+                            });
+                    })
+            )
             .get();
-        const docIds = snapshot.docs.map(doc => doc.id);
 
-        if (docIds.length > 0) {
 
-            console.log(`Documents list is ${docIds.length} doc long`)
+        snapshot.docs.forEach(async doc => {
+            const { tickets_sold } = doc.data();
 
-            const gamesPendingCompletion = await db.collection('games')
-                .where('status', '==', 'live')
-                .where(FieldPath.documentId(), 'in', docIds)
-                .get();
+            const random_int = getRandomInt(0, tickets_sold);
 
-            gamesPendingCompletion.forEach(async (doc) => {
-                try {
-                    const gameRef = db.collection('games').doc(doc.id);
-
-                    const gameSnapshot = await gameRef.get();
-
-                    const {
-                        tickets_sold
-                    } = gameSnapshot.data();
-
-                    const random_int = getRandomInt(0, tickets_sold);
-
-                    await gameRef.update({
-                        status: 'ended',
-                        random_number: random_int
-                    });
-
-                    console.log(`Document ${doc.id} updated successfully`);
-
-                    //publish message here...
-
-                    const message = JSON.stringify({ game_to_process: doc.id })
-
-                    publishMessage(topicName, message);
-
-                } catch (error) {
-                    console.error(`Error updating document ${doc.id}:`, error);
-                }
+            // Update desired properties
+            await db.collection('games').doc(doc.id).update({
+                // Update desired properties here
+                status: 'ended',
+                random_number: random_int
             });
 
-        } else {
-            console.log("Documents list is empty");
-        }
+            console.log(`Document ${doc.id} updated successfully`);
 
+            //publish message here...
+
+            const message = JSON.stringify({ game_to_process: doc.id })
+
+            publishMessage(topicName, message);
+
+        });
+
+        
 
     } catch (error) {
 
