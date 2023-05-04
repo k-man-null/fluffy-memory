@@ -112,53 +112,48 @@ async function endGame() {
             .get();
         const docIds = snapshot.docs.map(doc => doc.id);
 
-        const gamesPendingCompletion = await db.collection('games')
-            .where('status', '==', 'live')
-            .where(FieldPath.documentId(), 'in', docIds)
-            .get();
+        if (docIds.length > 0) {
 
-        // const gamesPendingCompletion = await db.collection('games')
-        //     .where('status', '==', 'live')
-        //     .where(
-        //         FieldPath.documentId(),
-        //         'in',
-        //         db.collection('games')
-        //             .where('tickets_sold', '==', 'tickets_total')
-        //             .where('end_date', '<', currentDate)
-        //             .get()
-        //             .then(snapshot => snapshot.docs.map(doc => doc.id))
-        //     )
-        //     .get();
+            console.log(`Documents list is ${docIds.length} doc long`)
 
-        gamesPendingCompletion.forEach(async (doc) => {
-            try {
-                const gameRef = db.collection('games').doc(doc.id);
+            const gamesPendingCompletion = await db.collection('games')
+                .where('status', '==', 'live')
+                .where(FieldPath.documentId(), 'in', docIds)
+                .get();
 
-                const gameSnapshot = await gameRef.get();
+            gamesPendingCompletion.forEach(async (doc) => {
+                try {
+                    const gameRef = db.collection('games').doc(doc.id);
 
-                const {
-                    tickets_sold
-                } = gameSnapshot.data();
+                    const gameSnapshot = await gameRef.get();
 
-                const random_int = getRandomInt(0, tickets_sold);
+                    const {
+                        tickets_sold
+                    } = gameSnapshot.data();
 
-                await gameRef.update({
-                    status: 'ended',
-                    random_number: random_int
-                });
+                    const random_int = getRandomInt(0, tickets_sold);
 
-                console.log(`Document ${doc.id} updated successfully`);
+                    await gameRef.update({
+                        status: 'ended',
+                        random_number: random_int
+                    });
 
-                //publish message here...
+                    console.log(`Document ${doc.id} updated successfully`);
 
-                const message = JSON.stringify({ game_to_process: doc.id })
+                    //publish message here...
 
-                publishMessage(topicName, message);
+                    const message = JSON.stringify({ game_to_process: doc.id })
 
-            } catch (error) {
-                console.error(`Error updating document ${doc.id}:`, error);
-            }
-        });
+                    publishMessage(topicName, message);
+
+                } catch (error) {
+                    console.error(`Error updating document ${doc.id}:`, error);
+                }
+            });
+
+        } else {
+            console.log("Documents list is empty");
+        }
 
 
     } catch (error) {
