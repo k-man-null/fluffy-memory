@@ -1,8 +1,9 @@
-const User = require('../models/user');
-const Game = require('../models/games');
-const Ticket = require('../models/ticket');
 const sequelize = require('../connection');
 const { Op } = require('sequelize');
+
+
+const Game = require('../models/games');
+
 const currentDate = new Date();
 
 
