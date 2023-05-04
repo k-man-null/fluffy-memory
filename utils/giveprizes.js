@@ -131,7 +131,7 @@ async function endGame() {
             console.log("Found something ..................")
 
             results.forEach(async docSnapshot => {
-                console.log(docSnapshot.data());
+                
     
                 const docId = docSnapshot.id;
     
