@@ -254,7 +254,9 @@ async function enterGame(req, res) {
                     avatar: avatar,
                     ticket_price: ticketPrice,
                     invoice_id: "invoice_id",
-                    status: "live"
+                    status: "live",
+                    drawn: false,
+                    won: false
                 })
 
     

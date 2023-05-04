@@ -1,5 +1,5 @@
 const Game = require('../models/games');
-const User = require('../models/user');
+
 
 const db = require("../firebase");
 const { Timestamp } = require('firebase-admin/firestore');
@@ -133,7 +133,9 @@ async function createGame(req, res) {
             released: false,
             winningTicket_id: null,
             release_transaction_id: null,
-            closed_date: null
+            closed_date: null,
+            random_number: null,
+            drawn: false
         }
 
         await db.collection('games').add(new_game_data);
