@@ -126,7 +126,6 @@ async function endGame() {
 
         const results = pastdue.concat(fullySold);
 
-
         if(results.length > 0) {
 
             console.log("Found something ..................")
@@ -153,14 +152,8 @@ async function endGame() {
             });
 
         } else {
-            console.log("Try again later");
+            console.log("Try again later...........");
         }
-
-
-        
-        
-
-
 
     } catch (error) {
 
