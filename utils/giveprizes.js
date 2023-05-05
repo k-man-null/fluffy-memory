@@ -133,28 +133,22 @@ async function endGame() {
 
             results.forEach(async docSnapshot => {
                 
-    
                 const docId = docSnapshot.id;
     
                 const { tickets_sold } = docSnapshot.data();
     
                 const random_int = getRandomInt(0, tickets_sold);
     
-                await docSnapshot.ref.update(
-                    {
-                        status: 'ended',
-                        random_number: random_int
-                    }
-                );
-    
                 console.log(`Document ${docId} updated successfully`);
     
                 //publish message here...
     
-                const message = JSON.stringify({ game_to_process: docId })
+                const message = JSON.stringify({ 
+                    game_to_process: docId,
+                    random_int: random_int
+                 })
     
                 publishMessage(topicName, message);
-    
     
             });
 

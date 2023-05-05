@@ -156,8 +156,6 @@ async function enterGame(req, res) {
 
 
         const gameRef = db.collection('games').doc(game_id);
-        const ticketsCollectionRef = gameRef.collection('tickets').doc();
-
 
         const result = await db.runTransaction(async (transaction) => {
             const gameDoc = await transaction.get(gameRef);
@@ -261,7 +259,7 @@ async function enterGame(req, res) {
                     ticket_price: ticketPrice,
                     invoice_id: "invoice_id",
                     status: "live",
-                    drawn: false,
+                    claimed:false,
                     won: false
                 })
 
