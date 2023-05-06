@@ -1,5 +1,3 @@
-const User = require('../models/user');
-const Game = require('../models/games');
 const Ticket = require('../models/ticket');
 const db = require('../firebase');
 
@@ -17,7 +15,6 @@ async function getMytickets(req, res) {
 
         const ticketQuery = db.collectionGroup('tickets')
             .where('ticketowner_id', '==', user_id)
-            .where('status', '==', 'live');
 
         const ticketSnapshot = await ticketQuery.get();
 

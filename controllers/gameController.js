@@ -135,7 +135,6 @@ async function createGame(req, res) {
             winningTicket_id: null,
             release_transaction_id: null,
             closed_date: null,
-            random_number: null,
             drawn: false
         }
 
