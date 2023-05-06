@@ -163,4 +163,4 @@ async function endGame() {
 
 }
 
-module.exports = { endGame };
+module.exports = { endGame, publishMessage };

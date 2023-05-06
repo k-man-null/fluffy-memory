@@ -8,6 +8,8 @@ const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 const Ticket = require('../models/ticket');
 
+const { publishMessage } = require("../utils/giveprizes");
+
 async function logout(req, res) {
 
     return res.status(200)
@@ -17,6 +19,7 @@ async function logout(req, res) {
 }
 
 async function getMinProfile(req, res) {
+
 
     return res.status(200).json(req.user);
 
@@ -59,7 +62,18 @@ async function getWinnerProfile(req, res) {
 
 async function verifyEmail(req, res) {
 
-    return res.status(200).json({ message: "Implement Verify email" });
+    try {
+
+        const data = JSON.stringify({ email: "Hello from the other side, I need to verify my email!" })
+        publishMessage("email-to-send", data);
+        return res.status(200).json({ message: "Email sent" });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ message: "Error verifying email" });
+
+    }
+
 
 }
 
