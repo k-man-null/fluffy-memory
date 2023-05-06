@@ -135,6 +135,10 @@ async function endGame() {
                 const docId = docSnapshot.id;
     
                 const { tickets_sold } = docSnapshot.data();
+
+                if(tickets_sold == 0 || tickets_sold == 1) {
+                    return;
+                }
     
                 const random_int = getRandomInt(0, tickets_sold);
     
