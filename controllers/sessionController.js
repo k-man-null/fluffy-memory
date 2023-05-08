@@ -7,7 +7,6 @@ const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app"
 const jwt = require('jsonwebtoken');
-const db = require('../firebase');
 
 
 const Ticket = require('../models/ticket');
