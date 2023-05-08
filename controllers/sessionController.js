@@ -45,13 +45,13 @@ async function getWinnerProfile(req, res) {
 
         const ticketQuery = db.doc(docPath);
 
-        const ticketSnapshot = await ticketQuery.get();
+        const ticket = await ticketQuery.get();
 
-        if (ticketSnapshot.empty) {
+        if (!ticket.exists) {
             throw new Error("You have no winning ticket");
         }
 
-        const data = doc.data();
+        const data = ticket.data();
 
         return res.status(200).json(
             {
