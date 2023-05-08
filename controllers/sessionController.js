@@ -38,6 +38,8 @@ async function getWinnerProfile(req, res) {
         const game_id = req.query.game;
         const winner_ticket_id = req.query.won_ticket_id;
 
+        console.log(`Game ${game_id} :: winning_ticket ${winner_ticket_id}`)
+
         const ticketQuery = db.collectionGroup('tickets').where(
             '__name__' == `games/${game_id}/tickets/${winner_ticket_id}`
         )
