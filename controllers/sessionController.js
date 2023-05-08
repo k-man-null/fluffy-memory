@@ -8,7 +8,6 @@ const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app"
 const baseUrlFront = "https://tiki-a7763.web.app"
 const jwt = require('jsonwebtoken');
-const { FieldPath } = require('firebase-admin/firestore');
 
 
 
@@ -42,9 +41,9 @@ async function getWinnerProfile(req, res) {
 
         console.log(`Game ${game_id} :: winning_ticket ${winner_ticket_id}`)
 
-        const ticketQuery = db.doc(
-            `games/${game_id}/tickets/${winner_ticket_id}`
-        );
+        const docPath =  `games/${game_id}/tickets/${winner_ticket_id}`
+
+        const ticketQuery = db.doc(docPath);
 
         const ticketSnapshot = await ticketQuery.get();
 
