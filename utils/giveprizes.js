@@ -126,8 +126,6 @@ async function endGame() {
 
         const results = pastdue.concat(fullySold);
 
-        console.log(results);
-
         if(results.length > 0) {
 
             console.log("Found something ..................")
@@ -135,6 +133,8 @@ async function endGame() {
             results.forEach(async docSnapshot => {
                 
                 const docId = docSnapshot.id;
+
+                console.log(docId);
     
                 const { tickets_sold } = docSnapshot.data();
 
