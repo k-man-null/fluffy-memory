@@ -126,6 +126,8 @@ async function endGame() {
 
         const results = pastdue.concat(fullySold);
 
+        console.log(results);
+
         if(results.length > 0) {
 
             console.log("Found something ..................")
