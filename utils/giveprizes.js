@@ -133,13 +133,15 @@ async function endGame() {
             results.forEach(async docSnapshot => {
                 
                 const docId = docSnapshot.id;
-
-                console.log(docId);
     
                 const { tickets_sold } = docSnapshot.data();
 
                 if(tickets_sold == 0 || tickets_sold == 1) {
-                    return;
+                    console.log(docId);
+                    const gameRef = db.collection('games').doc(docId);
+                    gameRef.update({
+                        status: 'ended'
+                    })
                 }
     
                 const random_int = getRandomInt(0, tickets_sold);
