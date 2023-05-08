@@ -83,6 +83,8 @@ async function verifyEmail(req, res) {
             subject: "TikiTiki email verification"
         })
 
+        console.log(data);
+
         publishMessage("email-to-send", data);
 
         return res.status(200).json({ message: "We sent you an email to verify your account" });
@@ -99,6 +101,8 @@ async function verifyEmail(req, res) {
 async function verifyEmailCallBack(req, res) {
 
     try {
+
+        console.log("I got called back for verification...............");
 
         const token = req.params.token
 
