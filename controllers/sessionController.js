@@ -6,6 +6,7 @@ const { uploadFromMemory } = require("../controllers/gameController");
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app"
+const baseUrlFront = "https://tiki-a7763.web.app"
 const jwt = require('jsonwebtoken');
 
 
@@ -32,24 +33,28 @@ async function getWinnerProfile(req, res) {
 
     //TODO: migrate
 
-    const winning_ticket_id = req.params.id
-
     try {
 
-        const ticket = await Ticket.findByPk(winning_ticket_id);
+        const game_id = req.query.game;
+        const winner_ticket_id = req.query.won_ticket_id;
 
-        const id = ticket.ticketowner_id;
+        const ticketQuery = db.collectionGroup('tickets').where(
+            '__name__' == `games/${game_id}/tickets/${winner_ticket_id}`
+        )
 
-        const data = await User.findByPk(id);
+        const ticketSnapshot = await ticketQuery.get();
 
-        const { user_name, profile_image, first_name, last_name } = data.toJSON();
+        if (ticketSnapshot.empty) {
+            throw new Error("You have no winning ticket");
+        }
+
+
+        const data = doc.data();
 
         return res.status(200).json(
             {
-                user_name,
-                profile_image,
-                first_name,
-                last_name
+                profile_image: data.avatar,
+                user_name: data.ticket_owner_username
             });
 
     } catch (error) {
@@ -120,10 +125,9 @@ async function verifyEmailCallBack(req, res) {
                 verified: true
             });
 
-            return res.json({ message: "Email has been verified successfully" });
+            return res.redirect(200, `${baseUrlFront}/app/profile`);
 
         })
-
 
     } catch (error) {
         console.log(error);
