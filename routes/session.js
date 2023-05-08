@@ -26,7 +26,7 @@ router.get('/wallet', getUserWallet);
 
 router.get('/minProfile', getMinProfile);
 
-router.get('/winner/:id', getWinnerProfile);
+router.get('/winner/', getWinnerProfile);
 
 router.post('/deposit', loadUserWallet);
 
