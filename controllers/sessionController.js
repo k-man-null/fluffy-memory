@@ -42,14 +42,13 @@ async function getWinnerProfile(req, res) {
 
         const ticketQuery = db.collectionGroup('tickets').where(
             '__name__' == `games/${game_id}/tickets/${winner_ticket_id}`
-        )
+        );
 
         const ticketSnapshot = await ticketQuery.get();
 
         if (ticketSnapshot.empty) {
             throw new Error("You have no winning ticket");
         }
-
 
         const data = doc.data();
 
@@ -60,6 +59,8 @@ async function getWinnerProfile(req, res) {
             });
 
     } catch (error) {
+
+        console.log(error);
 
         return res.status(400).json({ message: "User not found" });
 
