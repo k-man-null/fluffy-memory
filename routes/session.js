@@ -16,7 +16,8 @@ const {
     getFullProfile,
     verifyEmail,
     uploadAvatar,
-    getWinnerProfile
+    getWinnerProfile,
+    verifyEmailCallBack
 } = require('../controllers/sessionController');
 
 router.get('/logout', logout);
@@ -31,9 +32,11 @@ router.post('/deposit', loadUserWallet);
 
 router.get('/transactionhistory', userWalletTransactions);
 
-router.get('/fullProfile', getFullProfile)
+router.get('/fullProfile', getFullProfile);
 
-router.get('/verifyemail', verifyEmail)
+router.get('/verifyemail', verifyEmail);
+
+router.get('/verifyemail/:token', verifyEmailCallBack);
 
 router.post('/avatar', upload.fields([{ name: 'avatar', maxCount: 1 }]), uploadAvatar);
 

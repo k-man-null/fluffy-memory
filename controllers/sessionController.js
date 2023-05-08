@@ -5,6 +5,10 @@ const { uploadFromMemory } = require("../controllers/gameController");
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
+const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app"
+const jwt = require('jsonwebtoken');
+const db = require('../firebase');
+
 
 const Ticket = require('../models/ticket');
 
@@ -53,20 +57,70 @@ async function getWinnerProfile(req, res) {
 
         return res.status(400).json({ message: "User not found" });
 
-
     }
 
-
-
 }
+
 
 async function verifyEmail(req, res) {
 
     try {
 
-        const data = JSON.stringify({ email: "Hello from the other side, I need to verify my email!" })
+        const to = req.user.email;
+
+        const code = jwt.sign(req.user, "myprivatekeytochange", {
+            expiresIn: 300
+        });
+
+        const text = "To verify your email, click the link below. The link is only valid for 5 minutes"
+
+        const link = `${baseUrl}/session/verifyemail/${code}`
+
+        const data = JSON.stringify({
+            type: "verify_email",
+            recipient: to,
+            email_text: text,
+            verify_email_link: link,
+            subject: "TikiTiki email verification"
+        })
+
         publishMessage("email-to-send", data);
-        return res.status(200).json({ message: "Email sent" });
+
+        return res.status(200).json({ message: "We sent you an email to verify your account" });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ message: "Error verifying email" });
+
+    }
+
+
+}
+
+async function verifyEmailCallBack(req, res) {
+
+    try {
+
+        const token = req.params.token
+
+        jwt.verify(token, "myprivatekeytochange", async (err, decoded) => {
+            if (err) {
+                return res.json({ message: "Invalid Token" });
+            }
+
+            const { user_id } = decoded;
+
+            const user_ref = db.collection('users').doc(user_id);
+
+
+            await user_ref.update({
+                verified: true
+            });
+
+            return res.json({ message: "Email has been verified successfully" });
+
+        })
+
 
     } catch (error) {
         console.log(error);
@@ -85,7 +139,7 @@ async function getFullProfile(req, res) {
 
         const usersCollection = db.collection('users');
 
-        const userDocRef = await usersCollection.doc(id);
+        const userDocRef = usersCollection.doc(id);
 
         const user = await userDocRef.get();
 
@@ -94,7 +148,6 @@ async function getFullProfile(req, res) {
         }
 
         const userData = user.data();
-
 
         const full_profile = {
             user_id: req.user.user_id,
@@ -381,5 +434,6 @@ module.exports = {
     verifyEmail,
     uploadAvatar,
     getWinnerProfile,
-    createUserWallet
+    createUserWallet,
+    verifyEmailCallBack
 }
