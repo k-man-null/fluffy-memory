@@ -1,5 +1,4 @@
 const express = require('express');
-const errorResponse = require('../controllers/error');
 const router = express.Router();
 const { 
     
@@ -10,20 +9,20 @@ const {
 
 router.get('/', startMyClaim);
 
-router.get('/live', getMyLiveTickets);
+// router.get('/live', getMyLiveTickets);
 
-router.get('/lost', getMyLostTickets);
+// router.get('/lost', getMyLostTickets);
 
-router.get('/won', getMyWonTickets);
+// router.get('/won', getMyWonTickets);
 
-router.get('/:id', errorResponse);
+// router.get('/:id', errorResponse);
 
-router.post('/enterGame', enterGame);
+// router.post('/enterGame', enterGame);
 
-router.put('/*', errorResponse);
+// router.put('/*', errorResponse);
 
-router.patch('/*', errorResponse);
+// router.patch('/*', errorResponse);
 
-router.delete('/*', errorResponse);
+// router.delete('/*', errorResponse);
 
 module.exports = router;
