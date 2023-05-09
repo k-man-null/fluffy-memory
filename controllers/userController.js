@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
 const db = require('../firebase');
 const { Timestamp } = require('firebase-admin/firestore');
+const { publishMessage } = require('../utils/giveprizes');
+const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app"
+const baseUrlFront = "https://tiki-a7763.web.app"
 
 async function saveUser(req, res) {
 
@@ -159,8 +162,8 @@ async function loginUser(req, res) {
         const correctUser = await bcrypt.compare(password, userPassword);
 
         const userData = existingUser.docs[0].data();
-        
-        const { password:userpass, ...userWithoutPassword } = userData;
+
+        const { password: userpass, ...userWithoutPassword } = userData;
 
         userWithoutPassword.user_id = existingUser.docs[0].id;
 
@@ -201,22 +204,32 @@ async function loginUser(req, res) {
 
 async function changePassword(req, res) {
 
-    //TODO: migrate
+    //Get user from the token
 
     try {
 
-        const { email, password } = req.body;
+        const { password, token } = req.body;
 
-        const user = await User.findOne({ where: { email: email } });
+        jwt.verify(token, "myprivatekeytochange", async (err, decoded) => {
 
-        if (!user) {
-            return res.status(400).json({ message: `User with email ${email} not found` });
-        }
+            if (err) {
+                return res.json({ message: "Invalid Token" });
+            }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+            const { user_id } = decoded;
 
-        await user.update({ password: hashedPassword });
+            const user_ref = db.collection('users').doc(user_id);
 
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            await user_ref.update({
+                password: hashedPassword
+            });
+
+            return res.redirect(200, `${baseUrlFront}/enter`);
+
+        })
+        
         return res.status(200).json({
             message: "Password changed successfully",
         });
@@ -229,23 +242,55 @@ async function changePassword(req, res) {
 
 }
 
+async function forgotPassword(req, res) {
 
-
-
-async function verifyEmail(req, res) {
-
-    // TODO: complete and test method
     try {
 
-        const { email } = req.body;
+        const { email } = req.body
+
+        //check if the email exists among the users.
+        const usersCollection = db.collection('users');
+
+        const existingUser = await usersCollection.where('email', '==', email).get();
+
+        if (existingUser.empty) {
+            return res.status(400).json({
+                field: "email",
+                message: `User with email ${email} not found`
+            });
+        }
+
+        const user = existingUser.docs[0].data();
+
+        //Tell the user you have sent them an email and send the email
+
+        const code = jwt.sign(user, "myprivatekeytochange", {
+            expiresIn: 300
+        });
+
+        const text = "To recover your password, click the link below. The link is only valid for 5 minutes"
+
+        const link = `${baseUrlFront}/forgotpassword/${code}`
+
+        const data = JSON.stringify({
+            type: "forgot_password",
+            recipient: email,
+            email_text: text,
+            verify_email_link: link,
+            subject: "TikiTiki Password Recovery"
+        })
+
+        publishMessage("email-to-send", data)
+
+        return res.status(200).json({ message: "We sent you an email to reset your password" });
 
     } catch (error) {
-
-        res.status(500).send("Internal server error");
+        console.log(error);
+        return res.status(400).json({ message: "Error ocurred try again" });
 
     }
 
 }
 
 
-module.exports = { saveUser, loginUser, changePassword }
+module.exports = { saveUser, loginUser, changePassword, forgotPassword }

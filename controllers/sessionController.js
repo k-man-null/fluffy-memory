@@ -1,4 +1,3 @@
-const User = require('../models/user');
 const IntaSend = require('intasend-node');
 const db = require('../firebase');
 const { uploadFromMemory } = require("../controllers/gameController");
@@ -8,10 +7,6 @@ const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app"
 const baseUrlFront = "https://tiki-a7763.web.app"
 const jwt = require('jsonwebtoken');
-
-
-
-const Ticket = require('../models/ticket');
 
 const { publishMessage } = require("../utils/giveprizes");
 
@@ -123,7 +118,6 @@ async function verifyEmailCallBack(req, res) {
             const { user_id } = decoded;
 
             const user_ref = db.collection('users').doc(user_id);
-
 
             await user_ref.update({
                 verified: true

@@ -3,7 +3,8 @@ const router = express.Router();
 const { 
     saveUser,
     loginUser,
-    changePassword
+    changePassword,
+    forgotPassword
 } = require('../controllers/userController')
 
 
@@ -11,6 +12,10 @@ router.get('/:id', (req,res) => {
     const id =  req.params.id;
     res.send(`You hit the get id: ${id}`)
 });
+
+router.get('/recoverpassword', forgotPassword);
+
+router.get('/forgotpassword', changePassword);
 
 router.post('/register', saveUser);
 
