@@ -218,9 +218,9 @@ async function changePassword(req, res) {
 
             const { user_id } = decoded;
 
-            console.log(decoded);
 
             const user_ref = db.collection('users').doc(user_id);
+
 
             const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -261,7 +261,11 @@ async function forgotPassword(req, res) {
             });
         }
 
-        const user = existingUser.docs[0].data();
+        const user = {
+
+            ...existingUser.docs[0].data(),
+            user_id: existingUser.docs[0].id
+        }
 
         //Tell the user you have sent them an email and send the email
 
