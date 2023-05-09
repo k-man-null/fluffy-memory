@@ -213,10 +213,12 @@ async function changePassword(req, res) {
         jwt.verify(token, "myprivatekeytochange", async (err, decoded) => {
 
             if (err) {
-                return res.json({ message: "Invalid Token" });
+                return res.status(400).json({ message: "Invalid Token" });
             }
 
             const { user_id } = decoded;
+
+            console.log(decoded);
 
             const user_ref = db.collection('users').doc(user_id);
 
@@ -230,13 +232,13 @@ async function changePassword(req, res) {
 
         })
         
-        return res.status(200).json({
-            message: "Password changed successfully",
-        });
+        
 
     } catch (error) {
 
-        res.status(500).send("Internal server error");
+        console.log(error);
+
+        return res.status(400).send("An error occured");
 
     }
 
