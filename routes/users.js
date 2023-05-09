@@ -15,7 +15,7 @@ router.get('/:id', (req,res) => {
 
 router.post('/recoverpassword', forgotPassword);
 
-router.get('/forgotpassword', changePassword);
+router.post('/forgotpassword', changePassword);
 
 router.post('/register', saveUser);
 
