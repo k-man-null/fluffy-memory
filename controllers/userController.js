@@ -255,7 +255,6 @@ async function forgotPassword(req, res) {
 
         if (existingUser.empty) {
             return res.status(400).json({
-                field: "email",
                 message: `User with email ${email} not found`
             });
         }
