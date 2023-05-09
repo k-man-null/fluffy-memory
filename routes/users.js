@@ -13,7 +13,7 @@ router.get('/:id', (req,res) => {
     res.send(`You hit the get id: ${id}`)
 });
 
-router.get('/recoverpassword', forgotPassword);
+router.post('/recoverpassword', forgotPassword);
 
 router.get('/forgotpassword', changePassword);
 
