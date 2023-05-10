@@ -27,31 +27,6 @@ async function startMyClaim(req, res) {
 
         const user_id = req.user.user_id;
 
-    //     const ticketQuery = db.collectionGroup('tickets')
-    //         .where('ticketowner_id', '==', user_id)
-
-    //     const ticketSnapshot = await ticketQuery.get();
-
-    //     if (ticketSnapshot.empty) {
-    //         throw new Error("You have no live tickets");
-    //     }
-
-    //     const tickets = ticketSnapshot.docs.map((doc) => {
-    //         const data = doc.data();
-
-    //         return {
-    //             ticket_id: doc.id,
-    //             ...data,
-
-    //         };
-    //     });
-
-    //     return res.status(200).json({
-    //         tickets
-    //     })
-
-    // } catch (error) {
-    //     return res.status(400).json(error.message)
     
 
 }
