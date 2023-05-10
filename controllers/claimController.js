@@ -8,7 +8,7 @@ const MAX_TICKETS_PER_TRANSACTION = 300;
 
 async function startMyClaim(req, res) {
 
-    try {
+    
 
         const data = req.body;
 
@@ -52,7 +52,8 @@ async function startMyClaim(req, res) {
 
     // } catch (error) {
     //     return res.status(400).json(error.message)
-    // }
+    
+
 }
 
 async function getMyLiveTickets(req, res) {
