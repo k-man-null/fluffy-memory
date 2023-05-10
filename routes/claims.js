@@ -7,7 +7,7 @@ const {
 
 } = require('../controllers/claimController')
 
-router.get('/', startMyClaim);
+router.post('/', startMyClaim);
 
 // router.get('/live', getMyLiveTickets);
 

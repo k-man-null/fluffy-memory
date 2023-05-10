@@ -10,34 +10,49 @@ async function startMyClaim(req, res) {
 
     try {
 
+        const data = req.body;
+
+        console.log(data);
+
+
+        //get the ticket from body...
+
+        //get the creators email..from the ticket
+
+        //send the email to the creator notifying them of the claim
+
+        //create a claim object with status started...
+
+        //
+
         const user_id = req.user.user_id;
 
-        const ticketQuery = db.collectionGroup('tickets')
-            .where('ticketowner_id', '==', user_id)
+    //     const ticketQuery = db.collectionGroup('tickets')
+    //         .where('ticketowner_id', '==', user_id)
 
-        const ticketSnapshot = await ticketQuery.get();
+    //     const ticketSnapshot = await ticketQuery.get();
 
-        if (ticketSnapshot.empty) {
-            throw new Error("You have no live tickets");
-        }
+    //     if (ticketSnapshot.empty) {
+    //         throw new Error("You have no live tickets");
+    //     }
 
-        const tickets = ticketSnapshot.docs.map((doc) => {
-            const data = doc.data();
+    //     const tickets = ticketSnapshot.docs.map((doc) => {
+    //         const data = doc.data();
 
-            return {
-                ticket_id: doc.id,
-                ...data,
+    //         return {
+    //             ticket_id: doc.id,
+    //             ...data,
 
-            };
-        });
+    //         };
+    //     });
 
-        return res.status(200).json({
-            tickets
-        })
+    //     return res.status(200).json({
+    //         tickets
+    //     })
 
-    } catch (error) {
-        return res.status(400).json(error.message)
-    }
+    // } catch (error) {
+    //     return res.status(400).json(error.message)
+    // }
 }
 
 async function getMyLiveTickets(req, res) {
