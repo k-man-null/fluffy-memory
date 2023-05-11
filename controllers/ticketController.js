@@ -161,6 +161,7 @@ async function enterGame(req, res) {
             const ticketsTotal = gameDoc.data().tickets_total;
             const totalTicketsSold = gameDoc.data().tickets_sold;
             const ticketPrice = gameDoc.data().ticket_price;
+            const creator_email = gameDoc.data().creator_email;
 
 
             if (creator_id === user_id) {
@@ -258,7 +259,9 @@ async function enterGame(req, res) {
                     invoice_id: "invoice_id",
                     status: "live",
                     claimed:false,
-                    won: false
+                    won: false,
+                    game_id: game_id,
+                    creator_email: creator_email,
                 })
 
     

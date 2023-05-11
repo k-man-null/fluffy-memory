@@ -1,4 +1,6 @@
 const db = require('../firebase');
+const { FieldValue } = require('firebase-admin/firestore');
+
 
 const IntaSend = require('intasend-node');
 
@@ -8,26 +10,81 @@ const MAX_TICKETS_PER_TRANSACTION = 300;
 
 async function startMyClaim(req, res) {
 
-    
+    //const user_id = req.user.user_id;
 
-        const data = req.body;
+    //get the ticket from body...
 
-        console.log(data);
+    //get the creators email..from the ticket
+
+    //send the email to the creator notifying them of the claim
+
+    //create a claim object with status started...
+
+    try {
+
+        const data = req.body
+
+        const ticket = data.ticket;
+        const contact = data.contact;
+
+        const { game_id, creator_email } = ticket;
+
+        //check if there is such a claim first for te game beforee
+
+        const claim = {
+            winner_contact: contact,
+            creator_will_give_prize: false,
+            transaction_id: "",
+            timestamp: FieldValue.serverTimestamp(),
+            host_email: creator_email,
+            game_id: game_id,
+            closed: false,
+            closed_date: null,
+            accepted: false,
+
+        }
+
+        const claimRef = db.collection('claims').doc(game_id);
+        claimRef.get()
+            .then((docSnapshot) => {
+                if (docSnapshot.exists) {
+                    return res.status(400).send("A claim already exists for this game");
+                } else {
+                    return claimRef.set(
+                        claim
+                    ).then(() => {
+
+                        const text = `The user has claimed ticket and is asking you to contact them on \n\n ${contact} 
+                                        make sure to indicate in 24 hours 
+                                        whether you will give the prize or we will give the winner 75% of the ticket sales`;
+
+                        const data = JSON.stringify({
+                            type: "claims",
+                            recipient: creator_email,
+                            email_text: text,
+                            subject: "TikiTiki Claim Process"
+                        })
+
+                        publishMessage("email-to-send", data);
+
+                        return res.status(200).send('The calim has been created we will get back to you');
+                    })
+                        .catch(error => {
+                            console.log(error);
+                            return res.status(400)
+                        })
+                }
+            })
 
 
-        //get the ticket from body...
+    } catch (error) {
 
-        //get the creators email..from the ticket
 
-        //send the email to the creator notifying them of the claim
+    }
 
-        //create a claim object with status started...
 
-        //
 
-        const user_id = req.user.user_id;
 
-    
 
 }
 
@@ -164,7 +221,7 @@ async function enterGame(req, res) {
 
             const newTicketsSold = totalTicketsSold + parseInt(total_tickets);
 
-            if(newTicketsSold == ticketsTotal) {
+            if (newTicketsSold == ticketsTotal) {
                 transaction.update(gameRef, {
                     sold_out: true
                 });
@@ -174,12 +231,12 @@ async function enterGame(req, res) {
                 tickets_sold: newTicketsSold
             });
 
-            
+
 
             for (let i = 0; i < parseInt(total_tickets); i++) {
 
                 let ticketsCollectionRef = gameRef.collection('tickets').doc();
-                
+
                 transaction.set(ticketsCollectionRef, {
                     ticket_owner_username: user_name,
                     ticketowner_id: user_id,
@@ -187,11 +244,11 @@ async function enterGame(req, res) {
                     ticket_price: ticketPrice,
                     invoice_id: "invoice_id",
                     status: "live",
-                    claimed:false,
+                    claimed: false,
                     won: false
                 })
 
-    
+
             }
 
             return { message: "Transaction completed successfully" };
@@ -213,5 +270,5 @@ async function enterGame(req, res) {
 }
 
 module.exports = {
-   startMyClaim
+    startMyClaim
 };
