@@ -1,6 +1,5 @@
 const Game = require('../models/games');
 
-
 const db = require("../firebase");
 const { Timestamp } = require('firebase-admin/firestore');
 
@@ -128,6 +127,7 @@ async function createGame(req, res) {
             delivery: game.Delivery,
             end_date: game.EndDate,
             host_id: game.host_id,
+            creator_email: game.creator_email,
             prize_images: images,
             tickets_sold: 0,
             sold_out: false,
