@@ -66,6 +66,7 @@ async function createGame(req, res) {
         } = { ...req.body };
 
         game.host_id = req.user.user_id;
+        game.creator_email = req.user.email;
         game.EndDate = Timestamp.fromDate(new Date(game.EndDate));
 
         /**
