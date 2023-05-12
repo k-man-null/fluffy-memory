@@ -103,10 +103,10 @@ async function getClaim(req, res) {
 
         const claim = {
             claim_id: claimDoc.id,
-            ...claimDoc.data()   
+            ...claimDoc.data()
         }
 
-        
+
         return res.status(200).json({
             claim
         })
@@ -115,6 +115,31 @@ async function getClaim(req, res) {
         return res.status(400).json(error.message)
     }
 }
+
+async function updateClaim(req, res) {
+
+    try {
+
+        const game_id = req.params.game_id;
+
+        const data = req.body;
+
+        console.log(game_id)
+
+        const claimRef = db.collection('claims').doc(game_id);
+
+        
+        const claim = await claimRef.update(data);
+
+        return res.status(200).json({
+            claim
+        })
+
+    } catch (error) {
+        return res.status(400).json(error.message)
+    }
+}
+
 
 
 async function enterGame(req, res) {
@@ -263,5 +288,5 @@ async function enterGame(req, res) {
 }
 
 module.exports = {
-    startMyClaim, getClaim
+    startMyClaim, getClaim, updateClaim
 };
