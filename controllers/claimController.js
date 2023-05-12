@@ -128,7 +128,13 @@ async function updateClaim(req, res) {
 
         const claimRef = db.collection('claims').doc(game_id);
 
-        
+        const { creator_has_made_choice } = (await claimRef.get()).data();
+
+        if(creator_has_made_choice) {
+            return res.status(400).json("The choice is final");
+        }
+
+    
         const claim = await claimRef.update(data);
 
         return res.status(200).json({
