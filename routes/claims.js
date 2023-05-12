@@ -4,7 +4,7 @@ const {
     
     startMyClaim,
     getClaim,
-    updateClaims
+    updateClaim
   
 
 } = require('../controllers/claimController')
