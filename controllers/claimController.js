@@ -103,7 +103,7 @@ async function getClaim(req, res) {
 
         const claim = {
             claim_id: claimDoc.id,
-            ...claimDoc.doc.data()   
+            ...claimDoc.data()   
         }
 
         
