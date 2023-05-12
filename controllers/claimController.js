@@ -90,7 +90,11 @@ async function getClaim(req, res) {
 
         const game_id = req.params.game_id;
 
-        const claimDoc = db.collection('claims').doc(game_id).get();
+        console.log(game_id)
+
+        const docref = db.collection('claims').doc(game_id);
+
+        const claimDoc = await docref.get();
 
 
         if (!claimDoc.exists) {
