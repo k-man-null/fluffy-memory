@@ -1,5 +1,6 @@
 const db = require('../firebase');
 const { FieldValue } = require('firebase-admin/firestore');
+const { publishMessage } = require('../utils/giveprizes');
 
 
 const IntaSend = require('intasend-node');
@@ -67,7 +68,7 @@ async function startMyClaim(req, res) {
 
                         publishMessage("email-to-send", data);
 
-                        return res.status(200).send('The calim has been created we will get back to you');
+                        return res.status(200).send('The claim has been created we will get back to you');
                     })
                         .catch(error => {
                             console.log(error);
