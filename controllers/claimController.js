@@ -79,44 +79,32 @@ async function startMyClaim(req, res) {
 
 
     } catch (error) {
-
-
+        return res.status(500);
     }
-
-
-
-
 
 }
 
-async function getMyLiveTickets(req, res) {
+async function getClaim(req, res) {
 
     try {
 
-        const user_id = req.user.user_id;
+        const game_id = req.params.game_id;
 
-        const ticketQuery = db.collectionGroup('tickets')
-            .where('ticketowner_id', '==', user_id)
-            .where('status', '==', 'live');
+        const claimDoc = db.collection('claims').doc(game_id).get();
 
-        const ticketSnapshot = await ticketQuery.get();
 
-        if (ticketSnapshot.empty) {
-            throw new Error("You have no live tickets");
+        if (!claimDoc.exists) {
+            throw new Error("You have no claims");
         }
 
-        const tickets = ticketSnapshot.docs.map((doc) => {
-            const data = doc.data();
+        const claim = {
+            claim_id: (await claimDoc).id,
+            ...claim.doc.data()   
+        }
 
-            return {
-                ticket_id: doc.id,
-                ...data,
-
-            };
-        });
-
+        
         return res.status(200).json({
-            tickets
+            claim
         })
 
     } catch (error) {
@@ -271,5 +259,5 @@ async function enterGame(req, res) {
 }
 
 module.exports = {
-    startMyClaim
+    startMyClaim, getClaim
 };

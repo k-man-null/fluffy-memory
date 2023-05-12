@@ -3,13 +3,14 @@ const router = express.Router();
 const { 
     
     startMyClaim,
+    getClaim
   
 
 } = require('../controllers/claimController')
 
 router.post('/', startMyClaim);
 
-// router.get('/live', getMyLiveTickets);
+router.get('/:game_id', getClaim);
 
 // router.get('/lost', getMyLostTickets);
 
