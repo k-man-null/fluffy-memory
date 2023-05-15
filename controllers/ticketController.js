@@ -1,5 +1,6 @@
 const Ticket = require('../models/ticket');
 const db = require('../firebase');
+const { FieldValue } = require('firebase-admin/firestore');
 
 const IntaSend = require('intasend-node');
 
@@ -126,7 +127,7 @@ async function enterGame(req, res) {
 
         //TODO: Get the user id fom request after implementing auth
 
-        const { game_id, total_tickets } = req.body;
+        const { game_id, total_tickets, coupon_code } = req.body;
 
 
         const user_id = req.user.user_id;
@@ -245,12 +246,10 @@ async function enterGame(req, res) {
                 tickets_sold: newTicketsSold
             });
 
-            
-
             for (let i = 0; i < parseInt(total_tickets); i++) {
 
                 let ticketsCollectionRef = gameRef.collection('tickets').doc();
-                
+
                 transaction.set(ticketsCollectionRef, {
                     ticket_owner_username: user_name,
                     ticketowner_id: user_id,
@@ -264,7 +263,21 @@ async function enterGame(req, res) {
                     creator_email: creator_email,
                 })
 
-    
+                if(coupon_code) {
+
+                    let commissionsRef = db.collection('commissions').doc();
+
+                    transaction.set(commissionsRef,{
+                        game_id: game_id,
+                        number_of_tickets: parseInt(total_tickets),
+                        invoice_id: "invoice_id",
+                        settled: false,
+                        code: coupon_code,
+                        timestamp: FieldValue.serverTimestamp()
+                    });
+
+                }
+                
             }
 
             return { message: "Transaction completed successfully" };
