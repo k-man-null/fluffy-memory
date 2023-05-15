@@ -236,7 +236,7 @@ async function enterGame(req, res) {
 
             const newTicketsSold = totalTicketsSold + parseInt(total_tickets);
 
-            if(newTicketsSold == ticketsTotal) {
+            if (newTicketsSold == ticketsTotal) {
                 transaction.update(gameRef, {
                     sold_out: true
                 });
@@ -257,27 +257,29 @@ async function enterGame(req, res) {
                     ticket_price: ticketPrice,
                     invoice_id: "invoice_id",
                     status: "live",
-                    claimed:false,
+                    claimed: false,
                     won: false,
                     game_id: game_id,
                     creator_email: creator_email,
                 })
 
-                if(coupon_code) {
 
-                    let commissionsRef = db.collection('commissions').doc();
 
-                    transaction.set(commissionsRef,{
-                        game_id: game_id,
-                        number_of_tickets: parseInt(total_tickets),
-                        invoice_id: "invoice_id",
-                        settled: false,
-                        code: coupon_code,
-                        timestamp: FieldValue.serverTimestamp()
-                    });
+            }
 
-                }
-                
+            if (coupon_code) {
+
+                let commissionsRef = db.collection('commissions').doc();
+
+                transaction.set(commissionsRef, {
+                    game_id: game_id,
+                    number_of_tickets: parseInt(total_tickets),
+                    invoice_id: "invoice_id",
+                    settled: false,
+                    code: coupon_code,
+                    timestamp: FieldValue.serverTimestamp()
+                });
+
             }
 
             return { message: "Transaction completed successfully" };
