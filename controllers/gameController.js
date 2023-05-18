@@ -24,7 +24,7 @@ function uploadFromMemory(file) {
 
     // Generate a unique filename with the extension
     const uploadfilename = `${uploadFolderName}/${uniqueId}${fileExtension}`;
-    const servefilename = `${serveFolderName}/${uniqueId}.webp`;
+    const servefilename = `${uniqueId}.webp`;
 
     const metadata = {
         metadata: {
