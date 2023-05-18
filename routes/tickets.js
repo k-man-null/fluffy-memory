@@ -6,18 +6,12 @@ const {
     enterGame,
     getMytickets,
     getMyLiveTickets,
-    getMyLostTickets,
-    getMyWonTickets
 
 } = require('../controllers/ticketController')
 
 router.get('/', getMytickets);
 
 router.get('/live', getMyLiveTickets);
-
-router.get('/lost', getMyLostTickets);
-
-router.get('/won', getMyWonTickets);
 
 router.get('/:id', errorResponse);
 

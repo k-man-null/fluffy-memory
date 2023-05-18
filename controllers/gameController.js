@@ -1,4 +1,3 @@
-const Game = require('../models/games');
 
 const db = require("../firebase");
 const { Timestamp } = require('firebase-admin/firestore');
@@ -323,34 +322,33 @@ async function getAllGames(req, res) {
 
 }
 
-async function getAllLiveGames(req, res) {
+// async function getAllLiveGames(req, res) {
 
-    try {
+//     try {
 
-        const games = await Game.findAll({
-            where: {
-                status: "live"
-            }
-        });
+//         const games = await Game.findAll({
+//             where: {
+//                 status: "live"
+//             }
+//         });
 
-        if (games === null) {
-            return res.status(400).json({ message: "No live games found" });
-        }
-        return res.status(200).json(games);
+//         if (games === null) {
+//             return res.status(400).json({ message: "No live games found" });
+//         }
+//         return res.status(200).json(games);
 
-    } catch (error) {
+//     } catch (error) {
 
-        return res.status(500).send(error);
+//         return res.status(500).send(error);
 
-    }
+//     }
 
-}
+// }
 
 module.exports = {
     createGame,
     getGame,
     getAllGames,
-    getAllLiveGames,
     getMyEndedGames,
     getMyLiveGames,
     getGameCreator,

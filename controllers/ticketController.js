@@ -1,4 +1,3 @@
-const Ticket = require('../models/ticket');
 const db = require('../firebase');
 const { FieldValue } = require('firebase-admin/firestore');
 
@@ -77,49 +76,49 @@ async function getMyLiveTickets(req, res) {
     }
 }
 
-async function getMyLostTickets(req, res) {
+// async function getMyLostTickets(req, res) {
 
-    try {
+//     try {
 
-        const { user_id } = req.user;
+//         const { user_id } = req.user;
 
-        let tickets = await Ticket.findAll({
-            where: {
-                ticketowner_id: user_id,
-                status: "lost"
-            }
-        })
+//         let tickets = await Ticket.findAll({
+//             where: {
+//                 ticketowner_id: user_id,
+//                 status: "lost"
+//             }
+//         })
 
-        return res.status(200).json({
-            tickets
-        })
+//         return res.status(200).json({
+//             tickets
+//         })
 
-    } catch (error) {
-        return res.status(400).json(error.message)
-    }
-}
+//     } catch (error) {
+//         return res.status(400).json(error.message)
+//     }
+// }
 
-async function getMyWonTickets(req, res) {
+// async function getMyWonTickets(req, res) {
 
-    try {
+//     try {
 
-        const { user_id } = req.user;
+//         const { user_id } = req.user;
 
-        let tickets = await Ticket.findAll({
-            where: {
-                ticketowner_id: user_id,
-                status: "won"
-            }
-        })
+//         let tickets = await Ticket.findAll({
+//             where: {
+//                 ticketowner_id: user_id,
+//                 status: "won"
+//             }
+//         })
 
-        return res.status(200).json({
-            tickets
-        })
+//         return res.status(200).json({
+//             tickets
+//         })
 
-    } catch (error) {
-        return res.status(400).json(error.message)
-    }
-}
+//     } catch (error) {
+//         return res.status(400).json(error.message)
+//     }
+// }
 
 async function enterGame(req, res) {
 
@@ -375,6 +374,4 @@ module.exports = {
     enterGame,
     getMytickets,
     getMyLiveTickets,
-    getMyLostTickets,
-    getMyWonTickets
 };
