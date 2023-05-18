@@ -1,17 +1,10 @@
 const express = require('express');
 const logger = require('morgan');
-// const conn = require('./connection');
 const User = require('./models/user');
-// const { pickWinner } = require('./utils/giveprizes');
 const { verifyToken } = require("./utils/encryption");
 const cors = require('cors');
 const cookieparser = require('cookie-parser');
 
-// async function start() {
-//     await conn.sync({ force: true });
-// }
-
-// start()
 
 const cron = require('node-cron');
 const { endGame } = require('./utils/giveprizes');
