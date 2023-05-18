@@ -65,7 +65,7 @@ async function createGame(req, res) {
 
         game.host_id = req.user.user_id;
         game.creator_email = req.user.email;
-        console.log(game.EndDate);
+        
         game.EndDate = Timestamp.fromDate(new Date(game.EndDate));
 
         /**
@@ -116,6 +116,10 @@ async function createGame(req, res) {
 
         const images = await Promise.all(imageUploadPromises);
 
+        if(images.length < 1) {
+            throw new Error("A competition must have an image of the prize");
+        }
+
         // Create game in the database
         const new_game_data =
         {
@@ -145,7 +149,7 @@ async function createGame(req, res) {
 
     } catch (error) {
 
-        return res.status(400).send("Error creating the competition");
+        return res.status(400).send(error.message);
     }
 
 }
