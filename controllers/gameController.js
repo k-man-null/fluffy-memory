@@ -35,7 +35,7 @@ function uploadFromMemory(file) {
 
     return storage.bucket(bucketName).file(uploadfilename).save(file.buffer, { metadata }).then(() => {
 
-        const publicUrl = `https://storage.googleapis.com/${bucketName}/${servefilename}`;
+        const publicUrl = servefilename;
 
         console.log(
             `${uploadfilename} uploaded to ${bucketName}.`

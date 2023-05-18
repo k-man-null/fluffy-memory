@@ -263,8 +263,6 @@ async function enterGame(req, res) {
                     creator_email: creator_email,
                 })
 
-
-
             }
 
             if (coupon_code) {
