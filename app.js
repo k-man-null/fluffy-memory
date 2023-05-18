@@ -29,7 +29,7 @@ app.use(cookieparser())
 app.use(express.json())
 
 var corsOptions = {
-    origin: ["https://tiki-a7763.web.app", "http://localhost:3000"],
+    origin: ["https://tiki-a7763.web.app", "http://localhost:3000", "https://tikitiki.me"],
     credentials: true
 }
 
