@@ -11,7 +11,6 @@ const {
     createGame, 
     getGame,
     getAllGames,
-    getAllLiveGames,
     getMyEndedGames,
     getMyLiveGames,
     getGameCreator
@@ -24,8 +23,6 @@ router.get('/', (req,res) => {
 });
 
 router.get('/all', getAllGames);
-
-router.get('/live', getAllLiveGames);
 
 router.get('/my/live/', getMyLiveGames);
 
