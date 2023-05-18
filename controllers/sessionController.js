@@ -9,7 +9,6 @@ const baseUrlFront = "https://tiki-a7763.web.app"
 const jwt = require('jsonwebtoken');
 
 const { publishMessage } = require("../utils/giveprizes");
-const { Json } = require('sequelize/types/utils');
 
 async function logout(req, res) {
 
