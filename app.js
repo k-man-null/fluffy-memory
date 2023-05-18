@@ -1,6 +1,5 @@
 const express = require('express');
 const logger = require('morgan');
-const User = require('./models/user');
 const { verifyToken } = require("./utils/encryption");
 const cors = require('cors');
 const cookieparser = require('cookie-parser');
@@ -11,34 +10,6 @@ const { endGame } = require('./utils/giveprizes');
 
 cron.schedule('* * * * *', () => endGame());
 
-class UserSkel {
-    constructor(number) {
-        this.user_name = `test${number}`;
-        this.phone = `0722000${number}`;
-        this.password = `password${number}`;
-        this.email = `${this.user_name}@mail.com`;
-    }
-}
-
-async function createDummyUsers() {
-    let users = []
-
-    for (let i = 1; i < 1000; i++) {
-        const user = new UserSkel(i);
-        users.push(user);
-    }
-
-    try {
-
-        await User.bulkCreate(users);
-
-    } catch (error) {
-        console.log(error);
-    }
-
-}
-
-//createDummyUsers();
 
 const userRouter = require('./routes/users');
 const gamesRouter = require('./routes/games');
