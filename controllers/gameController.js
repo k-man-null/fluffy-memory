@@ -66,12 +66,11 @@ async function createGame(req, res) {
         game.host_id = req.user.user_id;
         game.creator_email = req.user.email;
 
-        console.log(game.endDate);
+        console.log(game.EndDate);
         
         game.EndDate = Timestamp.fromDate(new Date(game.EndDate));
 
-        console.log(game.endDate);
-
+        console.log(game.EndDate);  
 
         /**
          * The sweet code here was before I picked google cloud storage 
@@ -111,13 +110,11 @@ async function createGame(req, res) {
          */
 
 
-
         const imageUploadPromises = req.files.images.map((file) => {
 
             return uploadFromMemory(file);
 
         });
-
 
         const images = await Promise.all(imageUploadPromises);
 
@@ -235,8 +232,6 @@ async function getMyLiveGames(req, res) {
         const gamesRef = db.collection('games');
         const query = gamesRef.where('host_id', '==', id).where('status', '==', 'live');
         const querySnapshot = await query.get();
-
-        
 
         if (querySnapshot.empty) {
             return res.status(400).json({ message: "You have no live games" });
