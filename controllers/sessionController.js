@@ -130,10 +130,7 @@ async function verifyEmailCallBack(req, res) {
     } catch (error) {
         console.log(error);
         return res.status(400).json({ message: "Error verifying email" });
-
     }
-
-
 }
 
 async function getFullProfile(req, res) {
@@ -164,7 +161,6 @@ async function getFullProfile(req, res) {
             avatar: userData.avatar,
             verified: userData.verified
         };
-
 
         return res.status(200).json(full_profile);
 
@@ -332,24 +328,30 @@ async function loadUserWallet(req, res) {
                 narrative: narrative
             })
 
-            console.log(response);
-                // .then((response) => {
+            const data = JSON.stringify(response);
 
-                //     console.log(JSON.stringify(response))
-                //     console.log(`Intasend loadwallet response ${response}`);
-                //     return res.status(200).json({ message: "We have received your deposit request" });
-                // })
-                // .catch((error) => {
-                //     console.log(`Intasend loadwallet error ${error}`)
-                //     return res.status(400).json({ message: `Wallet not found` });
+            if(!data.hasOwnProperty("invoice")) {
+                return res.status(400).json({ message: data });
+            }
 
-                // });
+            const invoiceId = data.invoice.invoice_id;
+
+            // const statusTransaction =  await collection.status(invoiceId);
+
+            // const statusTransactionObj = JSON.stringify(statusTransaction);
+
+            // if(!statusTransactionObj.hasOwnProperty("invoice")) {
+            //     return res.status(400).json({ message: statusTransaction });
+            // }
+
+            return res.status(200).json({ message: "We have received your deposit request" });
+
 
         }
 
     } catch (error) {
 
-        console.log(`Error loading wallet catch2 ${error}`);
+        //console.log(`Error loading wallet catch2 ${error}`);
 
         res.status(500).send("Internal server error");
 

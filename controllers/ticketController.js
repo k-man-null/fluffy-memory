@@ -264,11 +264,15 @@ async function enterGame(req, res) {
 
             }
 
+            const commission = parseInt(total_tickets) * 0.1 * ticketPrice;
+
             if (coupon_code) {
 
                 let commissionsRef = db.collection('commissions').doc();
 
                 transaction.set(commissionsRef, {
+                    amount: commission,
+                    customer: user_name,
                     game_id: game_id,
                     number_of_tickets: parseInt(total_tickets),
                     invoice_id: "invoice_id",

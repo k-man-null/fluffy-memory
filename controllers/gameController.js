@@ -65,8 +65,13 @@ async function createGame(req, res) {
 
         game.host_id = req.user.user_id;
         game.creator_email = req.user.email;
+
+        console.log(game.endDate);
         
         game.EndDate = Timestamp.fromDate(new Date(game.EndDate));
+
+        console.log(game.endDate);
+
 
         /**
          * The sweet code here was before I picked google cloud storage 
