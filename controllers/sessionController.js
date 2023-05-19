@@ -4,8 +4,8 @@ const { uploadFromMemory } = require("../controllers/gameController");
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
-const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app"
-const baseUrlFront = "https://tiki-a7763.web.app"
+const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app";
+const baseUrlFront = "https://tikitiki.me";
 const jwt = require('jsonwebtoken');
 
 const { publishMessage } = require("../utils/giveprizes");
@@ -325,23 +325,25 @@ async function loadUserWallet(req, res) {
 
             let collection = intasend.collection();
 
-            await collection.mpesaStkPush({
+            const response =  await collection.mpesaStkPush({
                 wallet_id: wallet_id,
                 phone_number: phone_number,
                 amount: amount,
                 narrative: narrative
             })
-                .then((response) => {
 
-                    console.log(JSON.stringify(response))
-                    console.log(`Intasend loadwallet response ${response}`);
-                    return res.status(200).json({ message: "We have received your deposit request" });
-                })
-                .catch((error) => {
-                    console.log(`Intasend loadwallet error ${error}`)
-                    return res.status(400).json({ message: `Wallet not found` });
+            console.log(response);
+                // .then((response) => {
 
-                });
+                //     console.log(JSON.stringify(response))
+                //     console.log(`Intasend loadwallet response ${response}`);
+                //     return res.status(200).json({ message: "We have received your deposit request" });
+                // })
+                // .catch((error) => {
+                //     console.log(`Intasend loadwallet error ${error}`)
+                //     return res.status(400).json({ message: `Wallet not found` });
+
+                // });
 
         }
 
