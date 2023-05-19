@@ -68,7 +68,7 @@ async function createGame(req, res) {
 
         console.log(game.EndDate);
         
-        game.EndDate = Timestamp.fromDate(new Date(game.EndDate));
+        game.EndDate = Timestamp.fromMillis(game.EndDate);
 
         console.log(game.EndDate);  
 
