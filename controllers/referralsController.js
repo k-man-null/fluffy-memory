@@ -30,8 +30,8 @@ async function createReferralCode(req, res) {
 
         return res.status(200).json(
             {
-             message: "Your ref code has been set, you can share it and earn 10% with every sale",
-                
+                message: "Your ref code has been set, you can share it and earn 10% with every sale",
+
             });
 
     } catch (error) {
@@ -42,6 +42,161 @@ async function createReferralCode(req, res) {
 
 }
 
+async function getMyRefCodes(req, res) {
+    try {
+
+        const user_id = req.user.user_id;
+
+        const refCodesRef = db.collection('refcodes');
+
+        const snapshot = await refCodesRef.where('affiliate.user_id' == user_id).get();
+
+
+        if (snapshot.empty) {
+            throw new Error("You have no ref codes");
+        }
+
+        const codes = snapshot.docs.map((doc) => {
+            const data = doc.data();
+
+            return {
+                refcode_id: doc.id,
+                ...data,
+
+            };
+        });
+
+        return res.status(200).json({
+            codes
+        })
+
+
+    } catch (error) {
+
+        return res.status(400).json({
+            message: error.message
+        })
+
+    }
+}
+
+
+async function getMyEarnings(req, res) {
+
+    try {
+
+        const user_id = req.user.user_id;
+
+        //get the affiliate codes
+        const refCodesRef = db.collection('refcodes');
+
+        const snapshot = await refCodesRef.where('affiliate.user_id' == user_id).get();
+
+
+        if (snapshot.empty) {
+            throw new Error("You have no ref codes");
+        }
+
+        const codes = snapshot.docs.map((doc) => {
+
+            return {
+                refcode_id: doc.id,
+            };
+
+        });
+
+        const commissionsRef = db.collection('commissions');
+
+        const commissionsDocs = await commissionsRef.where('code', 'in', codes).get();
+
+        let settledAmount = 0;
+        let unsettledAmount = 0;
+
+        commissionsDocs.forEach((doc) => {
+            const data = doc.data();
+            const commissionAmount = data.amount;
+            const isSettled = data.settled;
+
+            if (isSettled) {
+                settledAmount += commissionAmount;
+            } else {
+                unsettledAmount += commissionAmount;
+            }
+        });
+
+        return res.status(200).json({
+            settledEarnings: settledAmount,
+            pendingEarnings: unsettledAmount
+        })
+
+
+    } catch (error) {
+
+        return res.status(400).json({ message: error.message });
+
+    }
+}
+
+async function getMyCommissions(req, res) {
+
+    try {
+
+        const user_id = req.user.user_id;
+
+        //get the affiliate codes
+        const refCodesRef = db.collection('refcodes');
+
+        const snapshot = await refCodesRef.where('affiliate.user_id' == user_id).get();
+
+
+        if (snapshot.empty) {
+            throw new Error("You have no ref codes");
+        }
+
+        const codes = snapshot.docs.map((doc) => {
+
+            return {
+                refcode_id: doc.id,
+            };
+
+        });
+
+        const commissionsRef = db.collection('commissions');
+
+        const commissionsDocs = await commissionsRef.where('code', 'in', codes).get();
+
+        if(commissionsDocs.empty) {
+            throw new Error("You have not earned yet");
+
+        }
+
+        const commissions = snapshot.docs.map((doc) => {
+            const data = doc.data();
+
+            return {
+                commission_id: doc.id,
+                ...data,
+
+            };
+        });
+
+        return res.status(200).json({
+            commissions
+        })
+
+
+    } catch (error) {
+
+        return res.status(400).json({
+            message: error.message
+        });
+
+    }
+}
+
 module.exports = {
-    createReferralCode
+    createReferralCode,
+    getMyRefCodes,
+    getMyEarnings,
+    getMyCommissions
 }
