@@ -16,6 +16,7 @@ const gamesRouter = require('./routes/games');
 const ticketRouter = require('./routes/tickets');
 const sessionRouter = require('./routes/session');
 const claimRouter = require('./routes/claims');
+const referralsRouter = require('./routes/referrals');
 
 
 const app = express();
@@ -46,6 +47,7 @@ app.use('/games', gamesRouter);
 app.use('/tickets', ticketRouter);
 app.use('/session', sessionRouter);
 app.use('/claim',claimRouter);
+app.use('/refcodes', referralsRouter);
 
 
 
