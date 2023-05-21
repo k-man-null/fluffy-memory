@@ -163,8 +163,10 @@ async function getMyCommissions(req, res) {
 
         const commissionsDocs = await commissionsRef.where('code', 'in', codes).get();
 
-        if(commissionsDocs.empty) {
-            throw new Error("You have not earned yet");
+        if (commissionsDocs.empty) {
+            return res.status(200).json({
+                commissions: []
+            })
 
         }
 
