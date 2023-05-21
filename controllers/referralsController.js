@@ -42,19 +42,18 @@ async function createReferralCode(req, res) {
 }
 
 async function getMyRefCodes(req, res) {
+
     try {
 
         const user_id = req.user.user_id;
 
         const refCodesRef = db.collection('refcodes');
 
-        const snapshot = await refCodesRef.where('affiliate.user_id' == user_id).get();
+        const snapshot = await refCodesRef.where('affiliate.user_id', '==', user_id).get();
 
         if (snapshot.empty) {
             throw new Error("You have no ref codes");
         }
-
-        console.log("Got here");
 
         const codes = snapshot.docs.map((doc) => {
             const data = doc.data();
@@ -69,7 +68,6 @@ async function getMyRefCodes(req, res) {
         return res.status(200).json({
             codes
         })
-
 
     } catch (error) {
 
@@ -90,7 +88,7 @@ async function getMyEarnings(req, res) {
         //get the affiliate codes
         const refCodesRef = db.collection('refcodes');
 
-        const snapshot = await refCodesRef.where('affiliate.user_id' == user_id).get();
+        const snapshot = await refCodesRef.where('affiliate.user_id', '==', user_id).get();
 
 
         if (snapshot.empty) {
@@ -146,7 +144,7 @@ async function getMyCommissions(req, res) {
         //get the affiliate codes
         const refCodesRef = db.collection('refcodes');
 
-        const snapshot = await refCodesRef.where('affiliate.user_id' == user_id).get();
+        const snapshot = await refCodesRef.where('affiliate.user_id', '==', user_id).get();
 
 
         if (snapshot.empty) {
