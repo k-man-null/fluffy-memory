@@ -159,6 +159,8 @@ async function getMyCommissions(req, res) {
 
         });
 
+        console.log(codes);
+
         const commissionsRef = db.collection('commissions');
 
         const commissionsDocs = await commissionsRef.where('code', 'in', codes).get();
