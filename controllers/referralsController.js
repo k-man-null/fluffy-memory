@@ -85,23 +85,15 @@ async function getMyEarnings(req, res) {
 
         const user_id = req.user.user_id;
 
-        //get the affiliate codes
         const refCodesRef = db.collection('refcodes');
 
         const snapshot = await refCodesRef.where('affiliate.user_id', '==', user_id).get();
-
 
         if (snapshot.empty) {
             throw new Error("You have no ref codes");
         }
 
-        const codes = snapshot.docs.map((doc) => {
-
-            return {
-                refcode_id: doc.id,
-            };
-
-        });
+        const codes = snapshot.docs.map((doc) => doc.id);
 
         const commissionsRef = db.collection('commissions');
 
