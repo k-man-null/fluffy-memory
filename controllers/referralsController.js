@@ -164,7 +164,7 @@ async function getMyCommissions(req, res) {
 
         }
 
-        const commissions = snapshot.docs.map((doc) => {
+        const commissions = commissionsDocs.docs.map((doc) => {
             const data = doc.data();
 
             return {
