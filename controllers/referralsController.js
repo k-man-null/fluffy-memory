@@ -10,7 +10,6 @@ const jwt = require('jsonwebtoken');
 
 const { publishMessage } = require("../utils/giveprizes");
 
-
 async function createReferralCode(req, res) {
 
     try {
@@ -51,10 +50,11 @@ async function getMyRefCodes(req, res) {
 
         const snapshot = await refCodesRef.where('affiliate.user_id' == user_id).get();
 
-
         if (snapshot.empty) {
             throw new Error("You have no ref codes");
         }
+
+        console.log("Got here");
 
         const codes = snapshot.docs.map((doc) => {
             const data = doc.data();

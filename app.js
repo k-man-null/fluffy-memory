@@ -47,7 +47,7 @@ app.use('/games', gamesRouter);
 app.use('/tickets', ticketRouter);
 app.use('/session', sessionRouter);
 app.use('/claim',claimRouter);
-app.use('/refcodes', referralsRouter);
+app.use('/referrals', referralsRouter);
 
 
 
