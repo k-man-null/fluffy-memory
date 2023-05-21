@@ -151,15 +151,7 @@ async function getMyCommissions(req, res) {
             throw new Error("You have no ref codes");
         }
 
-        const codes = snapshot.docs.map((doc) => {
-
-            return {
-                refcode_id: doc.id,
-            };
-
-        });
-
-        console.log(codes);
+        const codes = snapshot.docs.map((doc) => doc.id);
 
         const commissionsRef = db.collection('commissions');
 
