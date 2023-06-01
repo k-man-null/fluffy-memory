@@ -5,7 +5,8 @@ const {
     createReferralCode,
     getMyRefCodes,
     getMyEarnings,
-    getMyCommissions
+    getMyCommissions,
+    getGameCommissions
 
 } = require('../controllers/referralsController');
 
@@ -13,5 +14,6 @@ router.post('/', createReferralCode);
 router.get('/mycodes', getMyRefCodes);
 router.get('/earnings', getMyEarnings);
 router.get('/commissions', getMyCommissions);
+router.get('/gamecommissions', getGameCommissions);
 
 module.exports = router;

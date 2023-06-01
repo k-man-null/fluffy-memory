@@ -236,7 +236,7 @@ async function createUserWallet(req, res) {
 
         const usersCollection = db.collection('users');
 
-        const userDocRef = await usersCollection.doc(id);
+        const userDocRef =  usersCollection.doc(id);
 
         const user = await userDocRef.get();
 
@@ -320,6 +320,8 @@ async function loadUserWallet(req, res) {
             );
 
             let collection = intasend.collection();
+
+            collection.charge()
 
             const response =  await collection.mpesaStkPush({
                 wallet_id: wallet_id,

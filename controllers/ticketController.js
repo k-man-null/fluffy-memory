@@ -216,14 +216,14 @@ async function enterGame(req, res) {
             //         console.log("Intra transfer response");
             //         console.log(resp);
 
-            //          return true
+            //          return resp
 
             //     })
             //     .catch((err) => {
             //         console.log(`Intratransfer error`)
             //         console.log(err);
             //         return false
-            //         throw new Error(err);
+            
 
             //     });
 

@@ -8,7 +8,9 @@ const cookieparser = require('cookie-parser');
 const cron = require('node-cron');
 const { endGame } = require('./utils/giveprizes');
 
-cron.schedule('* * * * *', () => endGame());
+cron.schedule('0 */3 * * *', () => {
+    endGame();
+});
 
 
 const userRouter = require('./routes/users');
@@ -42,11 +44,10 @@ app.use('/users', userRouter);
 
 app.use(verifyToken);
 
-
 app.use('/games', gamesRouter);
 app.use('/tickets', ticketRouter);
 app.use('/session', sessionRouter);
-app.use('/claim',claimRouter);
+app.use('/claim', claimRouter);
 app.use('/referrals', referralsRouter);
 
 

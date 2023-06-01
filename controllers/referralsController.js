@@ -133,11 +133,9 @@ async function getMyCommissions(req, res) {
 
         const user_id = req.user.user_id;
 
-        //get the affiliate codes
         const refCodesRef = db.collection('refcodes');
 
         const snapshot = await refCodesRef.where('affiliate.user_id', '==', user_id).get();
-
 
         if (snapshot.empty) {
             throw new Error("You have no ref codes");
@@ -180,9 +178,46 @@ async function getMyCommissions(req, res) {
     }
 }
 
+async function getGameCommissions(req,res) {
+
+    try {
+
+        const game_id = req.body.game_id;
+        
+        const commissionsRef = db.collection('commissions'); 
+
+        const snapshot = await commissionsRef.where('game_id', '==', game_id).get();
+
+        let commissions = 0;
+
+        if(snapshot.empty) {
+            return res.status(200).json({
+                commissions
+            })
+        }
+
+        const totalCommissions = snapshot.docs.reduce(
+            (accumulator, currentvalue) => accumulator + currentvalue.data().amount, 0
+        )
+
+        commissions = totalCommissions;
+
+        return res.status(200).json({
+            commissions
+        })
+        
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        })
+        
+    }
+}
+
 module.exports = {
     createReferralCode,
     getMyRefCodes,
     getMyEarnings,
-    getMyCommissions
+    getMyCommissions,
+    getGameCommissions
 }

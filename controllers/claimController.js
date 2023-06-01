@@ -42,7 +42,6 @@ async function startMyClaim(req, res) {
             closed: false,
             closed_date: null,
             accepted: false,
-
         }
 
         const claimRef = db.collection('claims').doc(game_id);
