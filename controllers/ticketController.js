@@ -195,7 +195,7 @@ async function enterGame(req, res) {
 
                     //TODO: Convert back to customerAvailableBal < totalprice
 
-                    if (0 > customerAvailableBal) {
+                    if (customerAvailableBal < totalPrice) {
                         throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
                     }
                 })
@@ -209,29 +209,28 @@ async function enterGame(req, res) {
 
             //TODO: In production, make sure the wallet is charged (Uncomment)
 
-            // let narrative = 'Payment';
+            let narrative = 'Payment';
 
-            //const chargeSuccessful =  await wallets.intraTransfer(wallet_id, "WY7JRD0", 40, narrative)
-            //     .then((resp) => {
-            //         console.log("Intra transfer response");
-            //         console.log(resp);
+            const chargeSuccessful =  await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
+                .then((resp) => {
+                    console.log("Intra transfer response");
+                    console.log(resp);
 
-            //          return resp
+                     return resp
 
-            //     })
-            //     .catch((err) => {
-            //         console.log(`Intratransfer error`)
-            //         console.log(err);
-            //         return false
+                })
+                .catch((err) => {
+                    console.log(`Intratransfer error`)
+                    console.log(err);
+                    return false
             
-
-            //     });
+                });
 
             //TODO: Get the invice id of the transfer for tranasction reference
 
-            // if (!chargeSuccessful) {
-            //     throw new Error(`Charge failed for wallet ${wallet_id}`);
-            // }
+            if (!chargeSuccessful) {
+                throw new Error(`Charge failed for wallet ${wallet_id}`);
+            }
 
             const newTicketsSold = totalTicketsSold + parseInt(total_tickets);
 
@@ -254,7 +253,7 @@ async function enterGame(req, res) {
                     ticketowner_id: user_id,
                     avatar: avatar,
                     ticket_price: ticketPrice,
-                    invoice_id: "invoice_id",
+                    invoice_id: chargeSuccessful,
                     status: "live",
                     claimed: false,
                     won: false,
@@ -275,7 +274,7 @@ async function enterGame(req, res) {
                     customer: user_name,
                     game_id: game_id,
                     number_of_tickets: parseInt(total_tickets),
-                    invoice_id: "invoice_id",
+                    invoice_id: chargeSuccessful,
                     settled: false,
                     code: coupon_code,
                     timestamp: FieldValue.serverTimestamp()

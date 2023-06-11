@@ -338,16 +338,15 @@ async function loadUserWallet(req, res) {
 
             const invoiceId = data.invoice.invoice_id;
 
-            // const statusTransaction =  await collection.status(invoiceId);
+            const statusTransaction =  await collection.status(invoiceId);
 
-            // const statusTransactionObj = JSON.stringify(statusTransaction);
+            const statusTransactionObj = JSON.stringify(statusTransaction);
 
-            // if(!statusTransactionObj.hasOwnProperty("invoice")) {
-            //     return res.status(400).json({ message: statusTransaction });
-            // }
+            if(!statusTransactionObj.hasOwnProperty("invoice")) {
+                return res.status(400).json({ message: statusTransaction });
+            }
 
             return res.status(200).json({ message: "We have received your deposit request" });
-
 
         }
 

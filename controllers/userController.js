@@ -5,7 +5,7 @@ const db = require('../firebase');
 const { Timestamp } = require('firebase-admin/firestore');
 const { publishMessage } = require('../utils/giveprizes');
 const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app"
-const baseUrlFront = "https://tiki-a7763.web.app"
+const baseUrlFront = "https://tikitiki.me"
 
 async function saveUser(req, res) {
 
@@ -40,6 +40,36 @@ async function saveUser(req, res) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        let intasend;
+
+        if (intasendPublishable && intasendSecret) {
+
+            intasend = new IntaSend(
+                null,
+                intasendSecret,
+                false
+            );
+        }
+
+        let wallets = intasend.wallets();
+
+        //TODO : Uncomment in production...to avoid creating unnceccessary wallets
+
+        const { wallet_id } = await wallets.create({
+            label: `${user_name}`,
+            wallet_type: 'WORKING',
+            currency: 'KES',
+            can_disburse: true
+        })
+            .then((res) => {
+                return res
+            })
+            .catch((err) => {
+                console.log(err)
+                throw new Error("Intasend walet create error");
+            });
+
+        // const wallet_id = "0XZZQEY"
         const newUserRef = await usersCollection.add({
             first_name,
             last_name,
@@ -50,45 +80,11 @@ async function saveUser(req, res) {
             created_at: Timestamp.now(),
             verified: false,
             avatar: "",
-            wallet_id: "0XZZQEY"
+            wallet_id: wallet_id
         });
 
         const newUser = await newUserRef.get();
         const newUserData = newUser.data();
-
-
-        // let intasend;
-
-        // if (intasendPublishable && intasendSecret) {
-
-        //     intasend = new IntaSend(
-        //         null,
-        //         intasendSecret,
-        //         false
-        //     );
-        // }
-
-        // let wallets = intasend.wallets();
-
-        // let user;
-
-        //TODO : Uncomment in production...to avoid creating unnceccessary wallets
-
-        //    const { wallet_id } = await wallets.create({
-        //         label: `${user_name}`,
-        //         wallet_type: 'WORKING',
-        //         currency: 'KES',
-        //         can_disburse: true
-        //     })
-        //     .then((res) => {
-        //         return res
-        //     })
-        //     .catch((err) => {
-        //         console.log(err)
-        //         throw new Error("Intasend walet create error");
-        //     });
-
-        // const wallet_id = "0XZZQEY"
 
 
         return res.status(200).json({
@@ -142,8 +138,6 @@ async function loginUser(req, res) {
     try {
 
         const { email, password } = req.body;
-
-        // const user = await User.findOne({ where: { email: email } });
 
         const usersCollection = db.collection('users');
 
@@ -230,8 +224,8 @@ async function changePassword(req, res) {
             return res.redirect(200, `${baseUrlFront}/enter`);
 
         })
-        
-        
+
+
 
     } catch (error) {
 
