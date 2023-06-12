@@ -71,9 +71,7 @@ async function verifyEmail(req, res) {
 
         const to = req.user.email;
 
-        const code = jwt.sign(req.user, "myprivatekeytochange", {
-            expiresIn: 3000
-        });
+        const code = jwt.sign(req.user, "myprivatekeytochange");
 
         const text = "To verify your email, click the link below. The link is only valid for 5 minutes"
 
