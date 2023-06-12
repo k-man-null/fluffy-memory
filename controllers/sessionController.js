@@ -112,6 +112,7 @@ async function verifyEmailCallBack(req, res) {
 
         jwt.verify(token, "myprivatekeytochange", async (err, decoded) => {
             if (err) {
+                console.log(err);
                 return res.json({ message: "Invalid Token" });
             }
 
@@ -308,6 +309,71 @@ async function loadUserWallet(req, res) {
         const wallet_id = req.user.wallet_id;
 
         const narrative = "Deposit";
+
+        let intasend;
+
+        if (intasendPublishable && intasendSecret) {
+
+            intasend = new IntaSend(
+                null,
+                intasendSecret,
+                false
+            );
+
+            let collection = intasend.collection();
+
+            collection.charge()
+
+            const response =  await collection.mpesaStkPush({
+                wallet_id: wallet_id,
+                phone_number: phone_number,
+                amount: amount,
+                narrative: narrative
+            })
+
+            const data = JSON.stringify(response);
+
+            if(!data.hasOwnProperty("invoice")) {
+                return res.status(400).json({ message: data });
+            }
+
+            const invoiceId = data.invoice.invoice_id;
+
+            const statusTransaction =  await collection.status(invoiceId);
+
+            const statusTransactionObj = JSON.stringify(statusTransaction);
+
+            if(!statusTransactionObj.hasOwnProperty("invoice")) {
+                return res.status(400).json({ message: statusTransaction });
+            }
+
+            return res.status(200).json({ message: "We have received your deposit request" });
+
+        }
+
+    } catch (error) {
+
+        //console.log(`Error loading wallet catch2 ${error}`);
+
+        res.status(500).send("Internal server error");
+
+    }
+
+}
+
+async function withdraw(req, res) {
+
+    //TODO : Implement withdraw or Payouts
+
+    try {
+
+        const phone_number = req.body.phone_number;
+
+        const amount = req.body.amount;
+
+        const wallet_id = req.user.wallet_id;
+
+        const narrative = "Withdraw";
 
         let intasend;
 

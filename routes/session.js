@@ -30,6 +30,8 @@ router.get('/winner/', getWinnerProfile);
 
 router.post('/deposit', loadUserWallet);
 
+//router.post('/withdraw', withdraw);
+
 router.get('/transactionhistory', userWalletTransactions);
 
 router.get('/fullProfile', getFullProfile);
