@@ -320,8 +320,6 @@ async function loadUserWallet(req, res) {
 
             let collection = intasend.collection();
 
-            collection.charge()
-
             const response =  await collection.mpesaStkPush({
                 wallet_id: wallet_id,
                 phone_number: phone_number,
