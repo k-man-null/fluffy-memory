@@ -93,6 +93,7 @@ async function saveUser(req, res) {
 
 
     } catch (error) {
+        console.log(error)
 
         switch (error.message) {
             case "Username":
