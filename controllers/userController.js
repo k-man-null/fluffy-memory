@@ -7,6 +7,10 @@ const { publishMessage } = require('../utils/giveprizes');
 const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app"
 const baseUrlFront = "https://tikitiki.me"
 
+const IntaSend = require('intasend-node');
+const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
+const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
+
 async function saveUser(req, res) {
 
     // TODO: verify user emails 
@@ -93,7 +97,6 @@ async function saveUser(req, res) {
 
 
     } catch (error) {
-        console.log(error)
 
         switch (error.message) {
             case "Username":
