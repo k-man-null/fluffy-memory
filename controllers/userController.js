@@ -11,9 +11,12 @@ const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 
+const intasendPublishableTest = process.env.INTASEND_PUBLISHABLE_TOKEN_TEST;
+const intasendSecretTest = process.env.INTASEND_SECRET_TOKEN_TEST;
+
 let intasend = new IntaSend(
-    'ISPubKey_test_237ae75e-8851-4433-9edf-00f122e282b8',
-    'ISSecretKey_test_ae101b59-b4d3-4cb1-9710-60b11b187e10',
+    intasendPublishableTest,
+    intasendSecretTest,
     true
   );
 
@@ -47,21 +50,7 @@ async function saveUser(req, res) {
             throw new Error('Phone');
         }
 
-
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        
-
-        console.log([intasendPublishable, intasendSecret])
-
-        // if (intasendPublishable && intasendSecret) {
-
-        //     intasend = new IntaSend(
-        //         intasendPublishable,
-        //         intasendSecret,
-        //         true
-        //     );
-        // }
 
         let wallets = intasend.wallets();
 

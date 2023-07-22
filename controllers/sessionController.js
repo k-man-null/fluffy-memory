@@ -1,14 +1,23 @@
 const IntaSend = require('intasend-node');
 const db = require('../firebase');
 const { uploadFromMemory } = require("../controllers/gameController");
-
-const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
-const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
-const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app";
+const baseUrl = "https://tikitiki-api--server-cbjzk2a2wq-uc.a.run.app";
 const baseUrlFront = "https://tikitiki.me";
 const jwt = require('jsonwebtoken');
 
 const { publishMessage } = require("../utils/giveprizes");
+
+const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
+const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
+
+const intasendPublishableTest = process.env.INTASEND_PUBLISHABLE_TOKEN_TEST;
+const intasendSecretTest = process.env.INTASEND_SECRET_TOKEN_TEST;
+
+let intasend = new IntaSend(
+    intasendPublishableTest,
+    intasendSecretTest,
+    true
+);
 
 async function logout(req, res) {
 
@@ -36,7 +45,7 @@ async function getWinnerProfile(req, res) {
 
         console.log(`Game ${game_id} :: winning_ticket ${winner_ticket_id}`)
 
-        const docPath =  `games/${game_id}/tickets/${winner_ticket_id}`
+        const docPath = `games/${game_id}/tickets/${winner_ticket_id}`
 
         const ticketQuery = db.doc(docPath);
 
@@ -188,30 +197,21 @@ async function getUserWallet(req, res) {
             return res.status(400).json({ message: `User not found` });
         }
 
-        let intasend;
+        let wallets = intasend.wallets();
 
-        if (intasendPublishable && intasendSecret) {
+        wallets
+            .get(wallet_id)
+            .then((resp) => {
+                return res.status(200).json(
+                    resp
+                );
+            })
+            .catch((error) => {
+                console.log(`Error Get wallet inside catch1 ${error}`)
+                return res.status(400).json({ message: `Wallet not found` });
 
-            intasend = new IntaSend(
-                null,
-                intasendSecret,
-                false
-            );
+            });
 
-            let wallets = intasend.wallets();
-            wallets
-                .get(wallet_id)
-                .then((resp) => {
-                    return res.status(200).json(
-                        resp
-                    );
-                })
-                .catch((error) => {
-                    console.log(`Error Get wallet inside catch1 ${error}`)
-                    return res.status(400).json({ message: `Wallet not found` });
-
-                });
-        }
 
     } catch (error) {
 
@@ -235,7 +235,7 @@ async function createUserWallet(req, res) {
 
         const usersCollection = db.collection('users');
 
-        const userDocRef =  usersCollection.doc(id);
+        const userDocRef = usersCollection.doc(id);
 
         const user = await userDocRef.get();
 
@@ -295,7 +295,6 @@ async function createUserWallet(req, res) {
 
 }
 
-
 async function loadUserWallet(req, res) {
 
     try {
@@ -320,7 +319,7 @@ async function loadUserWallet(req, res) {
 
             let collection = intasend.collection();
 
-            const response =  await collection.mpesaStkPush({
+            const response = await collection.mpesaStkPush({
                 wallet_id: wallet_id,
                 phone_number: phone_number,
                 amount: amount,
@@ -329,17 +328,17 @@ async function loadUserWallet(req, res) {
 
             const data = JSON.stringify(response);
 
-            if(!data.hasOwnProperty("invoice")) {
+            if (!data.hasOwnProperty("invoice")) {
                 return res.status(400).json({ message: data });
             }
 
             const invoiceId = data.invoice.invoice_id;
 
-            const statusTransaction =  await collection.status(invoiceId);
+            const statusTransaction = await collection.status(invoiceId);
 
             const statusTransactionObj = JSON.stringify(statusTransaction);
 
-            if(!statusTransactionObj.hasOwnProperty("invoice")) {
+            if (!statusTransactionObj.hasOwnProperty("invoice")) {
                 return res.status(400).json({ message: statusTransaction });
             }
 
@@ -385,7 +384,7 @@ async function withdraw(req, res) {
 
             collection.charge()
 
-            const response =  await collection.mpesaStkPush({
+            const response = await collection.mpesaStkPush({
                 wallet_id: wallet_id,
                 phone_number: phone_number,
                 amount: amount,
@@ -394,17 +393,17 @@ async function withdraw(req, res) {
 
             const data = JSON.stringify(response);
 
-            if(!data.hasOwnProperty("invoice")) {
+            if (!data.hasOwnProperty("invoice")) {
                 return res.status(400).json({ message: data });
             }
 
             const invoiceId = data.invoice.invoice_id;
 
-            const statusTransaction =  await collection.status(invoiceId);
+            const statusTransaction = await collection.status(invoiceId);
 
             const statusTransactionObj = JSON.stringify(statusTransaction);
 
-            if(!statusTransactionObj.hasOwnProperty("invoice")) {
+            if (!statusTransactionObj.hasOwnProperty("invoice")) {
                 return res.status(400).json({ message: statusTransaction });
             }
 
