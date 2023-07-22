@@ -178,59 +178,59 @@ async function enterGame(req, res) {
 
             let totalPrice = ticketPrice * parseInt(total_tickets);
 
-            let intasend;
+            // let intasend;
 
-            intasend = new IntaSend(
-                null,
-                intasendSecret,
-                false
-            );
+            // intasend = new IntaSend(
+            //     null,
+            //     intasendSecret,
+            //     false
+            // );
 
-            // let collection = intasend.collection();
-            let wallets = intasend.wallets();
+            // // let collection = intasend.collection();
+            // let wallets = intasend.wallets();
 
-            await wallets.get(wallet_id)
-                .then((resp) => {
-                    let customerAvailableBal = resp.available_balance;
+            // await wallets.get(wallet_id)
+            //     .then((resp) => {
+            //         let customerAvailableBal = resp.available_balance;
 
-                    //TODO: Convert back to customerAvailableBal < totalprice
+            //         //TODO: Convert back to customerAvailableBal < totalprice
 
-                    if (customerAvailableBal < totalPrice) {
-                        throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
-                    }
-                })
-                .catch((err) => {
-                    console.log(`Intasend get wallet error`);
-                    console.log(err);
-                    throw new Error(err);
-                });
+            //         if (customerAvailableBal < totalPrice) {
+            //             throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
+            //         }
+            //     })
+            //     .catch((err) => {
+            //         console.log(`Intasend get wallet error`);
+            //         console.log(err);
+            //         throw new Error(err);
+            //     });
 
-            //charge wallet... transfer from user wallet to mainwallet (intra transfer)'
+            // //charge wallet... transfer from user wallet to mainwallet (intra transfer)'
 
-            //TODO: In production, make sure the wallet is charged (Uncomment)
+            // //TODO: In production, make sure the wallet is charged (Uncomment)
 
-            let narrative = 'Payment';
+            // let narrative = 'Payment';
 
-            const chargeSuccessful =  await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
-                .then((resp) => {
-                    console.log("Intra transfer response");
-                    console.log(resp);
+            // const chargeSuccessful =  await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
+            //     .then((resp) => {
+            //         console.log("Intra transfer response");
+            //         console.log(resp);
 
-                     return resp
+            //          return resp
 
-                })
-                .catch((err) => {
-                    console.log(`Intratransfer error`)
-                    console.log(err);
-                    return false
+            //     })
+            //     .catch((err) => {
+            //         console.log(`Intratransfer error`)
+            //         console.log(err);
+            //         return false
             
-                });
+            //     });
 
-            //TODO: Get the invice id of the transfer for tranasction reference
+            // //TODO: Get the invice id of the transfer for tranasction reference
 
-            if (!chargeSuccessful) {
-                throw new Error(`Charge failed for wallet ${wallet_id}`);
-            }
+            // if (!chargeSuccessful) {
+            //     throw new Error(`Charge failed for wallet ${wallet_id}`);
+            // }
 
             const newTicketsSold = totalTicketsSold + parseInt(total_tickets);
 
@@ -243,6 +243,8 @@ async function enterGame(req, res) {
             transaction.update(gameRef, {
                 tickets_sold: newTicketsSold
             });
+
+            let chargeSuccessful = {};
 
             for (let i = 0; i < parseInt(total_tickets); i++) {
 
