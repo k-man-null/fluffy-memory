@@ -4,7 +4,6 @@ const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
 const db = require('../firebase');
 const { Timestamp } = require('firebase-admin/firestore');
 const { publishMessage } = require('../utils/giveprizes');
-const baseUrl = "https://tiki-dev-server-7tzn6tu5vq-uc.a.run.app"
 const baseUrlFront = "https://tikitiki.me"
 
 const IntaSend = require('intasend-node');
@@ -45,6 +44,8 @@ async function saveUser(req, res) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         let intasend;
+
+        console.log([intasendPublishable, intasendSecret])
 
         if (intasendPublishable && intasendSecret) {
 
