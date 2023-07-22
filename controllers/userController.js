@@ -10,6 +10,13 @@ const IntaSend = require('intasend-node');
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
+
+let intasend = new IntaSend(
+    'ISPubKey_test_91ffc81a-8ac4-419e-8008-7091caa8d73f',
+    'ISSecretKey_test_15515fe9-fb5d-4362-970e-625532df8181',
+    true
+  );
+
 async function saveUser(req, res) {
 
     // TODO: verify user emails 
@@ -43,18 +50,18 @@ async function saveUser(req, res) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        let intasend;
+        
 
         console.log([intasendPublishable, intasendSecret])
 
-        if (intasendPublishable && intasendSecret) {
+        // if (intasendPublishable && intasendSecret) {
 
-            intasend = new IntaSend(
-                null,
-                intasendSecret,
-                false
-            );
-        }
+        //     intasend = new IntaSend(
+        //         intasendPublishable,
+        //         intasendSecret,
+        //         true
+        //     );
+        // }
 
         let wallets = intasend.wallets();
 
@@ -64,10 +71,9 @@ async function saveUser(req, res) {
             label: `${user_name}`,
             wallet_type: 'WORKING',
             currency: 'KES',
-            can_disburse: true
         })
-            .then((res) => {
-                return res
+            .then((resp) => {
+                console.log(`Resp: ${JSON.stringify(resp)}`);
             })
             .catch((err) => {
                 console.log(err)
