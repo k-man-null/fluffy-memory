@@ -98,6 +98,8 @@ async function saveUser(req, res) {
 
     } catch (error) {
 
+        console.log(error);
+
         switch (error.message) {
             case "Username":
                 res.status(416).json({
@@ -192,6 +194,8 @@ async function loginUser(req, res) {
         }
 
     } catch (error) {
+
+        console.log(error);
 
         res.status(500).send("Internal server error");
 
