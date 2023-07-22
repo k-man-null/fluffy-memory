@@ -8,7 +8,7 @@ const cookieparser = require('cookie-parser');
 const cron = require('node-cron');
 const { endGame } = require('./utils/giveprizes');
 
-cron.schedule('* 1 * * * *', () => {
+cron.schedule('* * * * *', () => {
     endGame();
 });
 
