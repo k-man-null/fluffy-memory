@@ -77,7 +77,7 @@ async function saveUser(req, res) {
                 return(resp);
             })
             .catch((err) => {
-                console.log(`Error: ${JSON.stringify(err)}`);
+                console.log(`Error: ${err}`);
                 throw new Error("Intasend walet create error");
             });
 
