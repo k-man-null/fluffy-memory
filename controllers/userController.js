@@ -73,7 +73,8 @@ async function saveUser(req, res) {
             currency: 'KES',
         })
             .then((resp) => {
-                console.log(`Resp: ${JSON.stringify(resp)}`);
+                console.log(resp);
+                return resp
             })
             .catch((err) => {
                 console.log(err)
