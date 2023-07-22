@@ -12,8 +12,8 @@ const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 
 let intasend = new IntaSend(
-    'ISPubKey_test_91ffc81a-8ac4-419e-8008-7091caa8d73f',
-    'ISSecretKey_test_15515fe9-fb5d-4362-970e-625532df8181',
+    'ISPubKey_test_237ae75e-8851-4433-9edf-00f122e282b8',
+    'ISSecretKey_test_ae101b59-b4d3-4cb1-9710-60b11b187e10',
     true
   );
 
