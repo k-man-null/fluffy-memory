@@ -189,7 +189,7 @@ async function getUserWallet(req, res) {
 
         const usersCollection = db.collection('users');
 
-        const userDocRef = await usersCollection.doc(id);
+        const userDocRef = usersCollection.doc(id);
 
         const user = await userDocRef.get();
 
@@ -198,6 +198,8 @@ async function getUserWallet(req, res) {
         }
 
         let wallets = intasend.wallets();
+
+        console.log(wallet_id);
 
         wallets
             .get(wallet_id)

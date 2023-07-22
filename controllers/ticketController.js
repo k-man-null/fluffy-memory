@@ -37,6 +37,7 @@ async function getMytickets(req, res) {
         })
 
     } catch (error) {
+        console.log(error)
         return res.status(400).json(error.message)
     }
 }
@@ -63,8 +64,8 @@ async function getMyLiveTickets(req, res) {
             return {
                 ticket_id: doc.id,
                 ...data,
-
             };
+
         });
 
         return res.status(200).json({
