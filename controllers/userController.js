@@ -73,11 +73,11 @@ async function saveUser(req, res) {
             currency: 'KES',
         })
             .then((resp) => {
-                console.log(resp);
-                return resp
+                console.log(`Resp: ${JSON.stringify(resp)}`);
+                return(resp);
             })
             .catch((err) => {
-                console.log(err)
+                console.log(`Error: ${JSON.stringify(err)}`);
                 throw new Error("Intasend walet create error");
             });
 
