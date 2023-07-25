@@ -312,15 +312,7 @@ async function loadUserWallet(req, res) {
 
         const narrative = "Deposit";
 
-        let intasend;
-
-        if (intasendPublishable && intasendSecret) {
-
-            intasend = new IntaSend(
-                null,
-                intasendSecret,
-                false
-            );
+        
 
             let collection = intasend.collection();
 
@@ -349,7 +341,7 @@ async function loadUserWallet(req, res) {
 
             return res.status(200).json({ message: "We have received your deposit request" });
 
-        }
+        
 
     } catch (error) {
 
