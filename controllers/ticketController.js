@@ -3,9 +3,16 @@ const { FieldValue } = require('firebase-admin/firestore');
 
 const IntaSend = require('intasend-node');
 
+const MAX_TICKETS_PER_TRANSACTION = 300;
+
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
-const MAX_TICKETS_PER_TRANSACTION = 300;
+
+let intasend = new IntaSend(
+    intasendPublishable,
+    intasendSecret,
+    false
+);
 
 async function getMytickets(req, res) {
 

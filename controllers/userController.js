@@ -15,9 +15,9 @@ const intasendPublishableTest = process.env.INTASEND_PUBLISHABLE_TOKEN_TEST;
 const intasendSecretTest = process.env.INTASEND_SECRET_TOKEN_TEST;
 
 let intasend = new IntaSend(
-    intasendPublishableTest,
-    intasendSecretTest,
-    true
+    intasendPublishable,
+    intasendSecret,
+    false
   );
 
 async function saveUser(req, res) {

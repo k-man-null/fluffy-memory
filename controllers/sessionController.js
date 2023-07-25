@@ -7,16 +7,18 @@ const jwt = require('jsonwebtoken');
 
 const { publishMessage } = require("../utils/giveprizes");
 
-const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
-const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
-
 const intasendPublishableTest = process.env.INTASEND_PUBLISHABLE_TOKEN_TEST;
 const intasendSecretTest = process.env.INTASEND_SECRET_TOKEN_TEST;
 
+const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
+const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
+
+
+
 let intasend = new IntaSend(
-    intasendPublishableTest,
-    intasendSecretTest,
-    true
+    intasendPublishable,
+    intasendSecret,
+    false
 );
 
 async function logout(req, res) {
