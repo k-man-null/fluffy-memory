@@ -183,6 +183,8 @@ async function getFullProfile(req, res) {
 
 async function getUserWallet(req, res) {
 
+    console.log(req.user)
+
     try {
 
         const id = req.user.user_id;
