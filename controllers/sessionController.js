@@ -16,7 +16,7 @@ const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 
 let intasend = new IntaSend(
-    intasendPublishable,
+    null,
     intasendSecret,
     false
 );
@@ -183,7 +183,6 @@ async function getFullProfile(req, res) {
 
 async function getUserWallet(req, res) {
 
-    console.log(req.user)
 
     try {
 
