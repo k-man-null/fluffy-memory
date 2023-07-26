@@ -9,7 +9,7 @@ const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
 let intasend = new IntaSend(
-    intasendPublishable,
+    null,
     intasendSecret,
     false
 );
@@ -24,7 +24,7 @@ async function getMytickets(req, res) {
         console.log(`Tickcetownerid : ${user_id}`);
 
         const ticketSnapshot = await db.collectionGroup('tickets')
-        .where('ticketowner_id', '==', 'TF3OVlaR1LcahUYdnbmj').get();
+            .where('ticketowner_id', '==', 'TF3OVlaR1LcahUYdnbmj').get();
 
         if (ticketSnapshot.empty) {
             throw new Error("You have no live tickets");
@@ -187,59 +187,51 @@ async function enterGame(req, res) {
 
             let totalPrice = ticketPrice * parseInt(total_tickets);
 
-            // let intasend;
+            let collection = intasend.collection();
+            let wallets = intasend.wallets();
 
-            // intasend = new IntaSend(
-            //     null,
-            //     intasendSecret,
-            //     false
-            // );
+            await wallets.get(wallet_id)
+                .then((resp) => {
+                    let customerAvailableBal = resp.available_balance;
 
-            // // let collection = intasend.collection();
-            // let wallets = intasend.wallets();
+                    //TODO: Convert back to customerAvailableBal < totalprice
 
-            // await wallets.get(wallet_id)
-            //     .then((resp) => {
-            //         let customerAvailableBal = resp.available_balance;
-
-            //         //TODO: Convert back to customerAvailableBal < totalprice
-
-            //         if (customerAvailableBal < totalPrice) {
-            //             throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
-            //         }
-            //     })
-            //     .catch((err) => {
-            //         console.log(`Intasend get wallet error`);
-            //         console.log(err);
-            //         throw new Error(err);
-            //     });
+                    if (customerAvailableBal < totalPrice) {
+                        throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
+                    }
+                })
+                .catch((err) => {
+                    console.log(`Intasend get wallet error`);
+                    console.log(err);
+                    throw new Error(err);
+                });
 
             // //charge wallet... transfer from user wallet to mainwallet (intra transfer)'
 
             // //TODO: In production, make sure the wallet is charged (Uncomment)
 
-            // let narrative = 'Payment';
+            let narrative = 'Purchase';
 
-            // const chargeSuccessful =  await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
-            //     .then((resp) => {
-            //         console.log("Intra transfer response");
-            //         console.log(resp);
+            const chargeSuccessful =  await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
+                .then((resp) => {
+                    console.log("Intra transfer response");
+                    console.log(resp);
 
-            //          return resp
+                     return resp
 
-            //     })
-            //     .catch((err) => {
-            //         console.log(`Intratransfer error`)
-            //         console.log(err);
-            //         return false
-            
-            //     });
+                })
+                .catch((err) => {
+                    console.log(`Intratransfer error`)
+                    console.log(err);
+                    return false
+
+                });
 
             // //TODO: Get the invice id of the transfer for tranasction reference
 
-            // if (!chargeSuccessful) {
-            //     throw new Error(`Charge failed for wallet ${wallet_id}`);
-            // }
+            if (!chargeSuccessful) {
+                throw new Error(`Charge failed for wallet ${wallet_id}`);
+            }
 
             const newTicketsSold = totalTicketsSold + parseInt(total_tickets);
 
@@ -253,7 +245,6 @@ async function enterGame(req, res) {
                 tickets_sold: newTicketsSold
             });
 
-            let chargeSuccessful = {};
 
             for (let i = 0; i < parseInt(total_tickets); i++) {
 
@@ -296,79 +287,6 @@ async function enterGame(req, res) {
             return { message: "Transaction completed successfully" };
 
         })
-
-        // let game = await Game.findByPk(game_id, { lock: true, transaction: t });
-
-        // // const wallet_id = req.user.wallet_id;
-
-        // let ticketsTotal = game.tickets_total;
-
-        // let creator_id = game.host_id;
-
-        // if (creator_id === user_id) {
-        //     throw new Error("You cannot enter the game you created");
-        // }
-
-        // let totalTicketsSold = game.tickets_sold;
-
-        // if (totalTicketsSold + parseInt(total_tickets) > ticketsTotal) {
-
-        //     throw new Error("All tickets are sold for this game, please join another")
-
-        // }
-
-        // let ticketPrice = await game.ticket_price;
-
-        // let totalPrice = ticketPrice * total_tickets;
-
-        // let intasend;
-
-        // intasend = new IntaSend(
-        //     null,
-        //     intasendSecret,
-        //     false
-        // );
-
-        // // let collection = intasend.collection();
-        // let wallets = intasend.wallets();
-
-
-        // await wallets.get(wallet_id)
-        //     .then((resp) => {
-        //         let customerAvailableBal = resp.available_balance;
-
-        //         //TODO: Convert back to customerAvailableBal < totalprice
-
-        //         if (0 > customerAvailableBal) {
-        //             throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         console.log(`Intasend get wallet error`);
-        //         console.log(err);
-        //         throw new Error(err);
-        //     });
-
-        //charge wallet... transfer from user wallet to mainwallet (intra transfer)'
-
-        //TODO: In production, make sure the wallet is charged (Uncomment)
-
-        // let narrative = 'Payment';
-
-        // await wallets.intraTransfer(wallet_id, "WY7JRD0", 40, narrative)
-        //     .then((resp) => {
-        //         console.log("Intra transfer response");
-        //         console.log(resp);
-
-        //     })
-        //     .catch((err) => {
-        //         console.log(`Intratransfer error`)
-        //         console.log(err);
-        //         throw new Error(err);
-
-        //     });
-
-        //TODO: Get the invice id of the transfer for tranasction reference
 
         return res.status(200).json({
             result
