@@ -24,7 +24,7 @@ async function getMytickets(req, res) {
         console.log(`Tickcetownerid : ${user_id}`);
 
         const ticketSnapshot = await db.collectionGroup('tickets')
-        .where('ticketowner_id', '==', user_id).get();
+        .where('ticketowner_id', '==', 'TF3OVlaR1LcahUYdnbmj').get();
 
         if (ticketSnapshot.empty) {
             throw new Error("You have no live tickets");
