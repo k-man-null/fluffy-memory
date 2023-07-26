@@ -20,7 +20,7 @@ async function getMytickets(req, res) {
 
         const user_id = req.user.user_id;
 
-        const ticketQuery = db.collectionGroup('tickets')
+        const ticketQuery = await db.collectionGroup('tickets')
             .where('ticketowner_id', '==', user_id)
 
         const ticketSnapshot = await ticketQuery.get();

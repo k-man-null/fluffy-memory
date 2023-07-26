@@ -325,6 +325,8 @@ async function loadUserWallet(req, res) {
 
             const data = JSON.stringify(response);
 
+            console.log(data);
+
             if (!data.hasOwnProperty("invoice")) {
                 return res.status(400).json({ message: data });
             }
