@@ -18,13 +18,10 @@ async function getMytickets(req, res) {
 
     try {
 
-
         const user_id = req.user.user_id;
 
-        console.log(`Tickcetownerid : ${user_id}`);
-
         const ticketSnapshot = await db.collectionGroup('tickets')
-            .where('ticketowner_id', '==', 'TF3OVlaR1LcahUYdnbmj').get();
+            .where('ticketowner_id', '==', user_id).get();
 
         if (ticketSnapshot.empty) {
             throw new Error("You have no live tickets");
@@ -144,21 +141,7 @@ async function enterGame(req, res) {
         const wallet_id = req.user.wallet_id;
 
 
-        //get the user wallet
-
-        //check the current balance
-        //compute the  total amount.. game.ticketprice * total_tickets
-        //if the total amount is greater than the current balance,
-        //resspond with failed, need to topup
-        //else 
-        //check if there are enough remaining tickets to fulfil purchase
-        //if there are not enough, respond with not enoug tickets remaining only X amount remaining
-        //else ...proceed
-        //charge the wallet the wallet the total amount
-        //if charge was not successful, respond with reason
-        //else create the tickets of the total number and respond with tickets
-
-        //TODO: also include notify to firebase to communicate with game creatores that the user has purcahed tickets.
+        
 
 
         const gameRef = db.collection('games').doc(game_id);

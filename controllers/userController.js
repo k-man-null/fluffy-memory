@@ -10,7 +10,6 @@ const IntaSend = require('intasend-node');
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
-
 const intasendPublishableTest = process.env.INTASEND_PUBLISHABLE_TOKEN_TEST;
 const intasendSecretTest = process.env.INTASEND_SECRET_TOKEN_TEST;
 

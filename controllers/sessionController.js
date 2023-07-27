@@ -13,8 +13,6 @@ const intasendSecretTest = process.env.INTASEND_SECRET_TOKEN_TEST;
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
-
-
 let intasend = new IntaSend(
     null,
     intasendSecret,
@@ -30,7 +28,6 @@ async function logout(req, res) {
 }
 
 async function getMinProfile(req, res) {
-
 
     return res.status(200).json(req.user);
 
