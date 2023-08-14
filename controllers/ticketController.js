@@ -140,10 +140,6 @@ async function enterGame(req, res) {
         const avatar = req.user.avatar;
         const wallet_id = req.user.wallet_id;
 
-
-        
-
-
         const gameRef = db.collection('games').doc(game_id);
 
         const result = await db.runTransaction(async (transaction) => {

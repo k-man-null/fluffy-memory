@@ -41,10 +41,11 @@ app.use(cors(corsOptions))
 app.use(logger('combined'));
 
 app.use('/users', userRouter);
+app.use('/games', gamesRouter);
 
 app.use(verifyToken);
 
-app.use('/games', gamesRouter);
+
 app.use('/tickets', ticketRouter);
 app.use('/session', sessionRouter);
 app.use('/claim', claimRouter);

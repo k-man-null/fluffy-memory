@@ -309,8 +309,6 @@ async function loadUserWallet(req, res) {
 
         const narrative = "Deposit";
 
-        
-
             let collection = intasend.collection();
 
             const response = await collection.mpesaStkPush({
