@@ -45,7 +45,6 @@ app.use('/games', gamesRouter);
 
 app.use(verifyToken);
 
-
 app.use('/tickets', ticketRouter);
 app.use('/session', sessionRouter);
 app.use('/claim', claimRouter);
