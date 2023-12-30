@@ -75,6 +75,8 @@ SES.
 
 ## DEPLOYMENT
 
+** For session cookies to work, remember to set session affinity **
+
 # 1. Create a GCLOUD project
 # 2. Create a Firebase Project associated with the GCLOUD project
 # 3. Create a Firestore Database

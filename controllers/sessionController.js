@@ -21,6 +21,8 @@ let intasend = new IntaSend(
 
 async function logout(req, res) {
 
+    console.log(`Logout ${req}`)
+
     return res.status(200)
         .clearCookie('__session', { httpOnly: true, secure: true, sameSite: 'none' })
         .json({ message: "logged out" })
