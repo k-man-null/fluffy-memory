@@ -4,7 +4,6 @@ const IntaSend = require('intasend-node');
 const db = require('../firebase');
 const { publishMessage } = require('../utils/giveprizes');
 
-const MAX_TICKETS_PER_TRANSACTION = 300;
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 
