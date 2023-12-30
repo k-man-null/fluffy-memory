@@ -17,7 +17,7 @@ By design, the system retains a percentage of total sales and distributes the re
 The winner has to acknowledge that the host has provided the prize
 as pictured and described in a Claim process.
 
-** For the purposes of demonstration, a user has virtual money **
+** For the purposes of demonstration, a user has endless money **
 
 ## Deployed to Google Cloud as a cloud run service
 
