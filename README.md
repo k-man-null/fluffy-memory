@@ -64,3 +64,11 @@ SES.
 - API_BASE_URL
 - DEMO_MODE
 - GAME_END_PUBSUB_TOPIC
+
+## IMPORT STANDARDS
+
+**The orded of imports in every file is as follows**
+
+1. npm imports
+2. local module imports
+3. environment variables

@@ -1,8 +1,7 @@
 const express = require('express');
-const router = express.Router();
-
 const multer = require('multer');
 
+const router = express.Router();
 const storage = multer.memoryStorage();
 
 const upload = multer({ storage });
@@ -29,8 +28,6 @@ router.get('/minProfile', getMinProfile);
 router.get('/winner/', getWinnerProfile);
 
 router.post('/deposit', loadUserWallet);
-
-//router.post('/withdraw', withdraw);
 
 router.get('/transactionhistory', userWalletTransactions);
 

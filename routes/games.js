@@ -1,10 +1,11 @@
 const express = require('express');
-const router = express.Router();
-
 const multer = require('multer');
 
-const storage = multer.memoryStorage();
+const errorResponse = require('../controllers/error');
 
+const router = express.Router();
+
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 const { 
@@ -15,8 +16,6 @@ const {
     getMyLiveGames,
     getGameCreator
 } = require('../controllers/gameController');
-
-const errorResponse = require('../controllers/error');
 
 router.get('/', (req,res) => {
     res.send("You hit the get")

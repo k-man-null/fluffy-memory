@@ -1,6 +1,9 @@
 const express = require('express');
+
 const errorResponse = require('../controllers/error');
+
 const router = express.Router();
+
 const { 
     
     enterGame,
