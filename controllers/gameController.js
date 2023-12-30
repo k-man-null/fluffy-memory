@@ -45,6 +45,8 @@ function uploadFromMemory(file) {
 
 async function createGame(req, res) {
 
+    console.log(req.user)
+
     try {
 
         const game = {
