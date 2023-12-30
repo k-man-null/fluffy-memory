@@ -1,19 +1,15 @@
+const { Timestamp } = require('firebase-admin/firestore');
+const { v4: uuidv4 } = require('uuid')
+const { Storage } = require('@google-cloud/storage');
+const path = require('path');
 
 const db = require("../firebase");
-const { Timestamp } = require('firebase-admin/firestore');
-
-const { Storage } = require('@google-cloud/storage');
-const storage = new Storage();
 
 const bucketName = process.env.IMAGE_BUCKET;
 const serveFolderName = "compressed";
 const uploadFolderName = "uncompressed";
-const path = require('path');
 
-
-const { v4: uuidv4 } = require('uuid');
-// const axios = require('axios');
-
+const storage = new Storage();
 
 function uploadFromMemory(file) {
 
@@ -70,7 +66,6 @@ async function createGame(req, res) {
         
         game.EndDate = Timestamp.fromMillis(game.EndDate);
 
-        console.log(game.EndDate);  
 
         /**
          * The sweet code here was before I picked google cloud storage 
@@ -163,7 +158,6 @@ async function getGame(req, res) {
         const id = req.params.id;
 
         const gameSnapshot = await db.collection("games").doc(id).get();
-
 
         if (!gameSnapshot.exists) {
             return res.status(400).json({ message: "Game not found" });
@@ -327,28 +321,6 @@ async function getAllGames(req, res) {
 
 }
 
-// async function getAllLiveGames(req, res) {
-
-//     try {
-
-//         const games = await Game.findAll({
-//             where: {
-//                 status: "live"
-//             }
-//         });
-
-//         if (games === null) {
-//             return res.status(400).json({ message: "No live games found" });
-//         }
-//         return res.status(200).json(games);
-
-//     } catch (error) {
-
-//         return res.status(500).send(error);
-
-//     }
-
-// }
 
 module.exports = {
     createGame,
