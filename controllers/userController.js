@@ -154,6 +154,8 @@ async function loginUser(req, res) {
 
         if (correctUser) {
 
+            console.log(privateKey)
+
             jwt.sign(userWithoutPassword,
                 privateKey,
                 function (err, token) {
@@ -161,6 +163,8 @@ async function loginUser(req, res) {
                     if (err) {
                         return res.status(400).json({ message: `Error loging in, please try again` });
                     }
+                    
+                    console.log(`Token ${token}`)
 
                     req.user = userWithoutPassword;
 
