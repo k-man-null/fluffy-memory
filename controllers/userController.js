@@ -1,33 +1,29 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
-const db = require('../firebase');
 const { Timestamp } = require('firebase-admin/firestore');
-const { publishMessage } = require('../utils/giveprizes');
-const baseUrlFront = "https://tikitiki.me"
-
 const IntaSend = require('intasend-node');
+
+const { publishMessage } = require('../utils/giveprizes');
+const db = require('../firebase');
+
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
-
 const intasendPublishableTest = process.env.INTASEND_PUBLISHABLE_TOKEN_TEST;
 const intasendSecretTest = process.env.INTASEND_SECRET_TOKEN_TEST;
+const privateKey = process.env.PRIVATE_JWT_KEY;
+const demoMode = process.env.DEMO_MODE;
+
+const baseUrlFront = "https://tikitiki.me"
+
+
 
 let intasend = new IntaSend(
     intasendPublishable,
     intasendSecret,
     false
-  );
+);
 
 async function saveUser(req, res) {
-
-    // TODO: verify user emails 
-
-    /**
-     * send them an email with a link to verify by clicking:
-     * automatically set the verified column to true
-     * to secure the email, somehow send a token to ensure it comes from us
-     */
 
     try {
 
@@ -53,8 +49,6 @@ async function saveUser(req, res) {
 
         let wallets = intasend.wallets();
 
-        //TODO : Uncomment in production...to avoid creating unnceccessary wallets
-
         const { wallet_id } = await wallets.create({
             label: `${user_name}`,
             wallet_type: 'WORKING',
@@ -62,14 +56,13 @@ async function saveUser(req, res) {
         })
             .then((resp) => {
                 console.log(`Resp: ${JSON.stringify(resp)}`);
-                return(resp);
+                return (resp);
             })
             .catch((err) => {
                 console.log(`Error: ${err}`);
                 throw new Error("Intasend walet create error");
             });
 
-        // const wallet_id = "0XZZQEY"
         const newUserRef = await usersCollection.add({
             first_name,
             last_name,
@@ -94,7 +87,6 @@ async function saveUser(req, res) {
 
     } catch (error) {
 
-        console.log(error);
 
         switch (error.message) {
             case "Username":
@@ -207,7 +199,7 @@ async function changePassword(req, res) {
 
         const { password, token } = req.body;
 
-        jwt.verify(token, "myprivatekeytochange", async (err, decoded) => {
+        jwt.verify(token, privateKey, async (err, decoded) => {
 
             if (err) {
                 return res.status(400).json({ message: "Invalid Token" });
@@ -266,7 +258,7 @@ async function forgotPassword(req, res) {
 
         //Tell the user you have sent them an email and send the email
 
-        const code = jwt.sign(user, "myprivatekeytochange", {
+        const code = jwt.sign(user, privateKey, {
             expiresIn: 300
         });
 

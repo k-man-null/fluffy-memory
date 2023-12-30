@@ -1,12 +1,13 @@
-const db = require('../firebase');
 const { FieldValue } = require('firebase-admin/firestore');
-
 const IntaSend = require('intasend-node');
 
-const MAX_TICKETS_PER_TRANSACTION = 300;
+const db = require('../firebase');
 
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
+const demoMode = process.env.DEMO_MODE;
+
+const MAX_TICKETS_PER_TRANSACTION = 300;
 
 let intasend = new IntaSend(
     null,
@@ -166,18 +167,19 @@ async function enterGame(req, res) {
 
             let totalPrice = ticketPrice * parseInt(total_tickets);
 
-            let collection = intasend.collection();
             let wallets = intasend.wallets();
 
             await wallets.get(wallet_id)
                 .then((resp) => {
+
                     let customerAvailableBal = resp.available_balance;
 
-                    //TODO: Convert back to customerAvailableBal < totalprice
-
-                    if (customerAvailableBal < totalPrice) {
-                        throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
+                    if (!demoMode) {
+                        if (customerAvailableBal < totalPrice) {
+                            throw new Error("You are low on cash, please deposit more funds or reduce the number of tickets")
+                        }
                     }
+
                 })
                 .catch((err) => {
                     console.log(`Intasend get wallet error`);
@@ -185,32 +187,34 @@ async function enterGame(req, res) {
                     throw new Error(err);
                 });
 
-            // //charge wallet... transfer from user wallet to mainwallet (intra transfer)'
+            //charge wallet... transfer from user wallet to mainwallet (intra transfer)
 
-            // //TODO: In production, make sure the wallet is charged (Uncomment)
+            let chargeSuccessful = {}
 
-            let narrative = 'Purchase';
+            if (!demoMode) {
+                let narrative = 'Purchase';
 
-            const chargeSuccessful =  await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
-                .then((resp) => {
-                    console.log("Intra transfer response");
-                    console.log(resp);
+                chargeSuccessful = await wallets.intraTransfer(wallet_id, "WY7JRD0", totalPrice, narrative)
+                    .then((resp) => {
+                        console.log("Intra transfer response");
+                        console.log(resp);
 
-                     return resp
+                        return resp
 
-                })
-                .catch((err) => {
-                    console.log(`Intratransfer error`)
-                    console.log(err);
-                    return false
+                    })
+                    .catch((err) => {
+                        console.log(`Intratransfer error`)
+                        console.log(err);
+                        return false
 
-                });
+                    });
 
-            // //TODO: Get the invice id of the transfer for tranasction reference
+                if (!chargeSuccessful) {
+                    throw new Error(`Charge failed for wallet ${wallet_id}`);
+                }
+            } 
 
-            if (!chargeSuccessful) {
-                throw new Error(`Charge failed for wallet ${wallet_id}`);
-            }
+            // //TODO: Get the invoice id of the transfer for tranasction reference
 
             const newTicketsSold = totalTicketsSold + parseInt(total_tickets);
 
@@ -223,7 +227,6 @@ async function enterGame(req, res) {
             transaction.update(gameRef, {
                 tickets_sold: newTicketsSold
             });
-
 
             for (let i = 0; i < parseInt(total_tickets); i++) {
 

@@ -1,17 +1,17 @@
+const jwt = require('jsonwebtoken');
 const IntaSend = require('intasend-node');
+
 const db = require('../firebase');
 const { uploadFromMemory } = require("../controllers/gameController");
-const baseUrl = "https://tikitiki-api--server-cbjzk2a2wq-uc.a.run.app";
-const baseUrlFront = "https://tikitiki.me";
-const jwt = require('jsonwebtoken');
-
 const { publishMessage } = require("../utils/giveprizes");
 
+const baseUrl = process.env.API_BASE_URL;
+const privateKey = process.env.PRIVATE_JWT_KEY;
 const intasendPublishableTest = process.env.INTASEND_PUBLISHABLE_TOKEN_TEST;
 const intasendSecretTest = process.env.INTASEND_SECRET_TOKEN_TEST;
-
 const intasendPublishable = process.env.INTASEND_PUBLISHABLE_TOKEN;
 const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
+const baseUrlFront = "https://tikitiki.me";
 
 let intasend = new IntaSend(
     null,
@@ -79,7 +79,7 @@ async function verifyEmail(req, res) {
 
         const to = req.user.email;
 
-        const code = jwt.sign(req.user, "myprivatekeytochange");
+        const code = jwt.sign(req.user, privateKey);
 
         const text = "To verify your email, click the link below. The link is only valid for 5 minutes"
 
@@ -112,11 +112,9 @@ async function verifyEmailCallBack(req, res) {
 
     try {
 
-        console.log("I got called back for verification...............");
-
         const token = req.params.token
 
-        jwt.verify(token, "myprivatekeytochange", async (err, decoded) => {
+        jwt.verify(token, privateKey, async (err, decoded) => {
             if (err) {
                 console.log(err);
                 return res.json({ message: "Invalid Token" });

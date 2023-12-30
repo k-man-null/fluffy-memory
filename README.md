@@ -8,7 +8,7 @@ To host a raffle, a user needs to register and verify their email address. Uploa
 including the number of tickets, their price, the total tickets 
 to be sold and the end date of the raffle.
 The System automatically picks a winner on the end date or when the last ticket is sold,
-whichever come first.
+whichever comes first.
 Users can also create referral codes and earn a commision when 
 raffles are bought through their codes.
 
@@ -18,7 +18,6 @@ The winner has to acknowledge that the host has provided the prize
 as pictured and described in a Claim process.
 
 ** For the purposes of demonstration, a user has virtual money **
-
 
 ## Deployed to Google Cloud as a cloud run service
 
@@ -44,3 +43,13 @@ Allows automatic deploys from github through cloud build, build packs and artifa
 
 - [Firestore](https://cloud.google.com/firestore?hl=en)
 Ease of scale as well and reduced administrative costs
+
+
+## When deploying, pass in the foloowing Environment variables to the build
+
+- IMAGE_BUCKET
+- PRIVATE_JWT_KEY
+- INTASEND_PUBLISHABLE_TOKEN
+- INTASEND_SECRET_TOKEN
+- API_BASE_URL
+- DEMO_MODE
