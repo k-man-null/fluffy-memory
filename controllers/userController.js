@@ -11,10 +11,8 @@ const intasendSecret = process.env.INTASEND_SECRET_TOKEN;
 const intasendPublishableTest = process.env.INTASEND_PUBLISHABLE_TOKEN_TEST;
 const intasendSecretTest = process.env.INTASEND_SECRET_TOKEN_TEST;
 const privateKey = process.env.PRIVATE_JWT_KEY;
-const demoMode = process.env.DEMO_MODE;
 
 const baseUrlFront = "https://tikitiki.me"
-
 
 
 let intasend = new IntaSend(

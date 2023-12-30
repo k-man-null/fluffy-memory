@@ -30,7 +30,7 @@ as pictured and described in a Claim process.
 5. Claim
 6. Referrals
 
-## Google Inrastructure used
+## Google Infrastructure used
 
 - [PubSub](https://cloud.google.com/pubsub/docs/overview) 
 Pubsub is used a the Enterprise Event Bus
@@ -44,8 +44,18 @@ Allows automatic deploys from github through cloud build, build packs and artifa
 - [Firestore](https://cloud.google.com/firestore?hl=en)
 Ease of scale as well and reduced administrative costs
 
+- [CloudFunctions](https://cloud.google.com/functions?hl=en)
 
-## When deploying, pass in the foloowing Environment variables to the build
+## AWS Infrastructure used
+
+- [SES](https://aws.amazon.com/ses/)
+For transactional email
+
+- [LAMBDA](https://aws.amazon.com/lambda/)
+Receives messages from GCLOUD cloud functions, and then triggers email send in AWS
+SES.
+
+## When deploying, pass in the following Environment variables to the build
 
 - IMAGE_BUCKET
 - PRIVATE_JWT_KEY
@@ -53,3 +63,4 @@ Ease of scale as well and reduced administrative costs
 - INTASEND_SECRET_TOKEN
 - API_BASE_URL
 - DEMO_MODE
+- GAME_END_PUBSUB_TOPIC
