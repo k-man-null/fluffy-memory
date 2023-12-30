@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const privateKey = 'mysecretkey' || process.env.PRIVATE_JWT_KEY;
+const privateKey = process.env.PRIVATE_JWT_KEY;
 
 const verifyToken = (req, res, next) => {
 
