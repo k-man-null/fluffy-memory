@@ -1,16 +1,11 @@
 const express = require('express');
 const logger = require('morgan');
-const { verifyToken } = require("./utils/encryption");
 const cors = require('cors');
 const cookieparser = require('cookie-parser');
-
-
 const cron = require('node-cron');
-const { endGame } = require('./utils/giveprizes');
 
-cron.schedule('* * * * *', () => {
-    endGame();
-});
+const { verifyToken } = require("./utils/encryption");
+const { endGame } = require('./utils/giveprizes');
 
 
 const userRouter = require('./routes/users');
@@ -20,6 +15,9 @@ const sessionRouter = require('./routes/session');
 const claimRouter = require('./routes/claims');
 const referralsRouter = require('./routes/referrals');
 
+cron.schedule('* * * * *', () => {
+    endGame();
+});
 
 const app = express();
 
