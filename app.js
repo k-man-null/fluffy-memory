@@ -39,10 +39,12 @@ app.use(cors(corsOptions))
 app.use(logger('combined'));
 
 app.use('/users', userRouter);
-app.use('/games', gamesRouter);
-
 app.use(verifyToken);
 
+//place the verify token middleware before protected routes i.e
+//routes that take action from a specified user
+
+app.use('/games', gamesRouter);
 app.use('/tickets', ticketRouter);
 app.use('/session', sessionRouter);
 app.use('/claim', claimRouter);
