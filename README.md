@@ -72,3 +72,14 @@ SES.
 1. npm imports
 2. local module imports
 3. environment variables
+
+## DEPLOYMENT
+
+# 1. Create a GCLOUD project
+# 2. Create a Firebase Project associated with the GCLOUD project
+# 3. Create a Firestore Database
+# 4. Obtain Intasend keys
+# 5. Create an Image Bucket(Cloud Storage)
+# 5. Create a Cloud Run service connected to the github project
+    You need to setup cloud build to deploy from repository
+# 6. Create a pubsub topic for when a game ends and it needs to be drawn

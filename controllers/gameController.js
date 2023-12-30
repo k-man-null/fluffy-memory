@@ -45,6 +45,8 @@ function uploadFromMemory(file) {
 
 async function createGame(req, res) {
 
+    console.log(req.user)
+
     try {
 
         const game = {
@@ -62,7 +64,6 @@ async function createGame(req, res) {
         game.host_id = req.user.user_id;
         game.creator_email = req.user.email;
 
-        console.log(game.EndDate);
         
         game.EndDate = Timestamp.fromMillis(game.EndDate);
 
