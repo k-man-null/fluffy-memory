@@ -83,49 +83,7 @@ async function getMyLiveTickets(req, res) {
     }
 }
 
-// async function getMyLostTickets(req, res) {
 
-//     try {
-
-//         const { user_id } = req.user;
-
-//         let tickets = await Ticket.findAll({
-//             where: {
-//                 ticketowner_id: user_id,
-//                 status: "lost"
-//             }
-//         })
-
-//         return res.status(200).json({
-//             tickets
-//         })
-
-//     } catch (error) {
-//         return res.status(400).json(error.message)
-//     }
-// }
-
-// async function getMyWonTickets(req, res) {
-
-//     try {
-
-//         const { user_id } = req.user;
-
-//         let tickets = await Ticket.findAll({
-//             where: {
-//                 ticketowner_id: user_id,
-//                 status: "won"
-//             }
-//         })
-
-//         return res.status(200).json({
-//             tickets
-//         })
-
-//     } catch (error) {
-//         return res.status(400).json(error.message)
-//     }
-// }
 
 async function enterGame(req, res) {
 
