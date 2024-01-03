@@ -46,6 +46,8 @@ Ease of scale as well and reduced administrative costs
 
 - [CloudFunctions](https://cloud.google.com/functions?hl=en)
 
+  - [Image compression and conversion](https://github.com/k-man-null/image-compressor-cloud-function)
+
 ## AWS Infrastructure used
 
 - [SES](https://aws.amazon.com/ses/)
@@ -84,4 +86,6 @@ SES.
 # 5. Create an Image Bucket(Cloud Storage)
 # 5. Create a Cloud Run service connected to the github project
     You need to setup cloud build to deploy from repository
+# 6. Deploy the cloud function that compresses uploaded images and converts them to webp
+    The function compresses and deletes uncompressed images
 # 6. Create a pubsub topic for when a game ends and it needs to be drawn

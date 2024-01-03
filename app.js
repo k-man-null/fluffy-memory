@@ -15,7 +15,7 @@ const sessionRouter = require('./routes/session');
 const claimRouter = require('./routes/claims');
 const referralsRouter = require('./routes/referrals');
 
-cron.schedule('* * * * *', () => {
+cron.schedule('30 10 * * *', () => {
     endGame();
 });
 
