@@ -15,9 +15,11 @@ const sessionRouter = require('./routes/session');
 const claimRouter = require('./routes/claims');
 const referralsRouter = require('./routes/referrals');
 
-cron.schedule('30 10 * * *', () => {
-    endGame();
-});
+// TODO: Uncomment to check for completed games/raffles
+// This is to reduce my cloud run costs
+// cron.schedule('30 10 * * *', () => {
+//     endGame();
+// });
 
 const app = express();
 
